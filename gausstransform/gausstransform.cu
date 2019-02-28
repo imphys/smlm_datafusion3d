@@ -9,18 +9,14 @@
 
 #include "gausstransform.h"
 
-#ifndef block_size_x
-    #define block_size_x 128    //best for GTX 690 and K40
-#endif
-
 #include "kernels.cu"
 
 
 
-GPUGaussTransform::GPUGaussTransform(int n) {
+GPUGaussTransform::GPUGaussTransform(int n, int arg_dim) {
     //allocate GPU memory for size max_n
     max_n = n;
-    dim = 2;
+    dim = arg_dim;
     int elems = max_n * dim;
 
     cudaError_t err;
@@ -90,15 +86,20 @@ double GPUGaussTransform::compute(const double *A, const double *B,
 
     //setup kernel execution parameters
     dim3 threads(block_size_x, 1, 1);
-    dim3 grid(m, 1, 1);
+    int grid_x = (int)ceil(m/(float)tile_size_x);
+    dim3 grid(grid_x, 1, 1);
     
     //call the first kernel
     double scale_sq = scale * scale;
-    GaussTransform<<<grid, threads, 0, stream>>>(d_A, d_B, m, n, scale_sq, d_grad, d_cross_term); 
+    if (dim == 2) {
+        GaussTransform<<<grid, threads, 0, stream>>>(d_A, d_B, m, n, scale_sq, d_grad, d_cross_term); 
+    } else {
+        GaussTransform3D<<<grid, threads, 0, stream>>>(d_A, d_B, m, n, scale_sq, d_grad, d_cross_term); 
+    }
 
     //call the second kernel
     dim3 grid2(1, 1, 1);
-    reduce_cross_term<<<grid2, threads, 0, stream>>>(d_cross_term, d_cross_term, m, n, m);
+    reduce_cross_term<<<grid2, threads, 0, stream>>>(d_cross_term, d_cross_term, m, n, grid_x);
 
     //copy result from GPU memory to host memory
     err = cudaMemcpyAsync(grad, d_grad, m*dim*sizeof(double), cudaMemcpyDeviceToHost, stream);
@@ -125,7 +126,7 @@ extern "C"
 float test_GaussTransformHost(double *cost, const double* A, const double* B,
             int m, int n, int dim, double scale, double* grad) {
 
-    GPUGaussTransform gpu_gt(1000000);
+    GPUGaussTransform gpu_gt(1000000, dim);
 
     *cost = gpu_gt.compute(A, B, m, n, scale, grad);
 

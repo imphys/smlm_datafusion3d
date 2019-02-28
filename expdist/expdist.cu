@@ -23,11 +23,18 @@
 #include "kernels.cu"
 
 
-GPUExpDist::GPUExpDist(int n) {
+GPUExpDist::GPUExpDist(int n, int argdim) {
     //allocate GPU memory for size max_n
     max_n = n;
-    dim = 2;
+    dim = argdim;
     int elems = max_n * dim;
+
+    scale_A_dim = 1;
+    scale_B_dim = 1;
+    if (dim == 3) {
+        scale_A_dim = 2;
+        scale_B_dim = 9;
+    }
 
     cudaError_t err;
 
@@ -41,12 +48,12 @@ GPUExpDist::GPUExpDist(int n) {
         fprintf(stderr, "Error in cudaMalloc: %s\n", cudaGetErrorString(err));
         exit(1);
     }
-    err = cudaMalloc((void **)&d_scale_A, max_n*sizeof(double));
+    err = cudaMalloc((void **)&d_scale_A, scale_A_dim*max_n*sizeof(double));
     if (err != cudaSuccess) {
         fprintf(stderr, "Error in cudaMalloc: %s\n", cudaGetErrorString(err));
         exit(1);
     }
-    err = cudaMalloc((void **)&d_scale_B, max_n*sizeof(double));
+    err = cudaMalloc((void **)&d_scale_B, scale_B_dim*max_n*sizeof(double));
     if (err != cudaSuccess) {
         fprintf(stderr, "Error in cudaMalloc: %s\n", cudaGetErrorString(err));
         exit(1);
@@ -56,8 +63,25 @@ GPUExpDist::GPUExpDist(int n) {
         fprintf(stderr, "Error in cudaMalloc: %s\n", cudaGetErrorString(err));
         exit(1);
     }
+    if (dim == 3) {
+        err = cudaMalloc((void **)&d_scale_B_temp, scale_A_dim*max_n*sizeof(double));
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Error in cudaMalloc: %s\n", cudaGetErrorString(err));
+            exit(1);
+        }
+    }
 
+    err = cudaEventCreate(&event);
+    if (err != cudaSuccess) {
+        fprintf(stderr, "Error in cudaEventCreate: %s\n", cudaGetErrorString(err));
+        exit(1);
+    }
     err = cudaStreamCreate(&stream);
+    if (err != cudaSuccess) {
+        fprintf(stderr, "Error in cudaStreamCreate: %s\n", cudaGetErrorString(err));
+        exit(1);
+    }
+    err = cudaStreamCreate(&stream_b);
     if (err != cudaSuccess) {
         fprintf(stderr, "Error in cudaStreamCreate: %s\n", cudaGetErrorString(err));
         exit(1);
@@ -72,10 +96,16 @@ GPUExpDist::~GPUExpDist() {
     cudaFree(d_scale_A);
     cudaFree(d_scale_B);
     cudaFree(d_cross_term);
+    cudaEventDestroy(event);
     cudaStreamDestroy(stream);
+    cudaStreamDestroy(stream_b);
 } 
 
 double GPUExpDist::compute(const double *A, const double *B, int m, int n, const double *scale_A, const double *scale_B) {
+  return GPUExpDist::compute(A, B, m, n, scale_A, scale_B, (const double *)NULL);
+}
+
+double GPUExpDist::compute(const double *A, const double *B, int m, int n, const double *scale_A, const double *scale_B, const double *rotation_matrix) {
 
     double cost;
     cudaError_t err;
@@ -91,19 +121,67 @@ double GPUExpDist::compute(const double *A, const double *B, int m, int n, const
         fprintf(stderr, "Error in cudaMemcpyAsync d_B: %s\n", cudaGetErrorString(err));
         exit(1);
     }
-    err = cudaMemcpyAsync(d_scale_A, scale_A, m*sizeof(double), cudaMemcpyHostToDevice, stream);
+    err = cudaMemcpyAsync(d_scale_A, scale_A, scale_A_dim*m*sizeof(double), cudaMemcpyHostToDevice, stream);
     if (err != cudaSuccess) {
         fprintf(stderr, "Error in cudaMemcpyAsync d_scale_A: %s\n", cudaGetErrorString(err));
         exit(1);
     }
-    err = cudaMemcpyAsync(d_scale_B, scale_B, n*sizeof(double), cudaMemcpyHostToDevice, stream);
-    if (err != cudaSuccess) {
-        fprintf(stderr, "Error in cudaMemcpyAsync d_scale_B: %s\n", cudaGetErrorString(err));
-        exit(1);
+
+    //prepare scale_B if needed
+    if (dim == 3) {
+        err = cudaMemcpyAsync(d_scale_B_temp, scale_B, scale_A_dim*n*sizeof(double), cudaMemcpyHostToDevice, stream_b);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Error in cudaMemcpyAsync d_scale_B: %s\n", cudaGetErrorString(err));
+            exit(1);
+        }
+        //compute tranpose of rotation matrix and send both to constant memory
+        double transposed_rotation_matrix[9];
+        transpose_matrix<double, 9, 3>(transposed_rotation_matrix, reinterpret_cast<const double(&)[9]>(*rotation_matrix));
+        
+        err = cudaMemcpyToSymbolAsync(rotation_matrixd, rotation_matrix, 9*sizeof(double), 0, cudaMemcpyHostToDevice, stream_b);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Error in cudaMemcpyToSymbolAsync rotation_matrix: %s\n", cudaGetErrorString(err));
+            exit(1);
+        }
+        err = cudaMemcpyToSymbolAsync(rotation_matrix_transposedd, &transposed_rotation_matrix, 9*sizeof(double), 0, cudaMemcpyHostToDevice, stream_b);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Error in cudaMemcpyToSymbolAsync rotation_matrix_transposed: %s\n", cudaGetErrorString(err));
+            exit(1);
+        }
+
+        //call rotate scales kernel
+        dim3 threads(block_size_x, 1, 1);
+        dim3 grid((int) ceil(n / (float)(block_size_x)), 1, 1);
+        rotate_scales_double<<<grid, threads, 0, stream_b>>>(d_scale_B, n, d_scale_B_temp);
+        cudaEventRecord(event, stream_b);
+
+
+    }
+    else {
+        err = cudaMemcpyAsync(d_scale_B, scale_B, scale_B_dim*n*sizeof(double), cudaMemcpyHostToDevice, stream);
+        if (err != cudaSuccess) {
+            fprintf(stderr, "Error in cudaMemcpyAsync d_scale_B: %s\n", cudaGetErrorString(err));
+            exit(1);
+        }
+    }
+
+    if (dim == 3) {
+        cudaStreamWaitEvent(stream, event, 0);
+
+        //also rotate B, after the recorded event because
+        //transfer of B (in stream) and rotation matrix
+        //(in stream_b) needs to be completed
+        //
+        //yes, at the moment only for the 3D case the B coordinates are rotated on the GPU, the 2D version assumes
+        //that the coordinates have been rotated before data is transferred to the GPU
+        dim3 threads(block_size_x, 1, 1);
+        dim3 grid((int) ceil(n / (float)(block_size_x)), 1, 1);
+        rotate_B_double<<<grid, threads, 0, stream>>>(d_B, n, d_B);
+
     }
 
     //compute number of thread blocks that would be used by the ExpDist kernel for this m and n
-    int nblocks = ((int) ceil(m / (block_size_x*tile_size_x)) * (int) ceil(n / (block_size_y*tile_size_y)));
+    int nblocks = ((int) ceil(m / (float)(block_size_x*tile_size_x)) * (int) ceil(n / (float)(block_size_y*tile_size_y)));
 
     //setup kernel execution parameters
     dim3 threads(block_size_x, block_size_y, 1);
@@ -117,14 +195,22 @@ double GPUExpDist::compute(const double *A, const double *B, int m, int n, const
         grid.y = (int) ceilf(n / (float)(block_size_y * tile_size_y));
     
         //call the first kernel
-        ExpDist<<<grid, threads, 0, stream>>>(d_A, d_B, m, n, d_scale_A, d_scale_B, d_cross_term); 
+        if (dim == 2) {
+            ExpDist<<<grid, threads, 0, stream>>>(d_A, d_B, m, n, d_scale_A, d_scale_B, d_cross_term); 
+        } else {
+            ExpDist3D<<<grid, threads, 0, stream>>>(d_A, d_B, m, n, d_scale_A, d_scale_B, d_cross_term); 
+        }
 
     } else {
         //setup kernel execution parameters
         grid.x = (int) ceilf(m / (float)(block_size_x * tile_size_x));
     
         //call the first kernel
-        ExpDist_column<<<grid, threads, 0, stream>>>(d_A, d_B, m, n, d_scale_A, d_scale_B, d_cross_term); 
+        if (dim == 2) {
+            ExpDist_column<<<grid, threads, 0, stream>>>(d_A, d_B, m, n, d_scale_A, d_scale_B, d_cross_term); 
+        } else {
+            ExpDist_column3D<<<grid, threads, 0, stream>>>(d_A, d_B, m, n, d_scale_A, d_scale_B, d_cross_term); 
+        }
     }
 
     //call the second kernel
@@ -142,13 +228,18 @@ double GPUExpDist::compute(const double *A, const double *B, int m, int n, const
 }
 
 
+
 extern "C"
 float test_GPUExpDistHost(double *cost, const double* A, const double* B,
-            int m, int n, int dim, const double *scale_A, const double *scale_B, int max_n) {
+            int m, int n, int dim, const double *scale_A, const double *scale_B, int max_n, const double *rotation_matrix) {
 
-    GPUExpDist gpu_expdist(max_n);
+    GPUExpDist gpu_expdist(1000000, dim);
 
-    *cost = gpu_expdist.compute(A, B, m, n, scale_A, scale_B);
+    if (dim == 2) {
+        *cost = gpu_expdist.compute(A, B, m, n, scale_A, scale_B);
+    } else {
+        *cost = gpu_expdist.compute(A, B, m, n, scale_A, scale_B, rotation_matrix);
+    }
 
     cudaDeviceSynchronize();
     cudaError_t err = cudaGetLastError();

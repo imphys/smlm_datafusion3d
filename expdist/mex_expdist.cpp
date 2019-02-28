@@ -14,8 +14,25 @@
 
 GPUExpDist *gpu_expdist = (GPUExpDist *)NULL;
 
+/*
+ * For 2D this function can be called as:
+ *      mex_expdist(Mt.points, S.points, Mt.sigma, S.sigma);
+ * For 3D this function can be called using:
+ *      mex_expdist(Mt.points, S.points, Mt.sigma, S.sigma, rotation_matrix);
+ *   Where:
+ *   * The points arrays are Nx2 arrays, which have a data layout of:
+ *      x1,x2,x3,...xn followed by y1,y2,y3,...,yn
+ *   * The sigma arrays are 2xN arrays for particles of size N with a data layout of:
+ *      sxy1,sz1,sxy2,sz2,sxy3,sz3,...,sxyn,szn
+ *   * The rotation_matrix is a 3x3 array of doubles, assumed to be stored in row-major
+ *      for example,    r11, r12, r13
+ *                      r21, r22, r23
+ *                      r31, r23, r33 
+ *      is assumed to be stored as:
+ *           r11,r12,r13,r21,r22,r23,r31,r23,r33
+ */
 void mexFunction(int nlhs,       mxArray *plhs[],
-		 int nrhs, const mxArray *prhs[])
+         int nrhs, const mxArray *prhs[])
 {
     /* Declare variables */ 
     int m, n, dim; 
@@ -25,11 +42,8 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     void mexLock(void);
     
     /* Check for proper number of input and output arguments */    
-    if (nrhs != 4) {
-	mexErrMsgTxt("Three input arguments required.");
-    } 
     if (nlhs > 2){
-	mexErrMsgTxt("Too many output arguments.");
+    mexErrMsgTxt("Too many output arguments.");
     }
     
     /* Check data type of input argument */
@@ -53,45 +67,87 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     B = (double *)mxGetPr(prhs[1]);
     scale_A = (double *)mxGetPr(prhs[2]);
     scale_B = (double *)mxGetPr(prhs[3]);
-  	/* Get the dimensions of the matrix input A&B. */
-  	m = mxGetM(prhs[0]);
-  	n = mxGetM(prhs[1]);
+      /* Get the dimensions of the matrix input A&B. */
+      m = mxGetM(prhs[0]);
+      n = mxGetM(prhs[1]);
 
-  	dim = mxGetN(prhs[0]);
-  	if (mxGetN(prhs[1])!=dim)
-  	{
-  		mexErrMsgTxt("The two input point sets should have same dimension.");
-  	}
+      dim = mxGetN(prhs[0]);
+      if (mxGetN(prhs[1])!=dim)
+      {
+          mexErrMsgTxt("The two input point sets should have same dimension.");
+      }
     
-  	if (mxGetM(prhs[0])!=mxGetM(prhs[2]))
-  	{
-  		mexErrMsgTxt("localizations and uncertainties (A) should have same dimension.");
-  	}    
+      if (mxGetM(prhs[0])!=mxGetM(prhs[2]))
+      {
+          mexErrMsgTxt("localizations and uncertainties (A) should have same dimension.");
+      }    
     
-  	if (mxGetM(prhs[1])!=mxGetM(prhs[3]))
-  	{
-  		mexErrMsgTxt("localizations and uncertainties (B) should have same dimension.");
-  	}        
+      if (mxGetM(prhs[1])!=mxGetM(prhs[3]))
+      {
+          mexErrMsgTxt("localizations and uncertainties (B) should have same dimension.");
+      }        
     
-  	if (mxGetN(prhs[2])!=1)
-  	{
-  		mexErrMsgTxt("uncertainties should be a m*1 matrix.");
-  	}        
-    
-  	if (mxGetN(prhs[3])!=1)
-  	{
-  		mexErrMsgTxt("uncertainties should be a n*1 matrix.");
-  	}            
+    if (dim == 2) {
+        if (nrhs != 4) {
+            mexErrMsgTxt("Four input arguments required.");
+        }
+    if (mxGetN(prhs[2])!=1)
+        {
+            mexErrMsgTxt("uncertainties should be a m*1 matrix.");
+        }
+
+    if (mxGetN(prhs[3])!=1)
+        {
+            mexErrMsgTxt("uncertainties should be a n*1 matrix.");
+        }
+    }
+    else if (dim == 3) {
+        if (nrhs != 5) {
+            mexErrMsgTxt("Five input arguments required.");
+        }
+        if (mxGetN(prhs[2])!=2)
+        {
+            mexErrMsgTxt("uncertainties should be a m*2 matrix for 3D.");
+        }
+
+        if (mxGetN(prhs[3])!=2)
+        {
+            mexErrMsgTxt("uncertainties should be a n*2 matrix for 3D.");
+        }
+
+        //rotation matrix
+        if (!(mxIsDouble(prhs[4]))) {
+          mexErrMsgTxt("Input array must be of type double.");
+        }
+        if (mxGetN(prhs[4])!=3 || mxGetM(prhs[4])!=3)
+        {
+            mexErrMsgTxt("rotation matrix should be 3x3 for 3D.");
+        }
+    }
+
     /* Allocate the space for the return argument */
 
     plhs[0] = mxCreateDoubleMatrix(1,1,mxREAL);
     result = mxGetPr(plhs[0]);
 
     if (gpu_expdist == (GPUExpDist *)NULL) {
-        gpu_expdist = new GPUExpDist(1000000);
+        gpu_expdist = new GPUExpDist(1000000, dim);
+    } else {
+    if (gpu_expdist->dim != dim) {
+            mexErrMsgTxt("Error GPUExpDist dimension does not match");
+        }
+        if ((gpu_expdist->max_n < m) || (gpu_expdist->max_n < n)) {
+            mexErrMsgTxt("Error GPUExpDist not sufficiently large");
+        }
     }
 
-    *result = gpu_expdist->compute(A, B, m, n, scale_A, scale_B);
+    if (dim == 2) {
+        *result = gpu_expdist->compute(A, B, m, n, scale_A, scale_B);
+    } else if (dim == 3) {
+        *result = gpu_expdist->compute(A, B, m, n, scale_A, scale_B, 
+                                       (double *)mxGetPr(prhs[4]));
+    }
+
 
 }
 

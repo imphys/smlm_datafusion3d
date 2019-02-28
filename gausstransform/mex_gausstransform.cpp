@@ -64,7 +64,14 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     grad = mxGetPr(plhs[1]);
 
     if (gpu_gt == (GPUGaussTransform *)NULL) {
-        gpu_gt = new GPUGaussTransform(1000000);
+        gpu_gt = new GPUGaussTransform(1000000, dim);
+    } else {
+        if (gpu_gt->dim != dim) {
+            mexErrMsgTxt("Error GPUGaussTransform dimension does not match");
+        }
+        if ((gpu_gt->max_n < m) || (gpu_gt->max_n < n)) {
+            mexErrMsgTxt("Error GPUGaussTransform not sufficiently large");
+        }
     }
 
     *result = gpu_gt->compute(A, B, m, n, scale, grad);

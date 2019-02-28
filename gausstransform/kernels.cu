@@ -1,27 +1,49 @@
 #include <cub/cub.cuh>
 
 #ifndef block_size_x
-    #define block_size_x 128
+    #define block_size_x 64
 #endif
 
 #ifndef tile_size_x
-    #define tile_size_x 1
+    #define tile_size_x 2
 #endif
 
-#ifndef use_shared_mem
-    #define use_shared_mem 0
+#ifndef use_registers_B
+    #define use_registers_B 1
 #endif
 
+#ifndef cub_algorithm
+    #define cub_algorithm BLOCK_REDUCE_WARP_REDUCTIONS
+#endif
 
-template <int tile_size, int stride, typename T>
-__device__ __forceinline__ void fill_shared_mem_tiled_1D(T (&sh_mem)[tile_size*stride], const T *d_mem, int sh_offset, int d_offset, int N) {
-    #pragma unroll
-    for (int ti=0; ti<tile_size; ti++) {
-        if (d_offset+ti*stride < N) {
-            sh_mem[sh_offset+ti*stride] = d_mem[d_offset+ti*stride];
-        }
+#define use_cub_algorithm cub::cub_algorithm
+
+
+template<typename T, int dim>
+__device__ __forceinline__ T compute_grad_and_cross(const int i, const int j, const T (&l_A)[dim], const T *B,
+        const T scale_sq, T (&grad_i)[dim], const int m, const int n) {
+
+    T cost_ij = 0.0;
+
+    if (i<m) {
+
+            T dist_ij = 0;
+            #pragma unroll
+            for (int d = 0; d < dim; ++d) {
+                dist_ij += (l_A[d] - B[d])*(l_A[d] - B[d]);
+            }
+            cost_ij = exp(-dist_ij/scale_sq);
+
+            #pragma unroll
+            for (int d = 0; d < dim; ++d) {
+                grad_i[d] -= cost_ij * 2.0 * (l_A[d] - B[d]);
+            }
+
     }
+
+    return cost_ij;
 }
+
 
 
 /*
@@ -40,60 +62,71 @@ __device__ __forceinline__ void GaussTransform_blocked_i(const T *A, const T *B,
     int tx = threadIdx.x;
 
     // Specialize BlockReduce for a 1D block of block_size_x threads on type T
-    typedef cub::BlockReduce<T, block_size_x> BlockReduce;
+    typedef cub::BlockReduce<T, block_size_x, use_cub_algorithm> BlockReduce;
     // Allocate shared memory for BlockReduce
     __shared__ typename BlockReduce::TempStorage temp_storage;
 
+    int i = blockIdx.x*tile_size_x; // i-loop is parallelized over thread blocks with tile_size_x stride
+
     T cross_term = 0.0;
-    T grad_i[dim];
-    for (int d = 0; d < dim; d++) {
-        grad_i[d] = 0.0;
-    }
-
-    int i = blockIdx.x;
-
-    #if use_shared_mem == 1
-    __shared__ T sh_A[dim][block_size_x*tile_size_x];
-
+    T grad_i[tile_size_x][dim];
+    T l_A[tile_size_x][dim];
     #pragma unroll
-    for (int d=0; d<dim; d++) {
-        fill_shared_mem_tiled_1D<tile_size_x, block_size_x>(sh_A[d], A+d*m, tx, i, m);
+    for (int ti=0; ti<tile_size_x; ti++) {
+        #pragma unroll
+        for (int d = 0; d < dim; d++) {
+            l_A[ti][d] = A[(i+ti)*dim+d];
+            grad_i[ti][d] = 0.0;
+        }
     }
-    __syncthreads();
+
+    #if use_registers_B == 1
+    T l_B[dim];
     #endif
 
-    //loop parallelized over threads within thread block
+    //j-loop parallelized over threads within thread block
     for (int j = tx; j<n; j+=block_size_x) {
 
-        T dist_ij = 0;
+        #if use_registers_B == 1
         #pragma unroll
-        for (int d = 0; d < dim; ++d) {
-            dist_ij += (A[i * dim + d] - B[j * dim + d])*(A[i * dim + d] - B[j * dim + d]);
+        for (int d = 0; d < dim; d++) {
+            l_B[d] = B[j*dim+d];
         }
-        T cost_ij = exp(-dist_ij/scale_sq);
+        #endif
 
-        #pragma unroll
-        for (int d = 0; d < dim; ++d) {
-            grad_i[d] -= cost_ij * 2.0 * (A[i * dim + d] - B[j * dim + d]);
+        //#pragma unroll
+        for (int ti=0; ti<tile_size_x; ti++) {
+            #if use_registers_B == 1
+            cross_term += compute_grad_and_cross<double, dim>(i+ti, j, l_A[ti], l_B, scale_sq, grad_i[ti], m, n);
+            #else
+            cross_term += compute_grad_and_cross<double, dim>(i+ti, j, l_A[ti], B+j*dim, scale_sq, grad_i[ti], m, n);
+            #endif
         }
 
-        cross_term += cost_ij;
     }
 
     //reduce grad_i for each d, within the block
     #pragma unroll
-    for (int d = 0; d < dim; d++) {
-        grad_i[d] = BlockReduce(temp_storage).Sum(grad_i[d]);
-        __syncthreads();
+    for (int ti=0; ti<tile_size_x; ti++) {
+        #pragma unroll
+        for (int d = 0; d < dim; d++) {
+            grad_i[ti][d] = BlockReduce(temp_storage).Sum(grad_i[ti][d]);
+            __syncthreads();
+        }
     }
 
     //reduce cross_term within the block, (division by m*n on CPU)
     cross_term = BlockReduce(temp_storage).Sum(cross_term);
 
-    if (tx == 0 && blockIdx.x < m) {
+    if (tx == 0) {
         #pragma unroll
-        for (int d = 0; d < dim; d++) {
-            d_grad[blockIdx.x * dim + d] = grad_i[d] / (scale_sq * m * n);
+        for (int ti=0; ti<tile_size_x; ti++) {
+            if (i+ti < m) {
+                #pragma unroll
+                for (int d = 0; d < dim; d++) {
+                    d_grad[(i+ti) * dim + d] = grad_i[ti][d] / (scale_sq * m * n);
+                }
+            }
         }
         d_cross_term[blockIdx.x] = cross_term;
     }
@@ -109,6 +142,19 @@ GaussTransform(const double* A, const double* B,
     GaussTransform_blocked_i<double, 2>(A, B, m, n, scale_sq, grad, cross_term);
 
 }
+
+
+extern "C"
+__global__ void
+GaussTransform3D(const double* A, const double* B,
+                 int m, int n, double scale_sq, double *grad, double *cross_term) {
+
+    //2-dimensional with double precision
+    GaussTransform_blocked_i<double, 3>(A, B, m, n, scale_sq, grad, cross_term);
+
+}
+
+
 
 /*
  * Reduce the per thread block cross terms computed in the GaussTransform kernel to single value

@@ -6,12 +6,12 @@
 
 class GPUGaussTransform {
     public:
-        GPUGaussTransform(int max_n);
+        GPUGaussTransform(int max_n, int argdim);
         ~GPUGaussTransform();
         double compute(const double *A, const double *B, int m, int n, double scale, double *grad);
-    private:
         int dim;
         int max_n;
+    private:
         double *d_A;
         double *d_B;
         double *d_grad;
