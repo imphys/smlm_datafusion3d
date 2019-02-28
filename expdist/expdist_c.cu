@@ -1,7 +1,7 @@
 #include <math.h>
 
 //definition
-#include "expdist_ref.cu"
+#include "expdist_ref.h"
 
 
 

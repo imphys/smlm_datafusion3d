@@ -12,7 +12,7 @@
 
 #include "mex.h"
 
-#include "gausstransform_ref.cpp"
+#include "gausstransform_ref.h"
 
 
 void mexFunction(int nlhs,       mxArray *plhs[],

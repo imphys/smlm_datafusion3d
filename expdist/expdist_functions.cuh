@@ -1,15 +1,21 @@
+#ifndef EXPDIST_FUNCTIONS_CUH
+#define EXPDIST_FUNCTIONS_CUH
+
 /* 
  * This file contains the shared functionality between the CPU and GPU version of
  * the Expdist 3D implementation
  */
+ 
+#ifdef __CUDACC__
+#define HOST_DEVICE __host__ __device__
+#else
+#define HOST_DEVICE 
+#endif // __CUDACC__
 
-
-#include "matrix_functions.cu"
-
-
+#include "matrix_functions.cuh"
 
 template <typename T>
-__host__ __device__
+HOST_DEVICE
 void rotate_scale(T *rotated_scales, const T *rotation_matrix, const T *transposed_rotation_matrix, const int i, const T *scale_B) {
 
     //construct matrix sigma with uncertainties on diagonal
@@ -34,7 +40,7 @@ void rotate_scale(T *rotated_scales, const T *rotation_matrix, const T *transpos
 }
 
 template <typename T>
-__host__ __device__
+HOST_DEVICE
 void rotate_B_point(T *rotated_B, const T *rotation_matrix, const int i, const T *B) {
 
     multiply_matrix_vector<T, 3>(reinterpret_cast<T(&)[3]>(*(rotated_B+i*3)),
@@ -44,7 +50,7 @@ void rotate_B_point(T *rotated_B, const T *rotation_matrix, const int i, const T
 
 
 template <typename T, int dim>
-__host__ __device__
+HOST_DEVICE
 T compute_expdist_3D(const T (&A)[dim], const T (&B)[dim], const T (&Sigma_i)[9], const T (&Sigma_j)[9]) {
 
     T cross_term = 0;
@@ -95,3 +101,4 @@ T compute_expdist_3D(const T (&A)[dim], const T (&B)[dim], const T (&Sigma_i)[9]
 
 }
 
+#endif // !EXPDIST_FUNCTIONS

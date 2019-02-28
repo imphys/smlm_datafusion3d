@@ -1,7 +1,7 @@
 #include <math.h>
 
 //definition
-#include "gausstransform_ref.cpp"
+#include "gausstransform_ref.h"
 
 
 

@@ -1,3 +1,6 @@
+#ifndef GAUSSTRANSFOEM_REF_H
+#define GAUSSTRANSFOEM_REF_H
+
 /* 
  * This file contains a few functions from:
  *
@@ -66,3 +69,4 @@ T GaussTransform(const T* A, const T* B,
   return cross_term / (m * n);
 }
 
+#endif // !GAUSSTRANSFOEM_REF_H

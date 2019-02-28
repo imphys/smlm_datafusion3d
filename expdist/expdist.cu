@@ -20,7 +20,7 @@
 #define reduce_block_size 256
 
 
-#include "kernels.cu"
+#include "kernels.cuh"
 
 
 GPUExpDist::GPUExpDist(int n, int argdim) {

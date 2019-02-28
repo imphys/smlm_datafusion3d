@@ -1,10 +1,18 @@
+#ifndef MATRIX_FUNCTIONS_CUH
+#define MATRIX_FUNCTIONS_CUH
+
+#ifdef __CUDACC__
+#define HOST_DEVICE __host__ __device__
+#else
+#define HOST_DEVICE 
+#endif // __CUDACC__
 
 /*
  *  This file will contain a couple of functions to be used with 3x3 matrices
  */
 
 template<typename T>
-__host__ __device__
+HOST_DEVICE
 T determinant(T (&matrix)[9]){
     // calculates determinant
     T temp = 0;
@@ -15,7 +23,7 @@ T determinant(T (&matrix)[9]){
 }
 
 template<typename T>
-__host__ __device__
+HOST_DEVICE
 void invert_matrix(T (&inverted)[9], T (&matrix)[9]) {
     // matrix,    pointer to 3x3 matrix which needs to be inverted
     // inverted,  pointer to 3x3 matrix which will store the result
@@ -33,7 +41,7 @@ void invert_matrix(T (&inverted)[9], T (&matrix)[9]) {
 }
 
 template<typename T, int sz, int s>
-__host__ __device__
+HOST_DEVICE
 void multiply_matrix(T (&output)[s*s], const T (&a)[sz], const T (&b)[sz]) {
     // calculates matrix product of two square matrices
     // out=A*B
@@ -52,7 +60,7 @@ void multiply_matrix(T (&output)[s*s], const T (&a)[sz], const T (&b)[sz]) {
 
 // output = Ax
 template<typename T, int s>
-__host__ __device__
+HOST_DEVICE
 void multiply_matrix_vector(T (&output)[s], const T (&A)[s*s], const T (&x)[s]) {
     // calculates matrix vector product, out = Ax 
     for (int i=0; i<s; i++) {
@@ -67,7 +75,7 @@ void multiply_matrix_vector(T (&output)[s], const T (&A)[s*s], const T (&x)[s]) 
 
 
 template<typename T, int sz, int s>
-__host__ __device__
+HOST_DEVICE
 void transpose_matrix(T (&output)[s*s], const T (&A)[sz]) {
     for (int i=0; i<s; i++) {
         for (int j=0; j<s; j++) {
@@ -77,7 +85,7 @@ void transpose_matrix(T (&output)[s*s], const T (&A)[sz]) {
 }
 
 template<typename T, int s>
-__host__ __device__
+HOST_DEVICE
 void zero_matrix(T (&output)[s]) {
     for (int i=0; i<s; i++) {
         output[i] = 0;
@@ -86,7 +94,7 @@ void zero_matrix(T (&output)[s]) {
 
 
 template<typename T, int s>
-__host__ __device__
+HOST_DEVICE
 void dot_product(T &output, const T (&a)[s], const T (&b)[s]) {
     // calculates dot product of two vectors (a and b) of length s
     output = 0;
@@ -97,7 +105,7 @@ void dot_product(T &output, const T (&a)[s], const T (&b)[s]) {
 
 
 template<typename T, int s>
-__host__ __device__
+HOST_DEVICE
 void add_matrix(T (&output)[s], const T (&a)[s], const T (&b)[s]) {
     // add two square matrices
     for (int i=0; i<s; i++) {
@@ -106,7 +114,7 @@ void add_matrix(T (&output)[s], const T (&a)[s], const T (&b)[s]) {
 }
 
 template <typename T>
-__host__ __device__
+HOST_DEVICE
 void load_matrix(T (&p2)[9], const T *p1, int i){
     /* load all points from the ii th matrix of p1 3x3xN, into p2*/
        p2[0] = p1[i*9];
@@ -120,4 +128,4 @@ void load_matrix(T (&p2)[9], const T *p1, int i){
        p2[8] = p1[8+i*9];
 }
 
-
+#endif // !MATRIX_FUNCTIONS_CUH

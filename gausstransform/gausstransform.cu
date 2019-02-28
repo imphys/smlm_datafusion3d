@@ -9,7 +9,7 @@
 
 #include "gausstransform.h"
 
-#include "kernels.cu"
+#include "kernels.cuh"
 
 
 
