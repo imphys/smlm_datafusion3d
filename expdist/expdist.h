@@ -1,14 +1,20 @@
 #pragma once
 
+#ifdef WIN32
+#define DLL_EXPORT __declspec(dllexport)
+#else
+#define DLL_EXPORT 
+#endif
+
 #include <stdint.h>
 #include <cuda_runtime.h>
 
 class GPUExpDist {
     public:
-        GPUExpDist(int max_n, int argdim);
+        DLL_EXPORT GPUExpDist(int max_n, int argdim);
         ~GPUExpDist();
-        double compute(const double *A, const double *B, int m, int n, const double *scale_A, const double *scale_B);
-        double compute(const double *A, const double *B, int m, int n, const double *scale_A, const double *scale_B, const double *rotation_matrix);
+        DLL_EXPORT double compute(const double *A, const double *B, int m, int n, const double *scale_A, const double *scale_B);
+        DLL_EXPORT double compute(const double *A, const double *B, int m, int n, const double *scale_A, const double *scale_B, const double *rotation_matrix);
         int dim;
         int max_n;
         int scale_A_dim;
