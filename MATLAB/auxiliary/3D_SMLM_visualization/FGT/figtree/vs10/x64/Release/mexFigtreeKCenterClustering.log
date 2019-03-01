@@ -1,0 +1,27 @@
+﻿Build started 28.1.19 10:15:53.
+     1>Project "C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\mexFigtreeKCenterClustering.vcxproj" on node 2 (Build target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(388,5): warning MSB8028: The intermediate directory (x64\Release\) contains files shared from another project (mexFigtreeChooseEvaluationMethod.vcxproj, mexFigtree.vcxproj, Sample.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\CL.exe /c /I../include /I../src/ /I../external/ann_1.1.1/include /ID:\MATLAB\R2018b\extern\include /Zi /nologo /W3 /WX- /O2 /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D MEXFIGTREE_EXPORTS /D FIGTREE_USE_MATLAB_MEX /D FIGTREE_STATIC /D FIGTREE_NO_ANN /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MT /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc120.pdb" /Gd /TP /errorReport:prompt ..\src\figtree.cpp ..\src\KCenterClustering.cpp ..\src\mex\mexFigtreeKCenterClustering.cpp
+         figtree.cpp
+         KCenterClustering.cpp
+         mexFigtreeKCenterClustering.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeKCenterClustering.dll" /INCREMENTAL:NO /NOLOGO /LIBPATH:../lib /LIBPATH:D:\MATLAB\R2018b\extern\lib\win64\microsoft libmat.lib libmx.lib libmex.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /DEF:"../src/mex/mexFigtreeKCenterClustering.def" /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeKCenterClustering.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeKCenterClustering.lib" /MACHINE:X64 /DLL x64\Release\figtree.obj
+         x64\Release\KCenterClustering.obj
+         x64\Release\mexFigtreeKCenterClustering.obj
+            Creating library C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeKCenterClustering.lib and object C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeKCenterClustering.exp
+     1>mexFigtreeKCenterClustering.exp : warning LNK4070: /OUT:figtreeKCenterClustering.dll directive in .EXP differs from output filename 'C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeKCenterClustering.dll'; ignoring directive
+         Generating code
+         Finished generating code
+     1>mexFigtreeKCenterClustering.exp : warning LNK4070: /OUT:figtreeKCenterClustering.dll directive in .EXP differs from output filename 'C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeKCenterClustering.dll'; ignoring directive
+         mexFigtreeKCenterClustering.vcxproj -> C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeKCenterClustering.dll
+       PostBuildEvent:
+         copy C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeKCenterClustering.dll C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\\..\matlab
+         :VCEnd
+                 1 file(s) copied.
+     1>Done Building Project "C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\mexFigtreeKCenterClustering.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.61

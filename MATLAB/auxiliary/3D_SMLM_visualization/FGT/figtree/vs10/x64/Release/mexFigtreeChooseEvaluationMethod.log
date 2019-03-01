@@ -1,0 +1,36 @@
+﻿Build started 28.1.19 10:16:00.
+     1>Project "C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\mexFigtreeChooseEvaluationMethod.vcxproj" on node 3 (Build target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V120\Microsoft.CppBuild.targets(388,5): warning MSB8028: The intermediate directory (x64\Release\) contains files shared from another project (mexFigtreeKCenterClustering.vcxproj, mexFigtree.vcxproj, Sample.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+     1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeChooseEvaluationMethod.dll" /INCREMENTAL:NO /NOLOGO /LIBPATH:../lib /LIBPATH:D:\MATLAB\R2018b\extern\lib\win64\microsoft libmat.lib libmx.lib libmex.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /DEF:"../src/mex/mexFigtreeChooseEvaluationMethod.def" /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeChooseEvaluationMethod.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeChooseEvaluationMethod.lib" /MACHINE:X64 /DLL x64\Release\figtree.obj
+         x64\Release\KCenterClustering.obj
+         x64\Release\mexFigtreeChooseEvaluationMethod.obj
+         x64\Release\ANN.obj
+         x64\Release\bd_fix_rad_search.obj
+         x64\Release\bd_pr_search.obj
+         x64\Release\bd_search.obj
+         x64\Release\bd_tree.obj
+         x64\Release\brute.obj
+         x64\Release\kd_dump.obj
+         x64\Release\kd_fix_rad_search.obj
+         x64\Release\kd_pr_search.obj
+         x64\Release\kd_search.obj
+         x64\Release\kd_split.obj
+         x64\Release\kd_tree.obj
+         x64\Release\kd_util.obj
+         x64\Release\perf.obj
+            Creating library C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeChooseEvaluationMethod.lib and object C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeChooseEvaluationMethod.exp
+     1>mexFigtreeChooseEvaluationMethod.exp : warning LNK4070: /OUT:figtreeChooseEvaluationMethod.dll directive in .EXP differs from output filename 'C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeChooseEvaluationMethod.dll'; ignoring directive
+         Generating code
+         Finished generating code
+     1>mexFigtreeChooseEvaluationMethod.exp : warning LNK4070: /OUT:figtreeChooseEvaluationMethod.dll directive in .EXP differs from output filename 'C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeChooseEvaluationMethod.dll'; ignoring directive
+         mexFigtreeChooseEvaluationMethod.vcxproj -> C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeChooseEvaluationMethod.dll
+       PostBuildEvent:
+         copy C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\x64\Release\mexFigtreeChooseEvaluationMethod.dll C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\\..\matlab
+         :VCEnd
+                 1 file(s) copied.
+     1>Done Building Project "C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\mexFigtreeChooseEvaluationMethod.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.75

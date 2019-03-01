@@ -1,0 +1,13 @@
+﻿Build started 28.1.19 10:22:40.
+     1>Project "C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\test.vcxproj" on node 2 (Build target(s)).
+     1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\test_Release\test.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\test_Release\test.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\test_Release\test.lib" /MACHINE:X64 C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\test_Release\test.obj
+         C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\figtree_Release\figtree.lib
+         Generating code
+         Finished generating code
+         test.vcxproj -> C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\test_Release\test.exe
+     1>Done Building Project "C:\Mark\Software_development\C_projects\VS_2013_Projects\Alltoall3d_repo\alltoall3d\MATLAB\auxiliary\3D_SMLM_visualization\FGT\figtree\vs10\test.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.77
