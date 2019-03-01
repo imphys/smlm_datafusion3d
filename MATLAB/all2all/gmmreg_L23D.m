@@ -1,4 +1,4 @@
-% gmmreg_L2   perfomrs GMM based registration
+% gmmreg_L2   performs GMM based registration
 %
 % SYNOPSIS:
 %   [param, transformed_model, history, config, function_value] = gmmreg_L2(config)

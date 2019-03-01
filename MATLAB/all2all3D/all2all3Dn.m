@@ -1,4 +1,12 @@
-function param = all2all3Dn(ptc1,ptc2, sig1, sig2, nIteration)
+function param = all2all3Dn(ptc1, ptc2, sig1, sig2, nIteration)
+% ptc1  point cloud of particle 1
+% ptc2  point cloud of particle 2
+% sig1  uncertainties for points in ptc1
+% sig2  uncertainties for points in ptc2
+% nIteration    maximal number of iterations in fit
+%
+% Output
+%   param       transformations parameter giving the highest cost
 
 % multiple start
 ang1 = [0 pi/2 pi 3*pi/2];
@@ -13,12 +21,13 @@ for init_iter=1:numel(a)
     qtmp = angle2quat(a(init_iter), b(init_iter), c(init_iter));
     
     % initialize gmmreg
-    f_config = initialize_config(double(ptc1), ... 
-                                 double(ptc2), 'rigid3d', nIteration);
+    f_config = initialize_config(double(ptc1), double(ptc2), 'rigid3d', nIteration);
     f_config.init_param = [qtmp(2) qtmp(3) qtmp(4) qtmp(1) 0 0 0];
-    f_config.scale = 0.1;
-    [tmpParam{1,init_iter}, ~, ~, ~, ~] = gmmreg_L23D(f_config); 
-
+    f_config.scale = 0.1;     % TODO  (JKF) Should sig1,sig2 not also be used in gmmreg_L23D? Currently only used for cost calculation?
+    % perform registration
+    tmpParam{1,init_iter} = gmmreg_L23D(f_config); 
+    
+    % calculate cost again and store
     M = double(ptc1);
     S = double(ptc2);
     q = [tmpParam{1,init_iter}(4) tmpParam{1,init_iter}(1) tmpParam{1,init_iter}(2) tmpParam{1,init_iter}(3)];
@@ -29,6 +38,7 @@ for init_iter=1:numel(a)
 
 end
 
+% find maximal costs and store results
 [maxCost, idx] = max(cost);
 param = tmpParam{1,idx};
 

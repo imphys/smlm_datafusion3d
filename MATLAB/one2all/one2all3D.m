@@ -74,7 +74,7 @@ function [ superParticle, MT] = one2all3D(Particles, iter, oldM, outdir, sup, sy
                 tmpParticle.points = [tmpParticle.points; rotate_by_pifourth3d(transform_by_rigid3d(M.points, parameter{j,i}))];
                 Particles{1,i}.points = rotate_by_pifourth3d(transform_by_rigid3d(M.points, parameter{j,i}));
             else
-                % wihtout 8-fold symmetry assumption of NPC
+                % without 8-fold symmetry assumption of NPC
                 tmpParticle.points = [tmpParticle.points; (transform_by_rigid3d(M.points, parameter{j,i}))];            
                 Particles{1,i}.points = (transform_by_rigid3d(M.points, parameter{j,i}));
             end

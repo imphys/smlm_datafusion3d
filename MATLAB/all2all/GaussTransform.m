@@ -1,4 +1,4 @@
-% GaussTransform   computes the Guass transform between point set A and B
+% GaussTransform   computes the Gauss transform between point sets A and B
 % with the scale parameter scale
 %
 % SYNOPSIS:
