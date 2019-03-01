@@ -30,3 +30,11 @@
 *.exe
 *.out
 *.app
+
+# Backups
+*.asv
+
+# Data
+*.em
+*.obf
+*.mat
