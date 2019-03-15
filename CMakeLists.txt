@@ -82,10 +82,13 @@ message( STATUS "CUDA_NVCC_FLAGS=${code_generation_flags}" )
 ### MATLAB ###
 
 find_package(Matlab COMPONENTS MX_LIBRARY)
+set(Matlab_RT_LIBRARY ${Matlab_ROOT_DIR}/extern/lib/win64/microsoft/mclmcrrt.lib)
+list(APPEND Matlab_LIBRARIES ${Matlab_RT_LIBRARY})
 
 set( matlab_package_build_directory "${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/mex" )
 
 ### Subdirectories ###
 add_subdirectory(expdist)
 add_subdirectory(gausstransform)
+add_subdirectory(c_interface)
 
