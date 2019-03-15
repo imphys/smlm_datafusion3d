@@ -30,9 +30,9 @@
 %
 % Hamidreza Heydarian, Oct 2017.
 
-function [ superParticle, MT] = one2all3D(Particles, iter, oldM, outdir, sup, sym_flag)
+function [ superParticle, MT] = one2all3D(Particles, iter, oldM, outdir, sup, symmetry_order)
 
-    disp('Bootstapping is started  !');
+%     disp('Bootstapping is started  !');
     
     [density] = visualizeSMLM3D(sup, 0.1, 0);
     weight = density/max(density);
@@ -62,17 +62,17 @@ function [ superParticle, MT] = one2all3D(Particles, iter, oldM, outdir, sup, sy
         tic;
         for i=1:N
 
-            if (~mod(i,5))
-                disp(['iter #' num2str(j) ' of ' num2str(iter) ': registering particle #' num2str(i) ' on initial ']);
-            end
+%             if (~mod(i,5))
+%                 disp(['iter #' num2str(j) ' of ' num2str(iter) ': registering particle #' num2str(i) ' on initial ']);
+%             end
             M = Particles{1,i};
             [curWeight, S] = delParticle3D(Particles, initParticle, i, weight);
             [parameter{j,i}, ~, ~] = pairFitting3D_parallel(M, S, curWeight, scale(j), j);
 
-            if sym_flag
+            if nargin > 5 && symmetry_order > 0
                 % with 8-fold symmetry assumption of NPC
-                tmpParticle.points = [tmpParticle.points; rotate_by_pifourth3d(transform_by_rigid3d(M.points, parameter{j,i}))];
-                Particles{1,i}.points = rotate_by_pifourth3d(transform_by_rigid3d(M.points, parameter{j,i}));
+                tmpParticle.points = [tmpParticle.points; random_rotate_z(transform_by_rigid3d(M.points, parameter{j,i}), 2*pi/symmetry_order)];
+                Particles{1,i}.points = random_rotate_z(transform_by_rigid3d(M.points, parameter{j,i}), 2*pi/symmetry_order);
             else
                 % without 8-fold symmetry assumption of NPC
                 tmpParticle.points = [tmpParticle.points; (transform_by_rigid3d(M.points, parameter{j,i}))];            
@@ -82,10 +82,11 @@ function [ superParticle, MT] = one2all3D(Particles, iter, oldM, outdir, sup, sy
             Particles{1,i}.sigma = M.sigma;
             tmpParticle.sigma = [tmpParticle.sigma; M.sigma];
 
+            progress_bar(N*iter,j*N+i);
         end
 
         a = toc;
-        disp(['iter #' num2str(j) '... done in ' num2str(a) ' seconds']); 
+%         disp(['iter #' num2str(j) '... done in ' num2str(a) ' seconds']); 
         superParticle{j+1} = tmpParticle.points; 
         initParticle = tmpParticle;
         [density] = visualizeSMLM3D(superParticle{j+1}, 0.1, 0); % def=0.05
@@ -97,8 +98,8 @@ function [ superParticle, MT] = one2all3D(Particles, iter, oldM, outdir, sup, sy
     MT = zeros(4,4,N,iter);
 
     % save to disk
-    save([outdir '/superParticle'], 'superParticle');
+%     save([outdir '/superParticle'], 'superParticle');
     
-    disp('Bootstapping is done  !');
+%     disp('Bootstapping is done  !');
     
 end
