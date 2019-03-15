@@ -14,12 +14,17 @@ set_target_properties(mex_expdist
     SUFFIX .${Matlab_MEX_EXTENSION}
     RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}"
 )
+
+add_dependencies(mex_expdist expdist)
+
 set_target_properties(mex_expdist_cpu
   PROPERTIES
     PREFIX ""
     SUFFIX .${Matlab_MEX_EXTENSION}
     RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}"
 )
+
+add_dependencies(mex_expdist_cpu expdist)
 
 # include directories
 target_include_directories(mex_expdist PRIVATE ${Matlab_INCLUDE_DIRS} ${Matlab_SOURCE_DIR} ../)
@@ -51,3 +56,5 @@ add_custom_target( MATLAB_expdist_PACKAGE ALL
     remove ${binary_mex}
   COMMENT "Creating expdist Matlab package"
 )
+
+add_dependencies(MATLAB_expdist_PACKAGE mex_expdist mex_expdist_cpu)

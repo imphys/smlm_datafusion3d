@@ -14,12 +14,17 @@ set_target_properties(mex_gausstransform
     SUFFIX .${Matlab_MEX_EXTENSION}
     RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}"
 )
+
+add_dependencies(mex_gausstransform gausstransform)
+
 set_target_properties(mex_gausstransform_cpu
   PROPERTIES
     PREFIX ""
     SUFFIX .${Matlab_MEX_EXTENSION}
     RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}"
 )
+
+add_dependencies(mex_gausstransform_cpu gausstransform)
 
 # include directories
 target_include_directories(mex_gausstransform PRIVATE ${Matlab_INCLUDE_DIRS} ${Matlab_SOURCE_DIR} ../)
@@ -51,3 +56,5 @@ add_custom_target( MATLAB_gausstransform_PACKAGE ALL
     remove ${binary_mex}
   COMMENT "Creating gausstransform Matlab package"
 )
+
+add_dependencies(MATLAB_gausstransform_PACKAGE mex_gausstransform mex_gausstransform_cpu)
