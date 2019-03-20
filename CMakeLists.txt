@@ -79,16 +79,31 @@ CUDA_SELECT_NVCC_ARCH_FLAGS( code_generation_flags "${CUDA_ARCHITECTURES}" )
 list( APPEND CUDA_NVCC_FLAGS ${code_generation_flags} )
 message( STATUS "CUDA_NVCC_FLAGS=${code_generation_flags}" )
 
+### File extension for shared libraries ###
+
+if(WIN32)
+    set(shared_lib_file_extension dll)
+else()
+    set(shared_lib_file_extension so)
+endif()
+
 ### MATLAB ###
 
-find_package(Matlab COMPONENTS MX_LIBRARY)
-set(Matlab_RT_LIBRARY ${Matlab_ROOT_DIR}/extern/lib/win64/microsoft/mclmcrrt.lib)
-list(APPEND Matlab_LIBRARIES ${Matlab_RT_LIBRARY})
+find_package(Matlab COMPONENTS MX_LIBRARY MCC_COMPILER)
+
+if(WIN32)
+    set(Matlab_RT_LIBRARY ${Matlab_ROOT_DIR}/extern/lib/win64/microsoft/mclmcrrt.lib)
+else()
+    set(Matlab_RT_LIBRARY ${Matlab_ROOT_DIR}/runtime/glnxa64/libmwmclmcrrt.so)
+endif()
 
 set( matlab_package_build_directory "${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/mex" )
 
 ### Subdirectories ###
 add_subdirectory(expdist)
 add_subdirectory(gausstransform)
-add_subdirectory(c_interface)
+
+if(Matlab_MCC_COMPILER)
+    add_subdirectory(c_interface)
+endif()
 
