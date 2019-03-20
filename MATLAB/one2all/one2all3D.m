@@ -71,6 +71,7 @@ function [ superParticle, MT] = one2all3D(Particles, iter, oldM, outdir, sup, sy
 
             if nargin > 5 && symmetry_order > 0
                 % with 8-fold symmetry assumption of NPC
+                symmetry_order = double(symmetry_order);
                 tmpParticle.points = [tmpParticle.points; random_rotate_z(transform_by_rigid3d(M.points, parameter{j,i}), 2*pi/symmetry_order)];
                 Particles{1,i}.points = random_rotate_z(transform_by_rigid3d(M.points, parameter{j,i}), 2*pi/symmetry_order);
             else
