@@ -11,9 +11,9 @@ add_custom_target( mcc_fuse_particles_3d ALL
 
 add_dependencies(mcc_fuse_particles_3d expdist gausstransform MATLAB_gausstransform_PACKAGE MATLAB_expdist_PACKAGE)
 
-add_library(fuse_particles_3d SHARED IMPORTED)
+add_library(fuse_particles_3d STATIC IMPORTED)
 
 set_property(TARGET fuse_particles_3d PROPERTY IMPORTED_LOCATION
-    ${mcc_build_directory}/fuse_particles_3d.${shared_lib_file_extension})
+    ${mcc_build_directory}/fuse_particles_3d.${lib_file_extension})
 
 add_subdirectory(examples)

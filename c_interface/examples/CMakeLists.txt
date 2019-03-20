@@ -8,6 +8,11 @@ target_include_directories(example_fuse_particles_3d PRIVATE
     ${Matlab_INCLUDE_DIRS}
     ${mcc_build_directory})
     
+if(WIN32)
+    set_property( TARGET example_fuse_particles_3d
+        PROPERTY RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}" )
+endif()
+    
 set_property( TARGET example_fuse_particles_3d PROPERTY FOLDER examples )
 
 add_dependencies(example_fuse_particles_3d mcc_fuse_particles_3d)

@@ -79,12 +79,12 @@ CUDA_SELECT_NVCC_ARCH_FLAGS( code_generation_flags "${CUDA_ARCHITECTURES}" )
 list( APPEND CUDA_NVCC_FLAGS ${code_generation_flags} )
 message( STATUS "CUDA_NVCC_FLAGS=${code_generation_flags}" )
 
-### File extension for shared libraries ###
+### File extension for libraries ###
 
 if(WIN32)
-    set(shared_lib_file_extension dll)
+    set(lib_file_extension lib)
 else()
-    set(shared_lib_file_extension so)
+    set(lib_file_extension so)
 endif()
 
 ### MATLAB ###
