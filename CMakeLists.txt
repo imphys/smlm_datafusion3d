@@ -97,7 +97,8 @@ else()
     set(Matlab_RT_LIBRARY ${Matlab_ROOT_DIR}/runtime/glnxa64/libmwmclmcrrt.so)
 endif()
 
-set( matlab_package_build_directory "${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/mex" )
+set(matlab_package_build_directory "${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/mex")
+set(figtree_build_directory "${CMAKE_BINARY_DIR}/figtree/${CMAKE_CFG_INTDIR}")
 
 ### Subdirectories ###
 add_subdirectory(expdist)
