@@ -1,0 +1,3 @@
+[submodule "MATLAB/auxiliary/3D_SMLM_visualization/figtree"]
+	path = MATLAB/auxiliary/3D_SMLM_visualization/figtree
+	url = https://github.com/gpufit/figtree.git

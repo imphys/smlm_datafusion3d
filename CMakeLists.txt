@@ -102,6 +102,7 @@ set( matlab_package_build_directory "${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/mex
 ### Subdirectories ###
 add_subdirectory(expdist)
 add_subdirectory(gausstransform)
+add_subdirectory(MATLAB/auxiliary/3D_SMLM_visualization/figtree)
 
 if(Matlab_MCC_COMPILER)
     add_subdirectory(c_interface)
