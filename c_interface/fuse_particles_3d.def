@@ -1,0 +1,3 @@
+LIBRARY	      "fuse_particles_3d"
+EXPORTS       
+    fuse_particles_3d @1
