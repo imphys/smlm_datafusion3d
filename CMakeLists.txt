@@ -1,7 +1,7 @@
 
 ### CMake ###
 
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.13.4)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
