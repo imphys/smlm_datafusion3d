@@ -3,7 +3,7 @@
 #include "mcc_fuse_particles_3d.h"
 #include "mex.h"
 
-int fuse_particles_3d_(int argc, const char **argv)
+int fuse_particles_3d_portable(int argc, const char **argv)
 {
     double * transformed_coordinates_x = (double *)argv[0];
     double * transformed_coordinates_y = (double *)argv[1];
@@ -161,7 +161,7 @@ int fuse_particles_3d(
     }
 
     // run application
-    return mclRunMain((mclMainFcnType)fuse_particles_3d_, 16, argv);
+    return mclRunMain((mclMainFcnType)fuse_particles_3d_portable, 16, argv);
 
     // terminate application
     mclTerminateApplication();

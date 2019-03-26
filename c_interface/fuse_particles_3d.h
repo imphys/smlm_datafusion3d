@@ -1,7 +1,7 @@
 
 #include <string.h>
 
-int fuse_particles_3d_(int argc, const char **argv);
+int fuse_particles_3d_portable(int argc, const char **argv);
 
 int fuse_particles_3d(
     double * transformed_coordinates_x,
