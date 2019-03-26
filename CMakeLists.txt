@@ -103,8 +103,28 @@ set(figtree_build_directory "${CMAKE_BINARY_DIR}/figtree/${CMAKE_CFG_INTDIR}")
 ### Subdirectories ###
 add_subdirectory(expdist)
 add_subdirectory(gausstransform)
+
+### git submodules ###
 add_subdirectory(figtree)
 
+set(figtree_mex_files $<TARGET_FILE:mexFigtree> $<TARGET_FILE:ann_figtree_version>)
+add_custom_target(copy_figtree
+    COMMAND ${CMAKE_COMMAND} -E
+        make_directory ${matlab_package_build_directory}
+    COMMAND ${CMAKE_COMMAND} -E
+        copy_if_different ${figtree_mex_files} ${matlab_package_build_directory})
+add_dependencies(copy_figtree mexFigtree ann_figtree_version)
+
+set_property(TARGET figtree PROPERTY FOLDER figtree_projects)
+set_property(TARGET ann_figtree_version PROPERTY FOLDER figtree_projects)
+set_property(TARGET mexFigtree PROPERTY FOLDER figtree_projects)
+set_property(TARGET mexFigtreeChooseEvaluationMethod PROPERTY FOLDER figtree_projects)
+set_property(TARGET mexFigtreeKCenterClustering PROPERTY FOLDER figtree_projects)
+set_property(TARGET run_tests PROPERTY FOLDER figtree_projects)
+set_property(TARGET sample PROPERTY FOLDER figtree_projects)
+set_property(TARGET copy_figtree PROPERTY FOLDER figtree_projects)
+
+### C interface ###
 if(Matlab_MCC_COMPILER)
     add_subdirectory(c_interface)
 endif()
