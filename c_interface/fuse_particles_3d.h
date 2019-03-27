@@ -25,7 +25,8 @@ extern "C" {
         int averaging_channel_id,
         int n_iterations_alltoall,
         int n_iterations_onetoall,
-        int symmetry_order);
+        int symmetry_order,
+        double outlier_threshold);
 
 #ifdef __cplusplus
 }

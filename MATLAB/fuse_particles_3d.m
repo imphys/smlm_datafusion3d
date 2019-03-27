@@ -20,6 +20,9 @@
 %       n_iterations_one2all: number of iterations of the onetoall routine
 %                             (optional, dafault value is 10)
 %       symmetry_order:       the symmetry order in the xy plane (optional)
+%       outlier_threshold: threshold used for the outlier removal, low
+%                          value -> strong removal (optional, default value
+%                          is 1)
 %   Output:
 %       transformed_coordinates_x: transformed x coordinates of each
 %                                  localization
@@ -43,21 +46,25 @@ function [transformed_coordinates_x, transformed_coordinates_y, transformed_coor
         averaging_channel_id,...
         n_iterations_all2all,...
         n_iterations_one2all,...
-        symmetry_order)
+        symmetry_order,...
+        outlier_threshold)
 
 %% check input parameters
-if nargin < 12
-    symmetry_order = 0;
-    if nargin < 11
-        n_iterations_one2all = 10;
-        if nargin < 10
-            n_iterations_all2all = 1;
-            if nargin < 9
-                averaging_channel_id = 0;
-                if nargin == 8
-                    channel_ids(:) = 0;
-                elseif nargin < 8
-                    channel_ids = zeros(numel(coordinates_x),1);
+if nargin < 13
+    outlier_threshold = 1;
+    if nargin < 12
+        symmetry_order = 0;
+        if nargin < 11
+            n_iterations_one2all = 10;
+            if nargin < 10
+                n_iterations_all2all = 1;
+                if nargin < 9
+                    averaging_channel_id = 0;
+                    if nargin == 8
+                        channel_ids(:) = 0;
+                    elseif nargin < 8
+                        channel_ids = zeros(numel(coordinates_x),1);
+                    end
                 end
             end
         end
@@ -95,9 +102,8 @@ for i=1:n_particles-1
         coordinates_j = [coordinates_x(indices_j), coordinates_y(indices_j), coordinates_z(indices_j)];
         weights_j = [weights_xy(indices_j), weights_z(indices_j)];
         
-        transformation_parameters = all2all3Dn(coordinates_i, coordinates_j, weights_i, weights_j, n_iterations_all2all);
-
-        all2all_matrix{i,j}.parameters = transformation_parameters;
+        all2all_matrix{i,j}.parameters = all2all3Dn(coordinates_i, coordinates_j, weights_i, weights_j, n_iterations_all2all);
+        
         all2all_matrix{i,j}.ids = [i; j];
     end
     
@@ -129,6 +135,20 @@ for i=1:n_particles-1
 end
 
 %% averaging transformation parameters
+pprint('averaging transformation parameters ',45);
+t = tic;
+Mest = MeanSE3Graph(RR, I);
+progress_bar(1,1);
+fprintf([' ' num2str(toc(t)) ' s\n']);
+
+%% remove outliers
+pprint('removing outliers ',45);
+t = tic;
+[RR, I] = remove_outliers(RR, I, Mest, outlier_threshold);
+progress_bar(1,1);
+fprintf([' ' num2str(toc(t)) ' s\n']);
+
+%% repeating averaging transformation parameters
 pprint('averaging transformation parameters ',45);
 t = tic;
 Mest = MeanSE3Graph(RR, I);

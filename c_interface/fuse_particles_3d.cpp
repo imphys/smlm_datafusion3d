@@ -2,6 +2,7 @@
 #include "fuse_particles_3d.h"
 #include "mcc_fuse_particles_3d.h"
 #include "mex.h"
+#include <stdlib.h>
 
 int fuse_particles_3d_portable(int argc, const char **argv)
 {
@@ -9,18 +10,20 @@ int fuse_particles_3d_portable(int argc, const char **argv)
     double * transformed_coordinates_y = (double *)argv[1];
     double * transformed_coordinates_z = (double *)argv[2];
     double * transformation_parameters = (double *)argv[3];
-    int n_particles = (int) *argv[4];
-    int * n_localizations_per_particle = (int*)argv[5];
+    int n_particles = *(int *)argv[4];
+    int * n_localizations_per_particle = (int *)argv[5];
     double * coordinates_x = (double *)argv[6];
     double * coordinates_y = (double *)argv[7];
     double * coordinates_z = (double *)argv[8];
     double * weights_xy = (double *)argv[9];
     double * weights_z = (double *)argv[10];
     int * channel_ids = (int *)argv[11];
-    int averaging_channel_id = (int)*argv[12];
-    int n_iterations_alltoall = (int)*argv[13];
-    int n_iterations_onetoall = (int)*argv[14];
-    int symmetry_order = (int)*argv[15];
+    int averaging_channel_id = *(int *)argv[12];
+    int n_iterations_alltoall = *(int *)argv[13];
+    int n_iterations_onetoall = *(int *)argv[14];
+    int symmetry_order = *(int *)argv[15];
+    double outlier_threshold = *(double *)argv[16];
+    //double outlier_threshold = 1.0;
 
     // total number of localizations
     size_t n_localizations = 0;
@@ -40,6 +43,7 @@ int fuse_particles_3d_portable(int argc, const char **argv)
     mxArray * mx_n_iterations_all2all = mxCreateNumericMatrix(1, 1, mxINT32_CLASS, mxREAL);
     mxArray * mx_n_iterations_one2all = mxCreateNumericMatrix(1, 1, mxINT32_CLASS, mxREAL);
     mxArray * mx_symmetry_order = mxCreateNumericMatrix(1, 1, mxINT32_CLASS, mxREAL);
+    mxArray * mx_outlier_threshold = mxCreateNumericMatrix(1, 1, mxDOUBLE_CLASS, mxREAL);
 
     // output
     mxArray * mx_transformed_coordinates_x = NULL;
@@ -60,6 +64,7 @@ int fuse_particles_3d_portable(int argc, const char **argv)
     memcpy(mxGetPr(mx_n_iterations_all2all), &n_iterations_alltoall, sizeof(int));
     memcpy(mxGetPr(mx_n_iterations_one2all), &n_iterations_onetoall, sizeof(int));
     memcpy(mxGetPr(mx_symmetry_order), &symmetry_order, sizeof(int));
+    memcpy(mxGetPr(mx_outlier_threshold), &outlier_threshold, sizeof(double));
 
     // initialize application
     if (!mcc_fuse_particles_3dInitialize()) {
@@ -86,7 +91,8 @@ int fuse_particles_3d_portable(int argc, const char **argv)
             mx_averaging_channel_id,
             mx_n_iterations_all2all,
             mx_n_iterations_one2all,
-            mx_symmetry_order);
+            mx_symmetry_order,
+            mx_outlier_threshold);
 
         memcpy(transformed_coordinates_x, mxGetPr(mx_transformed_coordinates_x), n_localizations * sizeof(double));
         memcpy(transformed_coordinates_y, mxGetPr(mx_transformed_coordinates_y), n_localizations * sizeof(double));
@@ -111,6 +117,7 @@ int fuse_particles_3d_portable(int argc, const char **argv)
         mxDestroyArray(mx_n_iterations_all2all);
         mxDestroyArray(mx_n_iterations_one2all);
         mxDestroyArray(mx_symmetry_order);
+        mxDestroyArray(mx_outlier_threshold);
     }
 
     return 0;
@@ -132,9 +139,11 @@ int fuse_particles_3d(
     int averaging_channel_id,
     int n_iterations_alltoall,
     int n_iterations_onetoall,
-    int symmetry_order)
+    int symmetry_order,
+    double outlier_threshold)
 {
-    const char *argv[16];
+    const int argc = 17;
+    const char * argv[argc];
 
     argv[0] = (char *)transformed_coordinates_x;
     argv[1] = (char *)transformed_coordinates_y;
@@ -152,6 +161,7 @@ int fuse_particles_3d(
     argv[13] = (char *)(&n_iterations_alltoall);
     argv[14] = (char *)(&n_iterations_onetoall);
     argv[15] = (char *)(&symmetry_order);
+    argv[16] = (char *)(&outlier_threshold);
 
     // initialize application
     if (!mclInitializeApplication(NULL, 0))
@@ -161,7 +171,7 @@ int fuse_particles_3d(
     }
 
     // run application
-    return mclRunMain((mclMainFcnType)fuse_particles_3d_portable, 16, argv);
+    return mclRunMain((mclMainFcnType)fuse_particles_3d_portable, argc, argv);
 
     // terminate application
     mclTerminateApplication();
