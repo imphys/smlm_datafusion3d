@@ -28,7 +28,7 @@ int main(int argc, char const *argv[])
     double * transformed_coordinates_x = (double *)malloc(n_localizations * sizeof(double));
     double * transformed_coordinates_y = (double *)malloc(n_localizations * sizeof(double));
     double * transformed_coordinates_z = (double *)malloc(n_localizations * sizeof(double));
-    double * transformation_parameters = (double *)malloc(12 * sizeof(double));
+	double * transformation_parameters = (double *)malloc(n_particles * 12 * sizeof(double));
 
     // run
     fuse_particles_3d(
@@ -49,6 +49,11 @@ int main(int argc, char const *argv[])
         n_iterations_onetoall,
         symmetry_order,
         outlier_threshold);
+
+	free(transformed_coordinates_x);
+	free(transformed_coordinates_y);
+	free(transformed_coordinates_z);
+	free(transformation_parameters);
 
     std::cout << std::endl << "Example completed!" << std::endl;
     std::cout << "Press ENTER to exit" << std::endl;
