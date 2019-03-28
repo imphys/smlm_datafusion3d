@@ -4,7 +4,9 @@
 #include "mex.h"
 #include <stdlib.h>
 
-int fuse_particles_3d_portable(int argc, const char **argv)
+
+
+int fuse_particles_3d_(int argc, const char **argv)
 {
     double * transformed_coordinates_x = (double *)argv[0];
     double * transformed_coordinates_y = (double *)argv[1];
@@ -23,7 +25,6 @@ int fuse_particles_3d_portable(int argc, const char **argv)
     int n_iterations_onetoall = *(int *)argv[14];
     int symmetry_order = *(int *)argv[15];
     double outlier_threshold = *(double *)argv[16];
-    //double outlier_threshold = 1.0;
 
     // total number of localizations
     size_t n_localizations = 0;
@@ -51,6 +52,7 @@ int fuse_particles_3d_portable(int argc, const char **argv)
     mxArray * mx_transformed_coordinates_z = NULL;
     mxArray * mx_transformation_parameters = NULL;
 
+
     // copy input
     memcpy(mxGetPr(mx_n_particles), &n_particles, sizeof(int));
     memcpy(mxGetPr(mx_n_localizations_per_particle), n_localizations_per_particle, n_particles * sizeof(int));
@@ -66,14 +68,20 @@ int fuse_particles_3d_portable(int argc, const char **argv)
     memcpy(mxGetPr(mx_symmetry_order), &symmetry_order, sizeof(int));
     memcpy(mxGetPr(mx_outlier_threshold), &outlier_threshold, sizeof(double));
 
+
     // initialize application
+
     if (!mcc_fuse_particles_3dInitialize()) {
+
         fprintf(stderr, "Could not initialize the library.\n");
         return -2;
+
     }
     else
     {
+
         // run application
+
         mlfMcc_fuse_particles_3d(
             4,
             &mx_transformed_coordinates_x,
@@ -100,28 +108,56 @@ int fuse_particles_3d_portable(int argc, const char **argv)
         memcpy(transformation_parameters, mxGetPr(mx_transformation_parameters), 12 * n_particles * sizeof(double));
 
         mcc_fuse_particles_3dTerminate();
-        mxDestroyArray(mx_transformed_coordinates_x);
-        mxDestroyArray(mx_transformed_coordinates_y);
-        mxDestroyArray(mx_transformed_coordinates_z);
-        mxDestroyArray(mx_transformation_parameters);
 
-        mxDestroyArray(mx_n_particles);
-        mxDestroyArray(mx_n_localizations_per_particle);
-        mxDestroyArray(mx_coordinates_x);
-        mxDestroyArray(mx_coordinates_y);
-        mxDestroyArray(mx_coordinates_z);
-        mxDestroyArray(mx_weights_xy);
-        mxDestroyArray(mx_weights_z);
-        mxDestroyArray(mx_channel_ids);
-        mxDestroyArray(mx_averaging_channel_id);
-        mxDestroyArray(mx_n_iterations_all2all);
-        mxDestroyArray(mx_n_iterations_one2all);
-        mxDestroyArray(mx_symmetry_order);
-        mxDestroyArray(mx_outlier_threshold);
-    }
+    }     
+
+    mxDestroyArray(mx_transformed_coordinates_x);
+    mxDestroyArray(mx_transformed_coordinates_y);
+    mxDestroyArray(mx_transformed_coordinates_z);
+    mxDestroyArray(mx_transformation_parameters);
+
+    mxDestroyArray(mx_n_particles);
+    mxDestroyArray(mx_n_localizations_per_particle);
+    mxDestroyArray(mx_coordinates_x);
+    mxDestroyArray(mx_coordinates_y);
+    mxDestroyArray(mx_coordinates_z);
+    mxDestroyArray(mx_weights_xy);
+    mxDestroyArray(mx_weights_z);
+    mxDestroyArray(mx_channel_ids);
+    mxDestroyArray(mx_averaging_channel_id);
+    mxDestroyArray(mx_n_iterations_all2all);
+    mxDestroyArray(mx_n_iterations_one2all);
+    mxDestroyArray(mx_symmetry_order);
+    mxDestroyArray(mx_outlier_threshold);
 
     return 0;
 }
+
+
+int fuse_particles_3d_portable(int argc, void *argv[])
+{
+
+    return fuse_particles_3d(
+        (double *) argv[0], 
+        (double *) argv[1],
+        (double *) argv[2],
+        (double *) argv[3],
+        *(int *) argv[4],
+        (int *) argv[5],
+        (double *) argv[6],
+        (double *) argv[7],
+        (double *) argv[8],
+        (double *) argv[9],
+        (double *) argv[10],
+        (int *) argv[11],
+        *(int *) argv[12],
+        *(int *) argv[13],
+        *(int *) argv[14],
+        *(int *) argv[15],
+        *(double *) argv[16]);
+
+}
+
 
 int fuse_particles_3d(
     double * transformed_coordinates_x,
@@ -143,7 +179,7 @@ int fuse_particles_3d(
     double outlier_threshold)
 {
     const int argc = 17;
-    const char * argv[argc];
+    const char * argv[17];
 
     argv[0] = (char *)transformed_coordinates_x;
     argv[1] = (char *)transformed_coordinates_y;
@@ -170,11 +206,13 @@ int fuse_particles_3d(
         return -1;
     }
 
+    int return_code = 0;
+
     // run application
-    return mclRunMain((mclMainFcnType)fuse_particles_3d_portable, argc, argv);
+    return_code = mclRunMain((mclMainFcnType)fuse_particles_3d_, argc, argv);
 
     // terminate application
-    mclTerminateApplication();
+    bool return_code_terminate = mclTerminateApplication();
 
-    return 0;
+    return return_code;
 }
