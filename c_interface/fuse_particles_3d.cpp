@@ -5,6 +5,42 @@
 #include <stdlib.h>
 
 
+int mcr_initialized = 0;
+
+
+int mcr_start()
+{
+    if (mcr_initialized == 0)
+    {
+        mclInitializeApplication(NULL, 0);
+        bool test_mcr_initialized = mclIsMCRInitialized();
+        if (test_mcr_initialized)
+        {
+            mcr_initialized = 1;
+        }
+        return 0;
+    }
+    else return 1;
+}
+
+
+int mcr_stop()
+{
+    if (mcr_initialized == 1)
+    {
+        mclTerminateApplication();
+        mcr_initialized = 0;
+        return 0;
+    }
+    else return 1;
+}
+
+
+int get_mcr_initialized()
+{
+    return mcr_initialized;
+}
+
 
 int fuse_particles_3d_(int argc, const char **argv)
 {
@@ -199,11 +235,15 @@ int fuse_particles_3d(
     argv[15] = (char *)(&symmetry_order);
     argv[16] = (char *)(&outlier_threshold);
 
-    // initialize application
-    if (!mclInitializeApplication(NULL, 0))
+
+    if (get_mcr_initialized() == 0)
     {
-        fprintf(stderr, "Could not initialize the application.\n");
-        return -1;
+        // initialize application
+        if (mcr_start() == 1)
+        {
+            fprintf(stderr, "Could not initialize the application.\n");
+            return -1;
+        }
     }
 
     int return_code = 0;
