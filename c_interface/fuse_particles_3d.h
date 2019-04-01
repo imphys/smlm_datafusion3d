@@ -7,7 +7,15 @@
 extern "C" {
 #endif
 
-    int fuse_particles_3d_portable(int argc, const char **argv);
+    int mcr_start();
+
+    int mcr_stop();
+
+    int get_mcr_initialized();
+
+    int fuse_particles_3d_(int argc, const char **argv);
+
+    int fuse_particles_3d_portable(int argc, void *argv[]);
 
     int fuse_particles_3d(
         double * transformed_coordinates_x,
