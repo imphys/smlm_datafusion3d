@@ -1,5 +1,5 @@
-#ifndef FUSE_PARTICLES_3D
-#define FUSE_PARTICLES_3D
+#ifndef FUSE_PARTICLES_3D_INITIALIZE_WIN32_INCLUDED
+#define FUSE_PARTICLES_3D_INITIALIZE_WIN32_INCLUDED
 
 #include <string.h>
 
@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-    int fuse_particles_3d_initialize_win32(int argc, void *argv[]);
+    int fuse_particles_3d_initialize_win32();
 
     int fuse_particles_3d_initialize_win32_portable(int argc, void *argv[]);
 
@@ -15,4 +15,4 @@ extern "C" {
 }
 #endif // __cplusplus
 
-#endif // !FUSE_PARTICLES_3D
+#endif // !FUSE_PARTICLES_3D_INITIALIZE_WIN32_INCLUDED

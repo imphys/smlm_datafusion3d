@@ -1,5 +1,6 @@
 
 #include "fuse_particles_3d.h"
+#include "fuse_particles_3d_initialize_win32.h"
 #include "mcc_fuse_particles_3d.h"
 #include "mex.h"
 #include <stdlib.h>
@@ -215,6 +216,8 @@ int fuse_particles_3d(
     int symmetry_order,
     double outlier_threshold)
 {
+    fuse_particles_3d_initialize_win32();
+
     const int argc = 17;
     const char * argv[17];
 
