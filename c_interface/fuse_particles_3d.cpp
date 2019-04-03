@@ -1,4 +1,3 @@
-
 #include "fuse_particles_3d.h"
 #include "fuse_particles_3d_initialize_win32.h"
 #include "mcc_fuse_particles_3d.h"
@@ -8,6 +7,8 @@
 
 // Global flag indicating that the Matlab runtime library has been started
 int mcr_initialized = 0;
+
+// Global flag indicating that the MCC-generated dll has been initialized
 int mcc_fuse_particles_3d_initialized = 0;
 
 
@@ -16,14 +17,9 @@ int mcr_start()
     if (mcr_initialized == 0)
     {
         mclInitializeApplication(NULL, 0);
-        bool test_mcr_initialized = mclIsMCRInitialized();
-        if (test_mcr_initialized)
-        {
-            mcr_initialized = 1;
-        }
-        return 1;
+        mcr_initialized = (int) mclIsMCRInitialized();
     }
-    else return 0;
+    return mcr_initialized;
 }
 
 
@@ -32,21 +28,11 @@ int mcr_stop()
     if (mcr_initialized == 1)
     {
         mclTerminateApplication();
-        bool test_mcr_initialized = mclIsMCRInitialized();
-        if (!test_mcr_initialized)
-        {
-            mcr_initialized = 0;
-        }
-        return 1;
+        mcr_initialized = (int)mclIsMCRInitialized();
     }
-    else return 0;
-}
-
-
-int get_mcr_initialized()
-{
     return mcr_initialized;
 }
+
 
 
 int fuse_particles_3d_(int argc, const char **argv)
@@ -244,7 +230,7 @@ int fuse_particles_3d(
     argv[16] = (char *)(&outlier_threshold);
 
 
-    if (get_mcr_initialized() == 0)
+    if (mcr_initialized == 0)
     {
         // initialize application
         if (!mcr_start())
