@@ -8,6 +8,7 @@
 
 // Global flag indicating that the Matlab runtime library has been started
 int mcr_initialized = 0;
+int mcc_fuse_particles_3d_initialized = 0;
 
 
 int mcr_start()
@@ -108,46 +109,41 @@ int fuse_particles_3d_(int argc, const char **argv)
 
 
     // initialize application
-
-    if (!mcc_fuse_particles_3dInitialize()) {
-
-        fprintf(stderr, "Could not initialize the library.\n");
-        return -2;
-
-    }
-    else
+    if (!mcc_fuse_particles_3d_initialized)
     {
+        if (!mcc_fuse_particles_3dInitialize())
+        {
+            fprintf(stderr, "Could not initialize the library.\n");
+            return -2;
+        }
+        mcc_fuse_particles_3d_initialized = 1;
+    }
 
-        // run application
+    // run application
+    mlfMcc_fuse_particles_3d(
+        4,
+        &mx_transformed_coordinates_x,
+        &mx_transformed_coordinates_y,
+        &mx_transformed_coordinates_z,
+        &mx_transformation_parameters,
+        mx_n_particles,
+        mx_n_localizations_per_particle,
+        mx_coordinates_x,
+        mx_coordinates_y,
+        mx_coordinates_z,
+        mx_weights_xy,
+        mx_weights_z,
+        mx_channel_ids,
+        mx_averaging_channel_id,
+        mx_n_iterations_all2all,
+        mx_n_iterations_one2all,
+        mx_symmetry_order,
+        mx_outlier_threshold);
 
-        mlfMcc_fuse_particles_3d(
-            4,
-            &mx_transformed_coordinates_x,
-            &mx_transformed_coordinates_y,
-            &mx_transformed_coordinates_z,
-            &mx_transformation_parameters,
-            mx_n_particles,
-            mx_n_localizations_per_particle,
-            mx_coordinates_x,
-            mx_coordinates_y,
-            mx_coordinates_z,
-            mx_weights_xy,
-            mx_weights_z,
-            mx_channel_ids,
-            mx_averaging_channel_id,
-            mx_n_iterations_all2all,
-            mx_n_iterations_one2all,
-            mx_symmetry_order,
-            mx_outlier_threshold);
-
-        memcpy(transformed_coordinates_x, mxGetPr(mx_transformed_coordinates_x), n_localizations * sizeof(double));
-        memcpy(transformed_coordinates_y, mxGetPr(mx_transformed_coordinates_y), n_localizations * sizeof(double));
-        memcpy(transformed_coordinates_z, mxGetPr(mx_transformed_coordinates_z), n_localizations * sizeof(double));
-        memcpy(transformation_parameters, mxGetPr(mx_transformation_parameters), 12 * n_particles * sizeof(double));
-
-        mcc_fuse_particles_3dTerminate();
-
-    }     
+    memcpy(transformed_coordinates_x, mxGetPr(mx_transformed_coordinates_x), n_localizations * sizeof(double));
+    memcpy(transformed_coordinates_y, mxGetPr(mx_transformed_coordinates_y), n_localizations * sizeof(double));
+    memcpy(transformed_coordinates_z, mxGetPr(mx_transformed_coordinates_z), n_localizations * sizeof(double));
+    memcpy(transformation_parameters, mxGetPr(mx_transformation_parameters), 12 * n_particles * sizeof(double));    
 
     mxDestroyArray(mx_transformed_coordinates_x);
     mxDestroyArray(mx_transformed_coordinates_y);
@@ -252,9 +248,6 @@ int fuse_particles_3d(
 
     // run application
     int return_code_mcl_runmain = mclRunMain((mclMainFcnType)fuse_particles_3d_, argc, argv);
-
-    // terminate application
-    // bool return_code_terminate = mclTerminateApplication();
 
     return return_code_mcl_runmain;
 }
