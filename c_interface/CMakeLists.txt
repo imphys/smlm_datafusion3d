@@ -39,8 +39,7 @@ add_library(fuse_particles_3d SHARED
 	fuse_particles_3d.h 
 	fuse_particles_3d_initialize_win32.cpp 
 	fuse_particles_3d_initialize_win32.h 
-	fuse_particles_3d.def
-	fuse_particles_3d_initialize_win32.def)
+	fuse_particles_3d.def)
 	
 set_property( TARGET fuse_particles_3d PROPERTY RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}" )
 target_link_libraries(fuse_particles_3d link_to_mcc_fuse_particles_3d ${Matlab_RT_LIBRARY} delayimp.lib)
