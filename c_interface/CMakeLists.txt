@@ -7,7 +7,7 @@ if(WIN32)
         COMMAND
             copy /Y \"${CMAKE_SOURCE_DIR}/MATLAB\\fuse_particles_3d.m\" \"${mcc_build_directory}/mcc_fuse_particles_3d.m\" >NUL
         COMMAND
-            mcc -l -v -a ${CMAKE_SOURCE_DIR}/MATLAB -a ${matlab_package_build_directory} -d ${mcc_build_directory} ${mcc_build_directory}/mcc_fuse_particles_3d.m
+            mcc -l -a ${CMAKE_SOURCE_DIR}/MATLAB -a ${matlab_package_build_directory} -d ${mcc_build_directory} ${mcc_build_directory}/mcc_fuse_particles_3d.m
         COMMAND
         COMMENT "Creating fuse_particles_3d library")
 else()
@@ -15,7 +15,7 @@ else()
         COMMAND
             cp ${CMAKE_SOURCE_DIR}/MATLAB/fuse_particles_3d.m ${mcc_build_directory}/mcc_fuse_particles_3d.m
         COMMAND
-            mcc -l -v -a ${CMAKE_SOURCE_DIR}/MATLAB -a ${matlab_package_build_directory} -d ${mcc_build_directory} ${mcc_build_directory}/mcc_fuse_particles_3d.m
+            mcc -l -a ${CMAKE_SOURCE_DIR}/MATLAB -a ${matlab_package_build_directory} -d ${mcc_build_directory} ${mcc_build_directory}/mcc_fuse_particles_3d.m
         COMMAND
         COMMENT "Creating fuse_particles_3d library")
 endif()
