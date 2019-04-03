@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 
+// Global flag indicating that the Matlab runtime library has been started
 int mcr_initialized = 0;
 
 
@@ -250,7 +251,7 @@ int fuse_particles_3d(
     int return_code_mcl_runmain = mclRunMain((mclMainFcnType)fuse_particles_3d_, argc, argv);
 
     // terminate application
-    bool return_code_terminate = mclTerminateApplication();
+    // bool return_code_terminate = mclTerminateApplication();
 
     return return_code_mcl_runmain;
 }

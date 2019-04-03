@@ -66,14 +66,21 @@ int fuse_particles_3d_initialize_win32()
     strncat(mcc_dll_path, path, (size_t)dir_path_length);
     strcat(mcc_dll_path, mcc_dll_name);
 
-    // load the mcc-generated dll
+    // test if the mcc-generated dll is already loaded
 
-    HMODULE module_handle = LoadLibraryA((LPCSTR)mcc_dll_path);
+    HMODULE loaded_module_handle = GetModuleHandle((LPCSTR)mcc_dll_name);
 
-    if (module_handle == NULL)
+    if (loaded_module_handle == NULL)
     {
-        int error_code = (int) GetLastError();
-        return error_code;
+        // load the mcc-generated dll
+
+        HMODULE module_handle = LoadLibraryA((LPCSTR)mcc_dll_path);
+
+        if (module_handle == NULL)
+        {
+            int error_code = (int) GetLastError();
+            return error_code;
+        }
     }
 
     return 0;
