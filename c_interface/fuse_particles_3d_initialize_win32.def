@@ -1,0 +1,4 @@
+LIBRARY	      "fuse_particles_3d_initialize_win32"
+EXPORTS       
+    fuse_particles_3d_initialize_win32           @1
+    fuse_particles_3d_initialize_win32_portable  @2
