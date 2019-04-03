@@ -32,7 +32,11 @@ int mcr_stop()
     if (mcr_initialized == 1)
     {
         mclTerminateApplication();
-        mcr_initialized = 0;
+        bool test_mcr_initialized = mclIsMCRInitialized();
+        if (!test_mcr_initialized)
+        {
+            mcr_initialized = 0;
+        }
         return 1;
     }
     else return 0;
@@ -109,14 +113,16 @@ int fuse_particles_3d_(int argc, const char **argv)
 
 
     // initialize application
-    if (!mcc_fuse_particles_3d_initialized)
+
+    if (mcc_fuse_particles_3d_initialized == 0)
     {
-        if (!mcc_fuse_particles_3dInitialize())
-        {
-            fprintf(stderr, "Could not initialize the library.\n");
-            return -2;
-        }
-        mcc_fuse_particles_3d_initialized = 1;
+        mcc_fuse_particles_3d_initialized = (int) mcc_fuse_particles_3dInitialize();
+    }
+
+    if (mcc_fuse_particles_3d_initialized == 0)
+    {
+        fprintf(stderr, "Could not initialize the library.\n");
+        return -2;
     }
 
     // run application
@@ -144,6 +150,8 @@ int fuse_particles_3d_(int argc, const char **argv)
     memcpy(transformed_coordinates_y, mxGetPr(mx_transformed_coordinates_y), n_localizations * sizeof(double));
     memcpy(transformed_coordinates_z, mxGetPr(mx_transformed_coordinates_z), n_localizations * sizeof(double));
     memcpy(transformation_parameters, mxGetPr(mx_transformation_parameters), 12 * n_particles * sizeof(double));    
+
+    // mcc_fuse_particles_3dTerminate();
 
     mxDestroyArray(mx_transformed_coordinates_x);
     mxDestroyArray(mx_transformed_coordinates_y);
@@ -248,6 +256,9 @@ int fuse_particles_3d(
 
     // run application
     int return_code_mcl_runmain = mclRunMain((mclMainFcnType)fuse_particles_3d_, argc, argv);
+
+    // stop the Matlab runtime library
+    //int return_code_terminate = mcr_stop();
 
     return return_code_mcl_runmain;
 }
