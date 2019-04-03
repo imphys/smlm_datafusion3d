@@ -34,7 +34,14 @@ set_property(TARGET link_to_mcc_fuse_particles_3d PROPERTY IMPORTED_LOCATION
     ${mcc_build_directory}/mcc_fuse_particles_3d.${lib_file_extension})
 
 # fuse_particles_3d
-add_library(fuse_particles_3d SHARED fuse_particles_3d.cpp fuse_particles_3d.h fuse_particles_3d_initialize_win32.cpp fuse_particles_3d_initialize_win32.h fuse_particles_3d.def)
+add_library(fuse_particles_3d SHARED 
+	fuse_particles_3d.cpp 
+	fuse_particles_3d.h 
+	fuse_particles_3d_initialize_win32.cpp 
+	fuse_particles_3d_initialize_win32.h 
+	fuse_particles_3d.def
+	fuse_particles_3d_initialize_win32.def)
+	
 set_property( TARGET fuse_particles_3d PROPERTY RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}" )
 target_link_libraries(fuse_particles_3d link_to_mcc_fuse_particles_3d ${Matlab_RT_LIBRARY} delayimp.lib)
 target_include_directories(fuse_particles_3d PRIVATE ${Matlab_INCLUDE_DIRS} ${mcc_build_directory})

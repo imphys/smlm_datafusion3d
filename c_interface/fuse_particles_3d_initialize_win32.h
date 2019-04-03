@@ -7,9 +7,9 @@
 extern "C" {
 #endif
 
+    int dummy_function(int argc, void *argv[]);
+    int get_current_dll_path();
     int fuse_particles_3d_initialize_win32();
-
-    int fuse_particles_3d_initialize_win32_portable(int argc, void *argv[]);
 
 #ifdef __cplusplus
 }

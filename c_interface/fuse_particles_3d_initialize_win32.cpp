@@ -11,15 +11,12 @@ HMODULE hm = NULL;
 
 int dummy_function(int argc, void *argv[])
 {
-
     return 0;
-
 }
 
 
 int get_current_dll_path()
 {
-
     // Get the file path of the current DLL
 
     int ret = 0;
@@ -38,7 +35,6 @@ int get_current_dll_path()
     }
 
     return ret;
-
 }
 
 
@@ -56,7 +52,6 @@ int fuse_particles_3d_initialize_win32()
         // Error getting current DLL path
         return return_code;
     }
-
 
     // set a path to the mcc_fuse_particles_3d.dll library
 
@@ -86,13 +81,6 @@ int fuse_particles_3d_initialize_win32()
     return 0;
 }
 
-
-int fuse_particles_3d_initialize_win32_portable(int argc, void *argv[])
-{
-
-    return fuse_particles_3d_initialize_win32();
-
-}
 
 
 
