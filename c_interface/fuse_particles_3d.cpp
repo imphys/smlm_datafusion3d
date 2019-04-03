@@ -18,9 +18,9 @@ int mcr_start()
         {
             mcr_initialized = 1;
         }
-        return 0;
+        return 1;
     }
-    else return 1;
+    else return 0;
 }
 
 
@@ -30,9 +30,9 @@ int mcr_stop()
     {
         mclTerminateApplication();
         mcr_initialized = 0;
-        return 0;
+        return 1;
     }
-    else return 1;
+    else return 0;
 }
 
 
@@ -239,20 +239,18 @@ int fuse_particles_3d(
     if (get_mcr_initialized() == 0)
     {
         // initialize application
-        if (mcr_start() == 1)
+        if (!mcr_start())
         {
             fprintf(stderr, "Could not initialize the application.\n");
             return -1;
         }
     }
 
-    int return_code = 0;
-
     // run application
-    return_code = mclRunMain((mclMainFcnType)fuse_particles_3d_, argc, argv);
+    int return_code_mcl_runmain = mclRunMain((mclMainFcnType)fuse_particles_3d_, argc, argv);
 
     // terminate application
     bool return_code_terminate = mclTerminateApplication();
 
-    return return_code;
+    return return_code_mcl_runmain;
 }
