@@ -38,3 +38,9 @@
 *.em
 *.obf
 *.mat
+
+# IntelliJ
+**/.idea
+
+# Python
+__pycache__
