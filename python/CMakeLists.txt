@@ -11,9 +11,14 @@ set( setup_files
 )
 set( module_directory "${build_directory}/py3Dalltoall" )
 set( module_files
-  "${CMAKE_CURRENT_SOURCE_DIR}/pygpufit/__init__.py"
-  "${CMAKE_CURRENT_SOURCE_DIR}/pygpufit/fuse.py"
-  "${CMAKE_CURRENT_SOURCE_DIR}/pygpufit/version.py"
+  "${CMAKE_CURRENT_SOURCE_DIR}/py3Dalltoall/__init__.py"
+  "${CMAKE_CURRENT_SOURCE_DIR}/py3Dalltoall/fuse_particles.py"
+  "${CMAKE_CURRENT_SOURCE_DIR}/py3Dalltoall/version.py"
+)
+
+set( binary
+  "$<TARGET_FILE:fuse_particles_3d>"
+  "${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/mcc_fuse_particles_3d.dll"
 )
 
 add_custom_target( PYTHON_PACKAGE
@@ -27,11 +32,14 @@ add_custom_target( PYTHON_PACKAGE
     make_directory ${module_directory}
   COMMAND ${CMAKE_COMMAND} -E
     copy_if_different ${module_files} ${module_directory}
+  COMMAND ${CMAKE_COMMAND} -E
+    copy_if_different ${binary} ${module_directory}
 )
 
 set_property( TARGET PYTHON_PACKAGE PROPERTY FOLDER CMakePredefinedTargets )
 add_dependencies( PYTHON_PACKAGE fuse_particles_3d )
 
+find_package( PythonInterp )
 if( NOT PYTHONINTERP_FOUND )
   message( STATUS "Python NOT found - skipping creation of Python wheel!" )
   return()
