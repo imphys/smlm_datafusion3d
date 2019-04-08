@@ -2,11 +2,18 @@
 #include <vector>
 #include "fuse_particles_3d.h"
 #include "data.h"
-#include <Windows.h>
+
+#ifdef _WIN32
+    #include <Windows.h>
+    #define LOAD_LIBRARY(PATH) LoadLibrary(PATH)
+#else
+    #define LOAD_LIBRARY(PATH) 
+#endif
 
 int main(int argc, char const *argv[])
 {
-    LoadLibrary("../../fuse_particles_3d.dll");
+    LOAD_LIBRARY("../../fuse_particles_3d.dll");
+
     // input
     int const n_particles = N_PARTICLES;
     std::vector<int> n_localizations_per_particle = N_LOCALIZATIONS_PER_PARTICLE;

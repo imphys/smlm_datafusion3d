@@ -127,7 +127,6 @@ set_property(TARGET copy_figtree PROPERTY FOLDER figtree_projects)
 ### C interface ###
 if(Matlab_MCC_COMPILER)
     add_subdirectory(c_interface)
-
     # Binding for the C interface
     add_subdirectory( python )
 endif()

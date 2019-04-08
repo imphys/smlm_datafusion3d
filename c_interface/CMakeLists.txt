@@ -1,6 +1,10 @@
 
 # mcc_fuse_particles_3d
-set(mcc_build_directory "${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
+if(WIN32)
+    set(mcc_build_directory "${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
+else()
+    set(mcc_build_directory "${CMAKE_BINARY_DIR}/c_interface")
+endif()
 
 if(WIN32)
     add_custom_target( mcc_fuse_particles_3d ALL
@@ -33,20 +37,32 @@ add_library(link_to_mcc_fuse_particles_3d STATIC IMPORTED)
 set_property(TARGET link_to_mcc_fuse_particles_3d PROPERTY IMPORTED_LOCATION
     ${mcc_build_directory}/mcc_fuse_particles_3d.${lib_file_extension})
 
-# fuse_particles_3d
-add_library(fuse_particles_3d SHARED 
-	fuse_particles_3d.cpp 
-	fuse_particles_3d.h 
-	fuse_particles_3d_initialize_win32.cpp 
-	fuse_particles_3d_initialize_win32.h 
-	fuse_particles_3d.def)
-	
-set_property( TARGET fuse_particles_3d PROPERTY RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}" )
-target_link_libraries(fuse_particles_3d link_to_mcc_fuse_particles_3d ${Matlab_RT_LIBRARY} delayimp.lib)
-target_include_directories(fuse_particles_3d PRIVATE ${Matlab_INCLUDE_DIRS} ${mcc_build_directory})
-target_link_options(fuse_particles_3d PRIVATE /delayload:mcc_fuse_particles_3d.dll)
-add_dependencies(fuse_particles_3d mcc_fuse_particles_3d)
+add_dependencies(link_to_mcc_fuse_particles_3d mcc_fuse_particles_3d)
 
+# fuse_particles_3d
+if(WIN32)
+    add_library(fuse_particles_3d SHARED
+	    fuse_particles_3d.cpp 
+	    fuse_particles_3d.h
+	    fuse_particles_3d.def
+	    fuse_particles_3d_initialize_win32.cpp 
+	    fuse_particles_3d_initialize_win32.h)
+
+    
+    target_link_libraries(fuse_particles_3d link_to_mcc_fuse_particles_3d ${Matlab_RT_LIBRARY} delayimp.lib)
+    target_link_options(fuse_particles_3d PRIVATE /delayload:mcc_fuse_particles_3d.dll)
+else()
+    add_library(fuse_particles_3d SHARED
+	    fuse_particles_3d.cpp 
+	    fuse_particles_3d.h
+	    fuse_particles_3d.def)
+    
+    target_link_libraries(fuse_particles_3d link_to_mcc_fuse_particles_3d ${Matlab_RT_LIBRARY})
+endif()
+
+add_dependencies(fuse_particles_3d link_to_mcc_fuse_particles_3d)	
+set_property( TARGET fuse_particles_3d PROPERTY RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}" )
+target_include_directories(fuse_particles_3d PRIVATE ${Matlab_INCLUDE_DIRS} ${mcc_build_directory})
 
 # examples
 add_subdirectory(examples)

@@ -1,9 +1,14 @@
 #include "fuse_particles_3d.h"
-#include "fuse_particles_3d_initialize_win32.h"
 #include "mcc_fuse_particles_3d.h"
 #include "mex.h"
 #include <stdlib.h>
 
+#ifdef _WIN32
+    #include "fuse_particles_3d_initialize_win32.h"
+    #define LOAD_MCC_LIBRARY fuse_particles_3d_initialize_win32();
+#else
+    #define LOAD_MCC_LIBRARY
+#endif
 
 // Global flag indicating that the Matlab runtime library has been started
 int mcr_initialized = 0;
@@ -206,7 +211,7 @@ int fuse_particles_3d(
     int symmetry_order,
     double outlier_threshold)
 {
-    fuse_particles_3d_initialize_win32();
+    LOAD_MCC_LIBRARY
 
     const int argc = 17;
     const char * argv[17];
