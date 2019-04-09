@@ -82,9 +82,11 @@ message( STATUS "CUDA_NVCC_FLAGS=${code_generation_flags}" )
 ### File extension for libraries ###
 
 if(WIN32)
-    set(lib_file_extension lib)
+    set(shared_lib_file_extension dll)    
+    set(static_lib_file_extension lib)
 else()
-    set(lib_file_extension so)
+    set(shared_lib_file_extension so)
+    set(static_lib_file_extension so)
 endif()
 
 ### MATLAB ###
@@ -126,6 +128,13 @@ set_property(TARGET copy_figtree PROPERTY FOLDER figtree_projects)
 
 ### C interface ###
 if(Matlab_MCC_COMPILER)
+    # mcc_build_directory
+    if(WIN32)
+        set(mcc_build_directory "${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
+    else()
+        set(mcc_build_directory "${CMAKE_BINARY_DIR}/c_interface")
+    endif()
+
     add_subdirectory(c_interface)
     # Binding for the C interface
     add_subdirectory( python )

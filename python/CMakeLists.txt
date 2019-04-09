@@ -18,7 +18,7 @@ set( module_files
 
 set( binary
   "$<TARGET_FILE:fuse_particles_3d>"
-  "${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}/mcc_fuse_particles_3d.dll"
+  "${mcc_build_directory}/mcc_fuse_particles_3d.${shared_lib_file_extension}"
 )
 
 add_custom_target( PYTHON_PACKAGE

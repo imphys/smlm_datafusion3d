@@ -1,11 +1,7 @@
 
-# mcc_fuse_particles_3d
-if(WIN32)
-    set(mcc_build_directory "${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
-else()
-    set(mcc_build_directory "${CMAKE_BINARY_DIR}/c_interface")
-endif()
+# c_interface
 
+# mcc_fuse_particles_3d
 if(WIN32)
     add_custom_target( mcc_fuse_particles_3d ALL
         COMMAND
@@ -35,7 +31,7 @@ add_dependencies(mcc_fuse_particles_3d
 add_library(link_to_mcc_fuse_particles_3d STATIC IMPORTED)
 
 set_property(TARGET link_to_mcc_fuse_particles_3d PROPERTY IMPORTED_LOCATION
-    ${mcc_build_directory}/mcc_fuse_particles_3d.${lib_file_extension})
+    ${mcc_build_directory}/mcc_fuse_particles_3d.${static_lib_file_extension})
 
 add_dependencies(link_to_mcc_fuse_particles_3d mcc_fuse_particles_3d)
 
