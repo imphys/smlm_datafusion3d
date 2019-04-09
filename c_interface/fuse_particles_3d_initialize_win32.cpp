@@ -58,8 +58,8 @@ int fuse_particles_3d_initialize_win32()
     char * search_char = "\\";
     char * last_path_sep = strrchr(path, search_char[0]);
     int dir_path_length = (last_path_sep - path) + 1;
-    strncat(mcc_dll_path, path, (size_t)dir_path_length);
-    strcat(mcc_dll_path, mcc_dll_name);
+    strncat_s(mcc_dll_path, path, (size_t)dir_path_length);
+    strcat_s(mcc_dll_path, mcc_dll_name);
 
     // test if the mcc-generated dll is already loaded
 

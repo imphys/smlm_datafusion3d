@@ -80,6 +80,4 @@ switch lower(motion)
         Ub = [MAX_DX; MAX_DY; MAX_DZ; inf; inf; inf; inf; inf; inf; inf; inf; inf];
     otherwise
         error('Unknown motion type');
-end;
-
-
+end

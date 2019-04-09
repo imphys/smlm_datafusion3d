@@ -68,10 +68,10 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     scale_A = (double *)mxGetPr(prhs[2]);
     scale_B = (double *)mxGetPr(prhs[3]);
       /* Get the dimensions of the matrix input A&B. */
-      m = mxGetM(prhs[0]);
-      n = mxGetM(prhs[1]);
+      m = static_cast<int>(mxGetM(prhs[0]));
+      n = static_cast<int>(mxGetM(prhs[1]));
 
-      dim = mxGetN(prhs[0]);
+      dim = static_cast<int>(mxGetN(prhs[0]));
       if (mxGetN(prhs[1])!=dim)
       {
           mexErrMsgTxt("The two input point sets should have same dimension.");
