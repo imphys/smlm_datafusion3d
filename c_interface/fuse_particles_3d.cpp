@@ -137,6 +137,13 @@ int fuse_particles_3d_(int argc, const char **argv)
         mx_symmetry_order,
         mx_outlier_threshold);
 
+    if (mx_transformed_coordinates_x == NULL || mx_transformed_coordinates_y == NULL ||
+        mx_transformed_coordinates_z == NULL || mx_transformation_parameters == NULL)
+    {
+        fprintf(stderr, "Not all outputs set in Matlab.\n");
+        return -3;
+    }
+
     memcpy(transformed_coordinates_x, mxGetPr(mx_transformed_coordinates_x), n_localizations * sizeof(double));
     memcpy(transformed_coordinates_y, mxGetPr(mx_transformed_coordinates_y), n_localizations * sizeof(double));
     memcpy(transformed_coordinates_z, mxGetPr(mx_transformed_coordinates_z), n_localizations * sizeof(double));

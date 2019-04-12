@@ -34,12 +34,25 @@ use the following command.
 > cd BUILD_DIRECTORY<br>
 > cmake -G "Visual Studio 14 2015 Win 64" -DCUB_ROOT_DIR=CUB_DIRECTORY SOURCE_DIRECTORY
 
+Test the example by running the example_fuse_particles_3d target. Test the Python binding by installing the created wheel in a Python environment
+and executing an example script.
+
+> pip install BUILD_DIRECTORY/py3Dalltoall/dist/py3Dalltoall-1.0.0-py2.py3-none-any.whl<br>
+> cd SOURCE_DIRECTORY/python/examples<br>
+> python three_particles.py
+
+> pip install BUILD_DIRECTORY/py3Dalltoall/dist/py3Dalltoall-1.0.0-py2.py3-none-any.whl<br>
+
 ### Linux
 
 Either use the CMake GUI or use CMake from the command line. On the command line, use the following command.
 
 > cd BUILD_DIRECTORY<br>
 > cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_C_COMPILER=gcc-5 -DCUB_ROOT_DIR=CUB_DIRECTORY SOURCE_DIRECTORY
+
+Then build the project
+
+> make
 
 To use the mex files in Matlab and to use the C interface library the library paths have to be adapted
 
@@ -50,6 +63,15 @@ Test the build by running the example.
 
 > cd BUILD_DIRECTORY/c_interface/examples<br>
 > ./example_fuse_particles_3d
+
+Test the Python binding
+
+> virtualenv test<br>
+> source test/bin/activate<br>
+> pip install numpy<br>
+> pip install BUILD_DIRECTORY/py3Dalltoall/dist/py3Dalltoall-1.0.0-py2.py3-none-any.whl<br>
+> cd SOURCE_DIRECTORY/python/examples<br>
+> python three_particles.py
 
 
 ### Matlab interface
