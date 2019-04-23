@@ -2,6 +2,7 @@
 #define FUSE_PARTICLES_3D
 
 #include <string.h>
+#include <cstdint>
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,18 +23,18 @@ extern "C" {
         double * transformed_coordinates_y,
         double * transformed_coordinates_z,
         double * transformation_parameters,
-        int n_particles,
-        int * n_localizations_per_particle,
+        int32_t n_particles,
+        int32_t * n_localizations_per_particle,
         double * coordinates_x,
         double * coordinates_y,
         double * coordinates_z,
         double * weights_xy,
         double * weights_z,
-        int * channel_ids,
-        int averaging_channel_id,
-        int n_iterations_alltoall,
-        int n_iterations_onetoall,
-        int symmetry_order,
+        int32_t * channel_ids,
+        int32_t averaging_channel_id,
+        int32_t n_iterations_alltoall,
+        int32_t n_iterations_onetoall,
+        int32_t symmetry_order,
         double outlier_threshold);
 
 #ifdef __cplusplus

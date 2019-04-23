@@ -46,18 +46,18 @@ int fuse_particles_3d_(int argc, const char **argv)
     double * transformed_coordinates_y = (double *)argv[1];
     double * transformed_coordinates_z = (double *)argv[2];
     double * transformation_parameters = (double *)argv[3];
-    int n_particles = *(int *)argv[4];
-    int * n_localizations_per_particle = (int *)argv[5];
+    int32_t n_particles = *(int32_t *)argv[4];
+    int32_t * n_localizations_per_particle = (int32_t *)argv[5];
     double * coordinates_x = (double *)argv[6];
     double * coordinates_y = (double *)argv[7];
     double * coordinates_z = (double *)argv[8];
     double * weights_xy = (double *)argv[9];
     double * weights_z = (double *)argv[10];
-    int * channel_ids = (int *)argv[11];
-    int averaging_channel_id = *(int *)argv[12];
-    int n_iterations_alltoall = *(int *)argv[13];
-    int n_iterations_onetoall = *(int *)argv[14];
-    int symmetry_order = *(int *)argv[15];
+    int32_t * channel_ids = (int *)argv[11];
+    int32_t averaging_channel_id = *(int32_t *)argv[12];
+    int32_t n_iterations_alltoall = *(int32_t *)argv[13];
+    int32_t n_iterations_onetoall = *(int32_t *)argv[14];
+    int32_t symmetry_order = *(int32_t *)argv[15];
     double outlier_threshold = *(double *)argv[16];
 
     // total number of localizations
@@ -88,19 +88,19 @@ int fuse_particles_3d_(int argc, const char **argv)
 
 
     // copy input
-    memcpy(mxGetPr(mx_n_particles), &n_particles, sizeof(int));
-    memcpy(mxGetPr(mx_n_localizations_per_particle), n_localizations_per_particle, n_particles * sizeof(int));
-    memcpy(mxGetPr(mx_coordinates_x), coordinates_x, n_localizations * sizeof(double));
-    memcpy(mxGetPr(mx_coordinates_y), coordinates_y, n_localizations * sizeof(double));
-    memcpy(mxGetPr(mx_coordinates_z), coordinates_z, n_localizations * sizeof(double));
-    memcpy(mxGetPr(mx_weights_xy), weights_xy, n_localizations * sizeof(double));
-    memcpy(mxGetPr(mx_weights_z), weights_z, n_localizations * sizeof(double));
-    memcpy(mxGetPr(mx_channel_ids), channel_ids, n_localizations * sizeof(int));
-    memcpy(mxGetPr(mx_averaging_channel_id), &averaging_channel_id, sizeof(int));
-    memcpy(mxGetPr(mx_n_iterations_all2all), &n_iterations_alltoall, sizeof(int));
-    memcpy(mxGetPr(mx_n_iterations_one2all), &n_iterations_onetoall, sizeof(int));
-    memcpy(mxGetPr(mx_symmetry_order), &symmetry_order, sizeof(int));
-    memcpy(mxGetPr(mx_outlier_threshold), &outlier_threshold, sizeof(double));
+    memcpy(mxGetInt32s(mx_n_particles), &n_particles, sizeof(int));
+    memcpy(mxGetInt32s(mx_n_localizations_per_particle), n_localizations_per_particle, n_particles * sizeof(int));
+    memcpy(mxGetDoubles(mx_coordinates_x), coordinates_x, n_localizations * sizeof(double));
+    memcpy(mxGetDoubles(mx_coordinates_y), coordinates_y, n_localizations * sizeof(double));
+    memcpy(mxGetDoubles(mx_coordinates_z), coordinates_z, n_localizations * sizeof(double));
+    memcpy(mxGetDoubles(mx_weights_xy), weights_xy, n_localizations * sizeof(double));
+    memcpy(mxGetDoubles(mx_weights_z), weights_z, n_localizations * sizeof(double));
+    memcpy(mxGetInt32s(mx_channel_ids), channel_ids, n_localizations * sizeof(int));
+    memcpy(mxGetInt32s(mx_averaging_channel_id), &averaging_channel_id, sizeof(int));
+    memcpy(mxGetInt32s(mx_n_iterations_all2all), &n_iterations_alltoall, sizeof(int));
+    memcpy(mxGetInt32s(mx_n_iterations_one2all), &n_iterations_onetoall, sizeof(int));
+    memcpy(mxGetInt32s(mx_symmetry_order), &symmetry_order, sizeof(int));
+    memcpy(mxGetInt32s(mx_outlier_threshold), &outlier_threshold, sizeof(double));
 
 
     // initialize application
@@ -182,18 +182,18 @@ int fuse_particles_3d_portable(int argc, void *argv[])
         (double *) argv[1],
         (double *) argv[2],
         (double *) argv[3],
-        *(int *) argv[4],
-        (int *) argv[5],
+        *(int32_t *) argv[4],
+        (int32_t *) argv[5],
         (double *) argv[6],
         (double *) argv[7],
         (double *) argv[8],
         (double *) argv[9],
         (double *) argv[10],
-        (int *) argv[11],
-        *(int *) argv[12],
-        *(int *) argv[13],
-        *(int *) argv[14],
-        *(int *) argv[15],
+        (int32_t *) argv[11],
+        *(int32_t *) argv[12],
+        *(int32_t *) argv[13],
+        *(int32_t *) argv[14],
+        *(int32_t *) argv[15],
         *(double *) argv[16]);
 
 }
@@ -204,18 +204,18 @@ int fuse_particles_3d(
     double * transformed_coordinates_y,
     double * transformed_coordinates_z,
     double * transformation_parameters,
-    int n_particles,
-    int * n_localizations_per_particle,
+    int32_t n_particles,
+    int32_t * n_localizations_per_particle,
     double * coordinates_x,
     double * coordinates_y,
     double * coordinates_z,
     double * weights_xy,
     double * weights_z,
-    int * channel_ids,
-    int averaging_channel_id,
-    int n_iterations_alltoall,
-    int n_iterations_onetoall,
-    int symmetry_order,
+    int32_t * channel_ids,
+    int32_t averaging_channel_id,
+    int32_t n_iterations_alltoall,
+    int32_t n_iterations_onetoall,
+    int32_t symmetry_order,
     double outlier_threshold)
 {
     LOAD_MCC_LIBRARY

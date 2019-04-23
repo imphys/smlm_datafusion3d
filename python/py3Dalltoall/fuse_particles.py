@@ -24,10 +24,10 @@ lib = cdll.LoadLibrary(lib_path)
 
 # fuse_particles_3d function in the dll
 func = lib.fuse_particles_3d
-func.restype = c_int
-func.argtypes = [POINTER(c_double), POINTER(c_double), POINTER(c_double), POINTER(c_double), c_int, POINTER(c_int),
+func.restype = c_int32
+func.argtypes = [POINTER(c_double), POINTER(c_double), POINTER(c_double), POINTER(c_double), c_int32, POINTER(c_int32),
                  POINTER(c_double), POINTER(c_double), POINTER(c_double), POINTER(c_double), POINTER(c_double),
-                 POINTER(c_int), c_int, c_int, c_int, c_int, c_double]
+                 POINTER(c_int32), c_int32, c_int32, c_int32, c_int32, c_double]
 
 def fuse_particles_3d(localizations_per_particle, coordinates_x, coordinates_y, coordinates_z, weights_xy, weights_z,
                       channel_ids=None, averaging_channel_id=0, number_iterations_all2all=1, number_iterations_one2all=10,
@@ -43,7 +43,7 @@ def fuse_particles_3d(localizations_per_particle, coordinates_x, coordinates_y, 
     d = (number_localizations,)
 
     if channel_ids is None:
-        channel_ids = np.zeros(d, dtype=np.int)
+        channel_ids = np.zeros(d, dtype=np.int32)
 
     if any([not x.flags.c_contiguous for x in [coordinates_x, coordinates_y, coordinates_z, weights_xy, weights_z, channel_ids]]):
         raise RuntimeError('Memory layout of data arrays mismatch')

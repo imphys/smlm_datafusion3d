@@ -15,18 +15,18 @@ int main(int argc, char const *argv[])
     LOAD_LIBRARY("../../fuse_particles_3d.dll");
 
     // input
-    int const n_particles = N_PARTICLES;
-    std::vector<int> n_localizations_per_particle = N_LOCALIZATIONS_PER_PARTICLE;
+    int32_t const n_particles = N_PARTICLES;
+    std::vector<int32_t> n_localizations_per_particle = N_LOCALIZATIONS_PER_PARTICLE;
     std::vector<double> coordinates_x = COORDINATES_X;
     std::vector<double> coordinates_y = COORDINATES_Y;
     std::vector<double> coordinates_z = COORDINATES_Z;
     std::vector<double> weights_xy = WEIGHTS_XY;
     std::vector<double> weights_z = WEIGHTS_Z;
-    std::vector<int> channel_ids = CHANNEL_IDS;
-    int averaging_channel_id = 0;
-    int n_iterations_alltoall = 1;
-    int n_iterations_onetoall = 2;
-    int symmetry_order = 8;
+    std::vector<int32_t> channel_ids = CHANNEL_IDS;
+    int32_t averaging_channel_id = 0;
+    int32_t n_iterations_alltoall = 1;
+    int32_t n_iterations_onetoall = 2;
+    int32_t symmetry_order = 8;
     double outlier_threshold = 1;
 
     std::size_t n_localizations = 0;

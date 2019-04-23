@@ -4,8 +4,8 @@ coordinates_x = np.array([
     -0.472699250566201,
     0.433936033857627,
     0.403990660322471,
-    - 0.0906535047165917,
-    - 0.696057404863076,
+    -0.0906535047165917,
+    -0.696057404863076,
     0.0121525865920020,
     -0.0189066785447167,
     -0.0416346448533105,
@@ -2305,7 +2305,7 @@ localizations_per_particle = np.array([
     235,
     292,
     237
-], dtype=np.int)
+], dtype=np.int32)
 
 channel_ids =np.array([
     0,
@@ -3072,7 +3072,7 @@ channel_ids =np.array([
     1,
     0,
     0
-], dtype=np.int)
+], dtype=np.int32)
 
 weights_xy = np.ones((764,1), dtype=np.double)
 weights_z = np.ones((764,1), dtype=np.double)

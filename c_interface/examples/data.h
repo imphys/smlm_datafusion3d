@@ -1,6 +1,6 @@
 #include <vector>
 
-int N_PARTICLES = 3;
+int32_t N_PARTICLES = 3;
 
 std::vector<double> COORDINATES_X =
 {
@@ -2306,14 +2306,14 @@ std::vector<double> COORDINATES_Z =
     0.0765385889302829
 };
 
-std::vector<int> N_LOCALIZATIONS_PER_PARTICLE =
+std::vector<int32_t> N_LOCALIZATIONS_PER_PARTICLE =
 {
     235,
     292,
     237
 };
 
-std::vector<int> CHANNEL_IDS =
+std::vector<int32_t> CHANNEL_IDS =
 {
     0,
     0,
