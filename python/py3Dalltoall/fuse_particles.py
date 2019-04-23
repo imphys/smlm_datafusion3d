@@ -7,7 +7,7 @@
 """
 
 import os
-from ctypes import cdll, POINTER, c_int, c_double
+from ctypes import cdll, POINTER, c_int32, c_double
 import numpy as np
 
 # define library loader (actual loading is lazy)
