@@ -15,8 +15,6 @@
 #include "expdist_ref.h"
 
 
-double *rotated_scales = (double *)NULL;
-
 void mexFunction(int nlhs,       mxArray *plhs[],
          int nrhs, const mxArray *prhs[])
 {
@@ -117,13 +115,14 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     result = mxGetPr(plhs[0]);
 
     if (dim == 3) {
-        if (rotated_scales == NULL) {
-            rotated_scales = (double *)malloc(9*n*sizeof(double));
-        }
+        double *rotated_scales = (double *)malloc(9*n*sizeof(double));
+        double *rotated_B = (double *)malloc(3 * n * sizeof(double));
         double *rotation_matrix = (double *)mxGetPr(prhs[4]);
         rotate_scales(rotated_scales, rotation_matrix, n, scale_B);
-        rotate_B(B, rotation_matrix, n, B);
-        *result = expdist3D(A, B, m, n, scale_A, rotated_scales);
+        rotate_B(rotated_B, rotation_matrix, n, B);
+        *result = expdist3D(A, rotated_B, m, n, scale_A, rotated_scales);
+        free(rotated_B);
+        free(rotated_scales);
     } else {
         *result = expdist(A, B, m, n, dim, scale_A, scale_B);
     }
