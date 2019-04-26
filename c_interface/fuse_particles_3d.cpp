@@ -88,19 +88,19 @@ int fuse_particles_3d_(int argc, const char **argv)
 
 
     // copy input
-    memcpy(mxGetInt32s(mx_n_particles), &n_particles, sizeof(int));
-    memcpy(mxGetInt32s(mx_n_localizations_per_particle), n_localizations_per_particle, n_particles * sizeof(int));
-    memcpy(mxGetDoubles(mx_coordinates_x), coordinates_x, n_localizations * sizeof(double));
-    memcpy(mxGetDoubles(mx_coordinates_y), coordinates_y, n_localizations * sizeof(double));
-    memcpy(mxGetDoubles(mx_coordinates_z), coordinates_z, n_localizations * sizeof(double));
-    memcpy(mxGetDoubles(mx_weights_xy), weights_xy, n_localizations * sizeof(double));
-    memcpy(mxGetDoubles(mx_weights_z), weights_z, n_localizations * sizeof(double));
-    memcpy(mxGetInt32s(mx_channel_ids), channel_ids, n_localizations * sizeof(int));
-    memcpy(mxGetInt32s(mx_averaging_channel_id), &averaging_channel_id, sizeof(int));
-    memcpy(mxGetInt32s(mx_n_iterations_all2all), &n_iterations_alltoall, sizeof(int));
-    memcpy(mxGetInt32s(mx_n_iterations_one2all), &n_iterations_onetoall, sizeof(int));
-    memcpy(mxGetInt32s(mx_symmetry_order), &symmetry_order, sizeof(int));
-    memcpy(mxGetInt32s(mx_outlier_threshold), &outlier_threshold, sizeof(double));
+    memcpy(mxGetPr(mx_n_particles), &n_particles, sizeof(int32_t));
+    memcpy(mxGetPr(mx_n_localizations_per_particle), n_localizations_per_particle, n_particles * sizeof(int32_t));
+    memcpy(mxGetPr(mx_coordinates_x), coordinates_x, n_localizations * sizeof(double));
+    memcpy(mxGetPr(mx_coordinates_y), coordinates_y, n_localizations * sizeof(double));
+    memcpy(mxGetPr(mx_coordinates_z), coordinates_z, n_localizations * sizeof(double));
+    memcpy(mxGetPr(mx_weights_xy), weights_xy, n_localizations * sizeof(double));
+    memcpy(mxGetPr(mx_weights_z), weights_z, n_localizations * sizeof(double));
+    memcpy(mxGetPr(mx_channel_ids), channel_ids, n_localizations * sizeof(int32_t));
+    memcpy(mxGetPr(mx_averaging_channel_id), &averaging_channel_id, sizeof(int32_t));
+    memcpy(mxGetPr(mx_n_iterations_all2all), &n_iterations_alltoall, sizeof(int32_t));
+    memcpy(mxGetPr(mx_n_iterations_one2all), &n_iterations_onetoall, sizeof(int32_t));
+    memcpy(mxGetPr(mx_symmetry_order), &symmetry_order, sizeof(int32_t));
+    memcpy(mxGetPr(mx_outlier_threshold), &outlier_threshold, sizeof(double));
 
 
     // initialize application
