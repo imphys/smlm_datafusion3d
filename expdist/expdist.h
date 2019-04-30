@@ -22,10 +22,14 @@ class GPUExpDist {
     private:
         double *d_A;
         double *d_B;
+        double *d_B_temp;
         double *d_scale_A;
         double *d_scale_B;
         double *d_scale_B_temp;
         double *d_cross_term;
+
+        double *ptrto_rotation_matrixd;
+        double *ptrto_rotation_matrix_transposedd;
 
         cudaEvent_t event;
         cudaStream_t stream;

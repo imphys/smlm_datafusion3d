@@ -438,15 +438,10 @@ ExpDist_column3D(const double *A, const double *B,
 extern "C"
 __global__ void reduce_cross_term(double *output, double *d_cross_term, int m, int n, int nblocks);
 
-
-__constant__ double rotation_matrixd[9];
-__constant__ double rotation_matrix_transposedd[9];
-
+extern "C"
+__global__ void rotate_scales_double(double *rotated_scales, const int n, const double *scale_B, double const *rotation_matrix, double const *rotation_matrix_transposed);
 
 extern "C"
-__global__ void rotate_scales_double(double *rotated_scales, const int n, const double *scale_B);
-
-extern "C"
-__global__ void rotate_B_double(double *rotated_B, const int n, const double *B);
+__global__ void rotate_B_double(double *rotated_B, const int n, const double *B, double const *rotation_matrix);
 
 #endif // !KERNELS_CUH

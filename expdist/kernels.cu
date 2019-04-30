@@ -74,23 +74,23 @@ __global__ void reduce_cross_term(double *output, double *d_cross_term, int m, i
 
 
 extern "C"
-__global__ void rotate_scales_double(double *rotated_scales, const int n, const double *scale_B) {
+__global__ void rotate_scales_double(double *rotated_scales, const int n, const double *scale_B, double const * rotation_matrix, double const * rotation_matrix_transposed) {
 
     int x = blockIdx.x * block_size_x + threadIdx.x;
 
     if (x < n) {
-        rotate_scale(rotated_scales, rotation_matrixd, rotation_matrix_transposedd, x, scale_B);
+        rotate_scale(rotated_scales, rotation_matrix, rotation_matrix_transposed, x, scale_B);
     }
 
 }
 
 extern "C"
-__global__ void rotate_B_double(double *rotated_B, const int n, const double *B) {
+__global__ void rotate_B_double(double *rotated_B, const int n, const double *B, double const * rotation_matrix) {
 
     int x = blockIdx.x * block_size_x + threadIdx.x;
 
     if (x < n) {
-        rotate_B_point(rotated_B, rotation_matrixd, x, B);
+        rotate_B_point(rotated_B, rotation_matrix, x, B);
     }
 
 }

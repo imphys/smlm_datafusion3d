@@ -22,6 +22,8 @@
 
 #include "kernels.cuh"
 
+__constant__ double rotation_matrixd[9];
+__constant__ double rotation_matrix_transposedd[9];
 
 GPUExpDist::GPUExpDist(int n, int argdim) {
     //allocate GPU memory for size max_n
@@ -48,6 +50,11 @@ GPUExpDist::GPUExpDist(int n, int argdim) {
         fprintf(stderr, "Error in cudaMalloc: %s\n", cudaGetErrorString(err));
         exit(1);
     }
+    err = cudaMalloc((void **)&d_B_temp, elems*sizeof(double));
+    if (err != cudaSuccess) {
+        fprintf(stderr, "Error in cudaMalloc: %s\n", cudaGetErrorString(err));
+        exit(1);
+    }
     err = cudaMalloc((void **)&d_scale_A, scale_A_dim*max_n*sizeof(double));
     if (err != cudaSuccess) {
         fprintf(stderr, "Error in cudaMalloc: %s\n", cudaGetErrorString(err));
@@ -69,6 +76,17 @@ GPUExpDist::GPUExpDist(int n, int argdim) {
             fprintf(stderr, "Error in cudaMalloc: %s\n", cudaGetErrorString(err));
             exit(1);
         }
+    }
+
+    err = cudaGetSymbolAddress((void**)&ptrto_rotation_matrixd, rotation_matrixd);
+    if (err != cudaSuccess) {
+        fprintf(stderr, "Error in cudaGetSymbolAddress: %s\n", cudaGetErrorString(err));
+        exit(1);
+    }
+    err = cudaGetSymbolAddress((void**)&ptrto_rotation_matrix_transposedd, rotation_matrix_transposedd);
+    if (err != cudaSuccess) {
+        fprintf(stderr, "Error in cudaGetSymbolAddress: %s\n", cudaGetErrorString(err));
+        exit(1);
     }
 
     err = cudaEventCreate(&event);
@@ -116,7 +134,7 @@ double GPUExpDist::compute(const double *A, const double *B, int m, int n, const
         fprintf(stderr, "Error in cudaMemcpyAsync d_A: %s\n", cudaGetErrorString(err));
         exit(1);
     }
-    err = cudaMemcpyAsync(d_B, B, n*dim*sizeof(double), cudaMemcpyHostToDevice, stream);
+    err = cudaMemcpyAsync(d_B_temp, B, n*dim*sizeof(double), cudaMemcpyHostToDevice, stream);
     if (err != cudaSuccess) {
         fprintf(stderr, "Error in cudaMemcpyAsync d_B: %s\n", cudaGetErrorString(err));
         exit(1);
@@ -143,7 +161,7 @@ double GPUExpDist::compute(const double *A, const double *B, int m, int n, const
             fprintf(stderr, "Error in cudaMemcpyToSymbolAsync rotation_matrix: %s\n", cudaGetErrorString(err));
             exit(1);
         }
-        err = cudaMemcpyToSymbolAsync(rotation_matrix_transposedd, &transposed_rotation_matrix, 9*sizeof(double), 0, cudaMemcpyHostToDevice, stream_b);
+        err = cudaMemcpyToSymbolAsync(rotation_matrix_transposedd, transposed_rotation_matrix, 9*sizeof(double), 0, cudaMemcpyHostToDevice, stream_b);
         if (err != cudaSuccess) {
             fprintf(stderr, "Error in cudaMemcpyToSymbolAsync rotation_matrix_transposed: %s\n", cudaGetErrorString(err));
             exit(1);
@@ -152,7 +170,7 @@ double GPUExpDist::compute(const double *A, const double *B, int m, int n, const
         //call rotate scales kernel
         dim3 threads(block_size_x, 1, 1);
         dim3 grid((int) ceil(n / (float)(block_size_x)), 1, 1);
-        rotate_scales_double<<<grid, threads, 0, stream_b>>>(d_scale_B, n, d_scale_B_temp);
+        rotate_scales_double<<<grid, threads, 0, stream_b>>>(d_scale_B, n, d_scale_B_temp, ptrto_rotation_matrixd, ptrto_rotation_matrix_transposedd);
         cudaEventRecord(event, stream_b);
 
 
@@ -176,7 +194,7 @@ double GPUExpDist::compute(const double *A, const double *B, int m, int n, const
         //that the coordinates have been rotated before data is transferred to the GPU
         dim3 threads(block_size_x, 1, 1);
         dim3 grid((int) ceil(n / (float)(block_size_x)), 1, 1);
-        rotate_B_double<<<grid, threads, 0, stream>>>(d_B, n, d_B);
+        rotate_B_double<<<grid, threads, 0, stream>>>(d_B, n, d_B_temp, ptrto_rotation_matrixd);
 
     }
 
