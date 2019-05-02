@@ -26,8 +26,8 @@ int main(int argc, char const *argv[])
     int32_t averaging_channel_id = 0;
     int32_t n_iterations_alltoall = 1;
     int32_t n_iterations_onetoall = 2;
-    int32_t symmetry_order = 8;
-    double outlier_threshold = 1;
+    int32_t symmetry_order = 0;
+    double outlier_threshold = 20;
 
     std::size_t n_localizations = 0;
     for (int i = 0; i < n_particles; i++)
