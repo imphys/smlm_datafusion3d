@@ -124,7 +124,8 @@ void mexFunction(int nlhs,       mxArray *plhs[],
         free(rotated_B);
         free(rotated_scales);
     } else {
-        *result = expdist(A, B, m, n, dim, scale_A, scale_B);
+        //*result = expdist(A, B, m, n, dim, scale_A, scale_B); // not used in alltoall3d
+        mexErrMsgTxt("wrong number of dimensions.");
     }
 }
 

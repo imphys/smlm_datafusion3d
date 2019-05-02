@@ -21,11 +21,8 @@ else()
 endif()
 
 add_dependencies(mcc_fuse_particles_3d
-    expdist
-    gausstransform
     MATLAB_gausstransform_PACKAGE
     MATLAB_expdist_PACKAGE
-    mexFigtree
     copy_figtree)
 
 add_library(link_to_mcc_fuse_particles_3d STATIC IMPORTED)

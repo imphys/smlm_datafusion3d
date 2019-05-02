@@ -35,7 +35,7 @@
 function [f,g] = GaussTransform(A, B, scale)	
 
     % run GPU version if it exists otherwise fall back to CPU version
-    if exist('mex_gausstransform','file')
+    if exist('mex_gausstransform','file') && gpuDeviceCount > 0
         [f,g] = mex_gausstransform(A',B',scale);
         g = g';
     elseif exist('mex_gausstransform_cpu','file')

@@ -76,9 +76,14 @@ function [parameter, registered_model, max_value] = pairFitting3D_parallel(M, S,
     parfor i=1:N_init
         q = [param{i}(4) param{i}(1) param{i}(2) param{i}(3)];
         tmpRR = q2R(q);
-        tmpTT = repmat([param{1,i}(5) param{1,i}(6) param{1,i}(7)], size(M,1),1);           
-        cost(i) = mex_expdist(S_resampled.points, (M.points - tmpTT) * tmpRR' * tmpRR',...
-                              S_resampled.sigma, M.sigma, tmpRR');                
+        tmpTT = repmat([param{1,i}(5) param{1,i}(6) param{1,i}(7)], size(M,1),1);
+        if exist('mex_expdist','file') && gpuDeviceCount > 0
+            cost(i) = mex_expdist(S_resampled.points, (M.points - tmpTT) * tmpRR' * tmpRR',...
+                                  S_resampled.sigma, M.sigma, tmpRR');
+        else
+            cost(i) = mex_expdist_cpu(S_resampled.points, (M.points - tmpTT) * tmpRR' * tmpRR',...
+                                      S_resampled.sigma, M.sigma, tmpRR');
+        end
     end
 
     [max_value, IDX] = max(cost);

@@ -5,17 +5,29 @@ if (NOT Matlab_FOUND)
     return()
 endif()
 
-add_library(mex_gausstransform SHARED mex_gausstransform.cpp)
+# GPU
+if (CUDA_FOUND)
+
+    add_library(mex_gausstransform SHARED mex_gausstransform.cpp)
+
+    set_target_properties(mex_gausstransform
+      PROPERTIES
+        PREFIX ""
+        SUFFIX .${Matlab_MEX_EXTENSION}
+        RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}"
+    )
+
+    add_dependencies(mex_gausstransform gausstransform)
+
+    target_include_directories(mex_gausstransform PRIVATE ${Matlab_INCLUDE_DIRS} ${Matlab_SOURCE_DIR} ../)
+
+    target_link_libraries(mex_gausstransform gausstransform ${Matlab_LIBRARIES})
+
+endif()
+
+
+# CPU
 add_library(mex_gausstransform_cpu SHARED mex_gausstransform_cpu.cpp)
-
-set_target_properties(mex_gausstransform
-  PROPERTIES
-    PREFIX ""
-    SUFFIX .${Matlab_MEX_EXTENSION}
-    RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}"
-)
-
-add_dependencies(mex_gausstransform gausstransform)
 
 set_target_properties(mex_gausstransform_cpu
   PROPERTIES
@@ -24,15 +36,9 @@ set_target_properties(mex_gausstransform_cpu
     RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}"
 )
 
-add_dependencies(mex_gausstransform_cpu gausstransform)
-
-# include directories
-target_include_directories(mex_gausstransform PRIVATE ${Matlab_INCLUDE_DIRS} ${Matlab_SOURCE_DIR} ../)
 target_include_directories(mex_gausstransform_cpu PRIVATE ${Matlab_INCLUDE_DIRS} ${Matlab_SOURCE_DIR} ../)
 
-# link libraries
-target_link_libraries(mex_gausstransform gausstransform ${Matlab_LIBRARIES})
-target_link_libraries(mex_gausstransform_cpu gausstransform ${Matlab_LIBRARIES})
+target_link_libraries(mex_gausstransform_cpu ${Matlab_LIBRARIES})
 
 # export mexFunction
 if(WIN32)
@@ -41,20 +47,24 @@ endif()
 
 # MATLAB package
 
-set( binary_mex $<TARGET_FILE:mex_gausstransform> $<TARGET_FILE:mex_gausstransform_cpu> )
-
-set( binary_lib $<TARGET_FILE:gausstransform> )
+if(CUDA_FOUND)
+    set( binary $<TARGET_FILE:mex_gausstransform> $<TARGET_FILE:mex_gausstransform_cpu> $<TARGET_FILE:gausstransform> )
+else()
+    set( binary $<TARGET_FILE:mex_gausstransform_cpu> )
+endif()
 
 add_custom_target( MATLAB_gausstransform_PACKAGE ALL
   COMMAND ${CMAKE_COMMAND} -E
     make_directory ${matlab_package_build_directory}
   COMMAND ${CMAKE_COMMAND} -E
-    copy_if_different ${binary_mex} ${matlab_package_build_directory}
+    copy_if_different ${binary} ${matlab_package_build_directory}
   COMMAND ${CMAKE_COMMAND} -E
-    copy_if_different ${binary_lib} ${matlab_package_build_directory}
-  COMMAND ${CMAKE_COMMAND} -E
-    remove ${binary_mex}
+    remove ${binary}
   COMMENT "Creating gausstransform Matlab package"
 )
 
-add_dependencies(MATLAB_gausstransform_PACKAGE mex_gausstransform mex_gausstransform_cpu)
+if(CUDA_FOUND)
+    add_dependencies(MATLAB_gausstransform_PACKAGE mex_gausstransform mex_gausstransform_cpu)
+else()
+    add_dependencies(MATLAB_gausstransform_PACKAGE mex_gausstransform_cpu)
+endif()
