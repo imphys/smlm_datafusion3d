@@ -24,7 +24,8 @@ R1 = X(1:3,1:3);
 R2 = Y(1:3,1:3);
 % d_rot = 0.5*trace(logm(R1'*R2));
 % d_rot = norm(logm(R1'*R2),'fro');
-d_rot = trace(logm(R1'*R2)'*logm(R1'*R2));
+% d_rot = trace(logm(R1'*R2)'*logm(R1'*R2));
+d_rot = sqrt(trace(logm(R1'*R2)'*logm(R1'*R2))/2);
 %quaternion Distance
 % qx = dcm2quat(R1);
 % qy = dcm2quat(R2);
