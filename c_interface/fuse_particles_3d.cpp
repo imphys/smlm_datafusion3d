@@ -51,14 +51,15 @@ int fuse_particles_3d_(int argc, const char **argv)
     double * coordinates_x = (double *)argv[6];
     double * coordinates_y = (double *)argv[7];
     double * coordinates_z = (double *)argv[8];
-    double * weights_xy = (double *)argv[9];
-    double * weights_z = (double *)argv[10];
-    int32_t * channel_ids = (int *)argv[11];
-    int32_t averaging_channel_id = *(int32_t *)argv[12];
-    int32_t n_iterations_alltoall = *(int32_t *)argv[13];
-    int32_t n_iterations_onetoall = *(int32_t *)argv[14];
-    int32_t symmetry_order = *(int32_t *)argv[15];
-    double outlier_threshold = *(double *)argv[16];
+    double * precision_xy = (double *)argv[9];
+    double * precision_z = (double *)argv[10];
+    double mean_precision = *(double *)argv[11];
+    int32_t * channel_ids = (int *)argv[12];
+    int32_t averaging_channel_id = *(int32_t *)argv[13];
+    int32_t n_iterations_alltoall = *(int32_t *)argv[14];
+    int32_t n_iterations_onetoall = *(int32_t *)argv[15];
+    int32_t symmetry_order = *(int32_t *)argv[16];
+    double outlier_threshold = *(double *)argv[17];
 
     // total number of localizations
     size_t n_localizations = 0;
@@ -71,8 +72,9 @@ int fuse_particles_3d_(int argc, const char **argv)
     mxArray * mx_coordinates_x = mxCreateNumericMatrix(n_localizations, 1, mxDOUBLE_CLASS, mxREAL);
     mxArray * mx_coordinates_y = mxCreateNumericMatrix(n_localizations, 1, mxDOUBLE_CLASS, mxREAL);
     mxArray * mx_coordinates_z = mxCreateNumericMatrix(n_localizations, 1, mxDOUBLE_CLASS, mxREAL);
-    mxArray * mx_weights_xy = mxCreateNumericMatrix(n_localizations, 1, mxDOUBLE_CLASS, mxREAL);
-    mxArray * mx_weights_z = mxCreateNumericMatrix(n_localizations, 1, mxDOUBLE_CLASS, mxREAL);
+    mxArray * mx_precision_xy = mxCreateNumericMatrix(n_localizations, 1, mxDOUBLE_CLASS, mxREAL);
+    mxArray * mx_precision_z = mxCreateNumericMatrix(n_localizations, 1, mxDOUBLE_CLASS, mxREAL);
+    mxArray * mx_mean_precision = mxCreateNumericMatrix(1, 1, mxDOUBLE_CLASS, mxREAL);
     mxArray * mx_channel_ids = mxCreateNumericMatrix(n_localizations, 1, mxINT32_CLASS, mxREAL);
     mxArray * mx_averaging_channel_id = mxCreateNumericMatrix(1, 1, mxINT32_CLASS, mxREAL);
     mxArray * mx_n_iterations_all2all = mxCreateNumericMatrix(1, 1, mxINT32_CLASS, mxREAL);
@@ -93,8 +95,9 @@ int fuse_particles_3d_(int argc, const char **argv)
     memcpy(mxGetPr(mx_coordinates_x), coordinates_x, n_localizations * sizeof(double));
     memcpy(mxGetPr(mx_coordinates_y), coordinates_y, n_localizations * sizeof(double));
     memcpy(mxGetPr(mx_coordinates_z), coordinates_z, n_localizations * sizeof(double));
-    memcpy(mxGetPr(mx_weights_xy), weights_xy, n_localizations * sizeof(double));
-    memcpy(mxGetPr(mx_weights_z), weights_z, n_localizations * sizeof(double));
+    memcpy(mxGetPr(mx_precision_xy), precision_xy, n_localizations * sizeof(double));
+    memcpy(mxGetPr(mx_precision_z), precision_z, n_localizations * sizeof(double));
+    memcpy(mxGetPr(mx_mean_precision), &mean_precision, sizeof(double));
     memcpy(mxGetPr(mx_channel_ids), channel_ids, n_localizations * sizeof(int32_t));
     memcpy(mxGetPr(mx_averaging_channel_id), &averaging_channel_id, sizeof(int32_t));
     memcpy(mxGetPr(mx_n_iterations_all2all), &n_iterations_alltoall, sizeof(int32_t));
@@ -128,8 +131,9 @@ int fuse_particles_3d_(int argc, const char **argv)
         mx_coordinates_x,
         mx_coordinates_y,
         mx_coordinates_z,
-        mx_weights_xy,
-        mx_weights_z,
+        mx_precision_xy,
+        mx_precision_z,
+        mx_mean_precision,
         mx_channel_ids,
         mx_averaging_channel_id,
         mx_n_iterations_all2all,
@@ -161,8 +165,9 @@ int fuse_particles_3d_(int argc, const char **argv)
     mxDestroyArray(mx_coordinates_x);
     mxDestroyArray(mx_coordinates_y);
     mxDestroyArray(mx_coordinates_z);
-    mxDestroyArray(mx_weights_xy);
-    mxDestroyArray(mx_weights_z);
+    mxDestroyArray(mx_precision_xy);
+    mxDestroyArray(mx_precision_z);
+    mxDestroyArray(mx_mean_precision);
     mxDestroyArray(mx_channel_ids);
     mxDestroyArray(mx_averaging_channel_id);
     mxDestroyArray(mx_n_iterations_all2all);
@@ -189,12 +194,13 @@ int fuse_particles_3d_portable(int argc, void *argv[])
         (double *) argv[8],
         (double *) argv[9],
         (double *) argv[10],
-        (int32_t *) argv[11],
-        *(int32_t *) argv[12],
+        *(double *)argv[11],
+        (int32_t *) argv[12],
         *(int32_t *) argv[13],
         *(int32_t *) argv[14],
         *(int32_t *) argv[15],
-        *(double *) argv[16]);
+        *(int32_t *) argv[16],
+        *(double *) argv[17]);
 
 }
 
@@ -209,8 +215,9 @@ int fuse_particles_3d(
     double * coordinates_x,
     double * coordinates_y,
     double * coordinates_z,
-    double * weights_xy,
-    double * weights_z,
+    double * precision_xy,
+    double * precision_z,
+    double mean_precision,
     int32_t * channel_ids,
     int32_t averaging_channel_id,
     int32_t n_iterations_alltoall,
@@ -220,8 +227,8 @@ int fuse_particles_3d(
 {
     LOAD_MCC_LIBRARY
 
-    const int argc = 17;
-    const char * argv[17];
+    const int argc = 18;
+    const char * argv[argc];
 
     argv[0] = (char *)transformed_coordinates_x;
     argv[1] = (char *)transformed_coordinates_y;
@@ -232,14 +239,15 @@ int fuse_particles_3d(
     argv[6] = (char *)coordinates_x;
     argv[7] = (char *)coordinates_y;
     argv[8] = (char *)coordinates_z;
-    argv[9] = (char *)weights_xy;
-    argv[10] = (char *)weights_z;
-    argv[11] = (char *)channel_ids;
-    argv[12] = (char *)(&averaging_channel_id);
-    argv[13] = (char *)(&n_iterations_alltoall);
-    argv[14] = (char *)(&n_iterations_onetoall);
-    argv[15] = (char *)(&symmetry_order);
-    argv[16] = (char *)(&outlier_threshold);
+    argv[9] = (char *)precision_xy;
+    argv[10] = (char *)precision_z;
+    argv[11] = (char *)(&mean_precision);
+    argv[12] = (char *)channel_ids;
+    argv[13] = (char *)(&averaging_channel_id);
+    argv[14] = (char *)(&n_iterations_alltoall);
+    argv[15] = (char *)(&n_iterations_onetoall);
+    argv[16] = (char *)(&symmetry_order);
+    argv[17] = (char *)(&outlier_threshold);
 
 
     if (mcr_initialized == 0)

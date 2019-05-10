@@ -9,8 +9,9 @@
 %       coordinates_x: x coordinates of each localization
 %       coordinates_y: y coordinates of each localization
 %       coordinates_z: z coordinates of each localization
-%       weights_xy: localization uncertainties in xy for each localization
-%       weights_z: localization uncertainties in z for each localization
+%       precision_xy: localization uncertainties in xy for each localization
+%       precision_z: localization uncertainties in z for each localization
+%       mean_precision: 
 %       channel_ids: the channel ids of each localization (optional,
 %                    default values are 0)
 %       averaging_channel_id: channel_id of the channel the fusion is based
@@ -40,8 +41,9 @@ function [transformed_coordinates_x, transformed_coordinates_y, transformed_coor
         coordinates_x,...
         coordinates_y,...
         coordinates_z,...
-        weights_xy,...
-        weights_z,...
+        precision_xy,...
+        precision_z,...
+        mean_precision,...
         channel_ids,...
         averaging_channel_id,...
         n_iterations_all2all,...
@@ -93,14 +95,14 @@ for i=1:n_particles-1
     indices_i = particle_beginnings(i):particle_beginnings(i)+n_localizations_per_particle(i)-1;
     indices_i = indices_i(channel_ids(indices_i) == averaging_channel_id);
     coordinates_i = [coordinates_x(indices_i), coordinates_y(indices_i), coordinates_z(indices_i)];
-    weights_i = [weights_xy(indices_i), weights_z(indices_i)];
+    weights_i = [precision_xy(indices_i), precision_z(indices_i)];
     
     parfor j=i+1:n_particles
         
         indices_j = particle_beginnings(j):particle_beginnings(j)+n_localizations_per_particle(j)-1;
         indices_j = indices_j(channel_ids(indices_j) == averaging_channel_id);
         coordinates_j = [coordinates_x(indices_j), coordinates_y(indices_j), coordinates_z(indices_j)];
-        weights_j = [weights_xy(indices_j), weights_z(indices_j)];
+        weights_j = [precision_xy(indices_j), precision_z(indices_j)];
         
         all2all_matrix{i,j}.parameters = all2all3Dn(coordinates_i, coordinates_j, weights_i, weights_j, n_iterations_all2all);
         
@@ -176,7 +178,7 @@ for i=1:n_particles
     
     % copy transformed coordinates
     transformed_particles{1,i}.points = transformed_coordinates_ptc.Location;
-    transformed_particles{1,i}.sigma = [weights_xy(indices), weights_z(indices)];
+    transformed_particles{1,i}.sigma = [precision_xy(indices), precision_z(indices)];
     transformed_coordinates(indices,:) = transformed_coordinates_ptc.Location;
 end
 progress_bar(1,1);
@@ -185,7 +187,7 @@ fprintf([' ' num2str(toc(t)) ' s\n']);
 %% performing the one2all registration
 pprint('one2all registration ',45);
 t = tic;
-tc = one2all3D(transformed_particles, n_iterations_one2all, [], '.', transformed_coordinates(channel_ids == averaging_channel_id), symmetry_order);
+tc = one2all3D(transformed_particles, n_iterations_one2all, [], '.', transformed_coordinates(channel_ids == averaging_channel_id), mean_precision, symmetry_order);
 transformed_coordinates(channel_ids == averaging_channel_id,:) = tc{end};
 fprintf([' ' num2str(toc(t)) ' s\n']);
 

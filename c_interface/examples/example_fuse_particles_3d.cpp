@@ -20,8 +20,9 @@ int main(int argc, char const *argv[])
     std::vector<double> coordinates_x = COORDINATES_X;
     std::vector<double> coordinates_y = COORDINATES_Y;
     std::vector<double> coordinates_z = COORDINATES_Z;
-    std::vector<double> weights_xy = WEIGHTS_XY;
-    std::vector<double> weights_z = WEIGHTS_Z;
+    std::vector<double> precision_xy = PRECISION_XY;
+    std::vector<double> precision_z = PRECISION_Z;
+    double const mean_precision = 0.1;
     std::vector<int32_t> channel_ids = CHANNEL_IDS;
     int32_t averaging_channel_id = 0;
     int32_t n_iterations_alltoall = 1;
@@ -50,8 +51,9 @@ int main(int argc, char const *argv[])
         coordinates_x.data(),
         coordinates_y.data(),
         coordinates_z.data(),
-        weights_xy.data(),
-        weights_z.data(),
+        precision_xy.data(),
+        precision_z.data(),
+        mean_precision,
         channel_ids.data(),
         averaging_channel_id,
         n_iterations_alltoall,

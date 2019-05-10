@@ -30,11 +30,11 @@
 %
 % Hamidreza Heydarian, Oct 2017.
 
-function [ superParticle, MT] = one2all3D(Particles, iter, oldM, outdir, sup, symmetry_order)
+function [ superParticle, MT] = one2all3D(Particles, iter, oldM, outdir, sup, mean_precision, symmetry_order)
 
 %     disp('Bootstapping is started  !');
     
-    [density] = visualizeSMLM3D(sup, 0.1, 0);
+    [density] = visualizeSMLM3D(sup, mean_precision, 0);
     weight = density/max(density);
 
     initParticle.points = [];
@@ -69,7 +69,7 @@ function [ superParticle, MT] = one2all3D(Particles, iter, oldM, outdir, sup, sy
             [curWeight, S] = delParticle3D(Particles, initParticle, i, weight);
             [parameter{j,i}, ~, ~] = pairFitting3D_parallel(M, S, curWeight, scale(j), j);
 
-            if nargin > 5 && symmetry_order > 0
+            if nargin > 6 && symmetry_order > 0
                 % with 8-fold symmetry assumption of NPC
                 symmetry_order = double(symmetry_order);
                 tmpParticle.points = [tmpParticle.points; random_rotate_z(transform_by_rigid3d(M.points, parameter{j,i}), 2*pi/symmetry_order)];
@@ -90,7 +90,7 @@ function [ superParticle, MT] = one2all3D(Particles, iter, oldM, outdir, sup, sy
 %         disp(['iter #' num2str(j) '... done in ' num2str(a) ' seconds']); 
         superParticle{j+1} = tmpParticle.points; 
         initParticle = tmpParticle;
-        [density] = visualizeSMLM3D(superParticle{j+1}, 0.1, 0); % def=0.05
+        [density] = visualizeSMLM3D(superParticle{j+1}, mean_precision, 0); % def=0.05
         weight = density/max(density);
     
     end

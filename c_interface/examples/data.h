@@ -3081,5 +3081,5 @@ std::vector<int32_t> CHANNEL_IDS =
     0
 };
 
-std::vector<double> WEIGHTS_XY(764, 1);
-std::vector<double> WEIGHTS_Z(764, 1);
+std::vector<double> PRECISION_XY(764, 1);
+std::vector<double> PRECISION_Z(764, 1);
