@@ -95,16 +95,16 @@ for i=1:n_particles-1
     indices_i = particle_beginnings(i):particle_beginnings(i)+n_localizations_per_particle(i)-1;
     indices_i = indices_i(channel_ids(indices_i) == averaging_channel_id);
     coordinates_i = [coordinates_x(indices_i), coordinates_y(indices_i), coordinates_z(indices_i)];
-    weights_i = [precision_xy(indices_i), precision_z(indices_i)];
+    precision_i = [precision_xy(indices_i), precision_z(indices_i)];
     
     parfor j=i+1:n_particles
         
         indices_j = particle_beginnings(j):particle_beginnings(j)+n_localizations_per_particle(j)-1;
         indices_j = indices_j(channel_ids(indices_j) == averaging_channel_id);
         coordinates_j = [coordinates_x(indices_j), coordinates_y(indices_j), coordinates_z(indices_j)];
-        weights_j = [precision_xy(indices_j), precision_z(indices_j)];
+        precision_j = [precision_xy(indices_j), precision_z(indices_j)];
         
-        all2all_matrix{i,j}.parameters = all2all3Dn(coordinates_i, coordinates_j, weights_i, weights_j, n_iterations_all2all);
+        all2all_matrix{i,j}.parameters = all2all3Dn(coordinates_i, coordinates_j, precision_i, precision_j, n_iterations_all2all);
         
         all2all_matrix{i,j}.ids = [i; j];
     end
