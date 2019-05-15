@@ -46,33 +46,10 @@ int main(int argc, char const *argv[])
     for (int i = 0; i < n_particles; i++)
         n_localizations += n_localizations_per_particle[i];
 
-    // output
-    std::vector<double> registration_matrix_onetoall = {
-        0.045397486822946774,
-        0.065519532810050185,
-        0.76726409067277712,
-        - 0.63635844786927265,
-        - 0.070685087374570701,
-        0.10868921660086993,
-        0.045321038845875017,
-
-        - 0.20199796500423403,
-        0.044404904789051902,
-        0.65168692352886171,
-        0.72974596968144401,
-        - 0.021791214262369376,
-        0.022002261988643610,
-        - 0.076579270869925400,
-
-        0.11764118447324520,
-        - 0.17757187769134358,
-        0.60539771135322817,
-        - 0.76689138152490399,
-        - 0.017138729871522634,
-        - 0.013013781605074949,
-        - 0.050565008779043741};
-
+    // input/output
     std::vector<double> registration_matrix((n_particles * (n_particles - 1)) / 2 * 7);
+
+    // output
     std::vector<double> transformed_coordinates_x(n_localizations);
     std::vector<double> transformed_coordinates_y(n_localizations);
     std::vector<double> transformed_coordinates_z(n_localizations);
