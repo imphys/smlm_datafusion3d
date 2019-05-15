@@ -31,6 +31,17 @@ if nargin < 12
     end
 end
 
+USE_GPU_GAUSSTRANSFORM = false;
+USE_GPU_EXPDIST = false;
+if gpuDeviceCount > 0
+    if exist('mex_gausstransform','file')
+        USE_GPU_GAUSSTRANSFORM = true;
+    end
+    if exist('mex_expdist','file')
+       USE_GPU_EXPDIST = true;
+    end
+end
+
 %% setting indicies of the first localization of each particle
 particle_beginnings = ones(n_particles,1);
 for i = 2:n_particles
@@ -121,7 +132,7 @@ fprintf([' ' num2str(toc(t)) ' s\n']);
 %% performing the one2all registration
 pprint('one2all registration ',45);
 t = tic;
-tc = one2all3D(transformed_particles, [], '.', transformed_coordinates(channel_ids == averaging_channel_id), mean_precision, symmetry_order);
+tc = one2all3D(transformed_particles, [], '.', transformed_coordinates(channel_ids == averaging_channel_id), mean_precision, symmetry_order, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
 transformed_coordinates(channel_ids == averaging_channel_id,:) = tc{end};
 fprintf([' ' num2str(toc(t)) ' s\n']);
 

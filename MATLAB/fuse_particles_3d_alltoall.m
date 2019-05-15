@@ -20,6 +20,17 @@ if nargin < 9
     end
 end
 
+USE_GPU_GAUSSTRANSFORM = false;
+USE_GPU_EXPDIST = false;
+if gpuDeviceCount > 0
+    if exist('mex_gausstransform','file')
+        USE_GPU_GAUSSTRANSFORM = true;
+    end
+    if exist('mex_expdist','file')
+       USE_GPU_EXPDIST = true;
+    end
+end
+
 %% starting parallel pool
 pp = gcp;
 if ~(pp.Connected)
@@ -59,7 +70,7 @@ for i=1:n_particles-1
         precision_j = [precision_xy(indices_j), precision_z(indices_j)];
         
         registration_matrix(:,matrix_index_i + j)...
-            = all2all3Dn(coordinates_i, coordinates_j, precision_i, precision_j,[])';
+            = all2all3Dn(coordinates_i, coordinates_j, precision_i, precision_j,[], USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)';
     end
     
     progress_bar(n_particles-1,i);

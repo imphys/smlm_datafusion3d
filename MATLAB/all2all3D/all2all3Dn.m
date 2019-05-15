@@ -1,4 +1,4 @@
-function param = all2all3Dn(ptc1, ptc2, sig1, sig2, nIteration)
+function param = all2all3Dn(ptc1, ptc2, sig1, sig2, nIteration, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)
 % ptc1  point cloud of particle 1
 % ptc2  point cloud of particle 2
 % sig1  uncertainties for points in ptc1
@@ -25,7 +25,7 @@ for init_iter=1:numel(a)
     f_config.init_param = [qtmp(2) qtmp(3) qtmp(4) qtmp(1) 0 0 0];
     f_config.scale = 0.1;     % TODO  (JKF) Should sig1,sig2 not also be used in gmmreg_L23D? Currently only used for cost calculation?
     % perform registration
-    tmpParam{1,init_iter} = gmmreg_L23D(f_config); 
+    tmpParam{1,init_iter} = gmmreg_L23D(f_config,USE_GPU_GAUSSTRANSFORM); 
     
     % calculate cost again and store
     M = double(ptc1);
@@ -34,7 +34,8 @@ for init_iter=1:numel(a)
     tmpRR = q2R(q);
     tmpTT = repmat([tmpParam{1,init_iter}(5) tmpParam{1,init_iter}(6) tmpParam{1,init_iter}(7)], size(M,1),1);
     M = (M - tmpTT) * tmpRR' * tmpRR';
-    if exist('mex_expdist','file') && gpuDeviceCount > 0
+
+    if USE_GPU_EXPDIST
         cost(init_iter) = mex_expdist(S, M, sig2, sig1, tmpRR');
     else
         cost(init_iter) = mex_expdist_cpu(S, M, sig2, sig1, tmpRR');

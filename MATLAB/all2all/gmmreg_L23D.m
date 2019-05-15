@@ -29,7 +29,7 @@
 % Revision: 121 
 % Modified: Hamidreza Heydarian, 2017
 
-function [param, transformed_model, history, config, function_value] = gmmreg_L23D(config)
+function [param, transformed_model, history, config, function_value] = gmmreg_L23D(config,USE_GPU)
 
 % todo: use the statgetargs() in statistics toolbox to process parameter name/value pairs
 % Set up shared variables with OUTFUN
@@ -103,7 +103,7 @@ switch lower(config.motion)
         modelHQ = config.model;
         sceneHQ = config.scene;
 %         [param,function_value] = fmincon(@gmmreg_L2_costfunc, x0, [ ],[ ],[ ],[ ], config.Lb, config.Ub, [], options, config);
-        [param,function_value] = fmincon(@(x)gmmreg_L2_costfunc(x,config), x0, [ ],[ ],[ ],[ ], config.Lb, config.Ub, @(x)q_norm(x), options);
+        [param,function_value] = fmincon(@(x)gmmreg_L2_costfunc(x,config,USE_GPU), x0, [ ],[ ],[ ],[ ], config.Lb, config.Ub, @(x)q_norm(x),options);
         
 %         problem = createOptimProblem('fmincon','objective', @(x) gmmreg_L2_costfunc(x,config),'x0', x0,'Aineq', [ ],'bineq',[ ],'Aeq',[ ],'beq',[ ],'lb', config.Lb,'ub', config.Ub,'nonlcon', [ ],'options', options);
 %         gs = GlobalSearch;
@@ -152,8 +152,8 @@ end
 
 
 
-function [dist] = L2_distance(model, scene, scale)
-    dist = GaussTransform(model,model,scale) + GaussTransform(scene,scene,scale) - 2*GaussTransform(model,scene,scale);
+function [dist] = L2_distance(model, scene, scale, USE_GPU)
+    dist = GaussTransform(model,model,scale,USE_GPU) + GaussTransform(scene,scene,scale,USE_GPU) - 2*GaussTransform(model,scene,scale,USE_GPU);
 end
 
 

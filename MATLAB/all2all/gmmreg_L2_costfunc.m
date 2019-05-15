@@ -27,7 +27,7 @@
 % Revision: 109 
 % Modified: Hamidreza Heydarian, 2017
 
-function [f,g] = gmmreg_L2_costfunc(param, config)
+function [f,g] = gmmreg_L2_costfunc(param, config, USE_GPU)
 
 model = config.model;
 scene = config.scene;
@@ -46,7 +46,7 @@ switch lower(config.motion)
              cos(theta)  -sin(theta)];
         g(3) = sum(sum(grad.*r));
     case 'rigid3d'
-       [f,grad] = rigid_costfunc(transformed_model, scene, scale);
+       [f,grad] = rigid_costfunc(transformed_model, scene, scale, USE_GPU);
         [r,gq] = quaternion2rotation(param(1:4));
         grad = grad';
         gm = grad*model; 
@@ -75,8 +75,8 @@ switch lower(config.motion)
 end
 
 
-function [f, g] = rigid_costfunc(A, B, scale)
-[f, g] =  GaussTransform(A,B,scale);
+function [f, g] = rigid_costfunc(A, B, scale,USE_GPU)
+[f, g] =  GaussTransform(A,B,scale,USE_GPU);
 f = -f; g = -g;
 
 

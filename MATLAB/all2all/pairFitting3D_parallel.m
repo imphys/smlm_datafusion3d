@@ -39,7 +39,7 @@
 %
 % Hamidreza Heydarian, 2017
 
-function [parameter, registered_model, max_value] = pairFitting3D_parallel(M, S, weight, scale, nIteration) 
+function [parameter, registered_model, max_value] = pairFitting3D_parallel(M, S, weight, scale, nIteration, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST) 
     
     % multiple start
 %     ang = [0 pi/4 pi/2 3*pi/4 pi 5*pi/4 3*pi/2 7*pi/4];
@@ -69,7 +69,7 @@ function [parameter, registered_model, max_value] = pairFitting3D_parallel(M, S,
         f_config = initialize_config(M.points, S_resampled.points, 'rigid3d', nIteration);
         f_config.init_param = q;
         f_config.scale = scale;
-        [param{i}, tmp_model{1,i}, ~, ~, ~] = gmmreg_L23D(f_config);
+        [param{i}, tmp_model{1,i}, ~, ~, ~] = gmmreg_L23D(f_config,USE_GPU_GAUSSTRANSFORM);
         
     end
     
@@ -77,7 +77,8 @@ function [parameter, registered_model, max_value] = pairFitting3D_parallel(M, S,
         q = [param{i}(4) param{i}(1) param{i}(2) param{i}(3)];
         tmpRR = q2R(q);
         tmpTT = repmat([param{1,i}(5) param{1,i}(6) param{1,i}(7)], size(M,1),1);
-        if exist('mex_expdist','file') && gpuDeviceCount > 0
+
+        if USE_GPU_EXPDIST
             cost(i) = mex_expdist(S_resampled.points, (M.points - tmpTT) * tmpRR' * tmpRR',...
                                   S_resampled.sigma, M.sigma, tmpRR');
         else
