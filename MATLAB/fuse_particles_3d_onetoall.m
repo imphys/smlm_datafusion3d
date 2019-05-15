@@ -121,7 +121,7 @@ fprintf([' ' num2str(toc(t)) ' s\n']);
 %% performing the one2all registration
 pprint('one2all registration ',45);
 t = tic;
-tc = one2all3D(transformed_particles, 1, [], '.', transformed_coordinates(channel_ids == averaging_channel_id), mean_precision, symmetry_order);
+tc = one2all3D(transformed_particles, [], '.', transformed_coordinates(channel_ids == averaging_channel_id), mean_precision, symmetry_order);
 transformed_coordinates(channel_ids == averaging_channel_id,:) = tc{end};
 fprintf([' ' num2str(toc(t)) ' s\n']);
 
