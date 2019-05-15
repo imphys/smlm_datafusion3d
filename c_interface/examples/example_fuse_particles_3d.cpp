@@ -1,18 +1,32 @@
 #include <iostream>
+#include <string>
 #include <vector>
 #include "fuse_particles_3d.h"
 #include "data.h"
 
 #ifdef _WIN32
-    #include <Windows.h>
-    #define LOAD_LIBRARY(PATH) LoadLibrary(PATH)
+#include <Windows.h>
+#define LOAD_LIBRARY(PATH) LoadLibrary(PATH)
 #else
-    #define LOAD_LIBRARY(PATH) 
+#define LOAD_LIBRARY(PATH) 
 #endif
+
+#define PI 3.1415926535897932384626433832795
 
 int main(int argc, char const *argv[])
 {
-    LOAD_LIBRARY("../../fuse_particles_3d.dll");
+    HMODULE lib;
+    try
+    {
+        if (!(lib = LOAD_LIBRARY("../../fuse_particles_3d.dll")))
+            throw -1;
+    }
+    catch(int err)
+    {        
+        std::cout << std::endl << "    !!! Failed to load fuse_particles_3d.dll !!!" << std::endl << std::endl;
+
+        return err;
+    }
 
     // input
     int32_t const n_particles = N_PARTICLES;
@@ -22,30 +36,51 @@ int main(int argc, char const *argv[])
     std::vector<double> coordinates_z = COORDINATES_Z;
     std::vector<double> precision_xy = PRECISION_XY;
     std::vector<double> precision_z = PRECISION_Z;
-    double const mean_precision = 0.1;
+    double const gauss_render_width = 0.1;
     std::vector<int32_t> channel_ids = CHANNEL_IDS;
     int32_t averaging_channel_id = 0;
-    int32_t n_iterations_alltoall = 1;
-    int32_t n_iterations_onetoall = 2;
     int32_t symmetry_order = 0;
-    double outlier_threshold = 20;
+    double transformation_refinement_threshold = PI;
 
     std::size_t n_localizations = 0;
     for (int i = 0; i < n_particles; i++)
         n_localizations += n_localizations_per_particle[i];
 
     // output
-    double * transformed_coordinates_x = (double *)malloc(n_localizations * sizeof(double));
-    double * transformed_coordinates_y = (double *)malloc(n_localizations * sizeof(double));
-    double * transformed_coordinates_z = (double *)malloc(n_localizations * sizeof(double));
-	double * transformation_parameters = (double *)malloc(n_particles * 12 * sizeof(double));
+    std::vector<double> registration_matrix_onetoall = {
+        0.045397486822946774,
+        0.065519532810050185,
+        0.76726409067277712,
+        - 0.63635844786927265,
+        - 0.070685087374570701,
+        0.10868921660086993,
+        0.045321038845875017,
+
+        - 0.20199796500423403,
+        0.044404904789051902,
+        0.65168692352886171,
+        0.72974596968144401,
+        - 0.021791214262369376,
+        0.022002261988643610,
+        - 0.076579270869925400,
+
+        0.11764118447324520,
+        - 0.17757187769134358,
+        0.60539771135322817,
+        - 0.76689138152490399,
+        - 0.017138729871522634,
+        - 0.013013781605074949,
+        - 0.050565008779043741};
+
+    std::vector<double> registration_matrix((n_particles * (n_particles - 1)) / 2 * 7);
+    std::vector<double> transformed_coordinates_x(n_localizations);
+    std::vector<double> transformed_coordinates_y(n_localizations);
+    std::vector<double> transformed_coordinates_z(n_localizations);
+    std::vector<double> transformation_parameters(n_particles * 12);
 
     // run
-    fuse_particles_3d(
-        transformed_coordinates_x,
-        transformed_coordinates_y,
-        transformed_coordinates_z,
-        transformation_parameters,
+    fuse_particles_3d_alltoall(
+        registration_matrix.data(),
         n_particles,
         n_localizations_per_particle.data(),
         coordinates_x.data(),
@@ -53,18 +88,27 @@ int main(int argc, char const *argv[])
         coordinates_z.data(),
         precision_xy.data(),
         precision_z.data(),
-        mean_precision,
+        channel_ids.data(),
+        averaging_channel_id);
+
+    fuse_particles_3d_onetoall(
+        transformed_coordinates_x.data(),
+        transformed_coordinates_y.data(),
+        transformed_coordinates_z.data(),
+        transformation_parameters.data(),
+        n_particles,
+        n_localizations_per_particle.data(),
+        registration_matrix.data(),
+        coordinates_x.data(),
+        coordinates_y.data(),
+        coordinates_z.data(),
+        precision_xy.data(),
+        precision_z.data(),
+        gauss_render_width,
         channel_ids.data(),
         averaging_channel_id,
-        n_iterations_alltoall,
-        n_iterations_onetoall,
         symmetry_order,
-        outlier_threshold);
-
-	free(transformed_coordinates_x);
-	free(transformed_coordinates_y);
-	free(transformed_coordinates_z);
-	free(transformation_parameters);
+        transformation_refinement_threshold);
 
     std::cout << std::endl << "Example completed!" << std::endl;
     std::cout << "Press ENTER to exit" << std::endl;
