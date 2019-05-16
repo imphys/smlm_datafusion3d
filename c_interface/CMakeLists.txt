@@ -10,10 +10,10 @@ if(WIN32)
             copy /Y \"${CMAKE_SOURCE_DIR}/MATLAB\\fuse_particles_3d_alltoall.m\" \"${mcc_build_directory}/mcc_fuse_particles_3d_alltoall.m\" >NUL
         COMMAND
             copy /Y \"${CMAKE_SOURCE_DIR}/MATLAB\\fuse_particles_3d_refinement.m\" \"${mcc_build_directory}/mcc_fuse_particles_3d_refinement.m\" >NUL
-#        COMMAND
-#            mcc -W lib:mcc_fuse_particles_3d -T link:lib 
-#            -a ${CMAKE_SOURCE_DIR}/MATLAB -a ${matlab_package_build_directory} -d ${mcc_build_directory} 
-#            ${mcc_build_directory}/mcc_fuse_particles_3d_onetoall.m ${mcc_build_directory}/mcc_fuse_particles_3d_alltoall.m ${mcc_build_directory}/mcc_fuse_particles_3d_refinement.m
+        COMMAND
+            mcc -W lib:mcc_fuse_particles_3d -T link:lib 
+            -a ${CMAKE_SOURCE_DIR}/MATLAB -a ${matlab_package_build_directory} -d ${mcc_build_directory} 
+            ${mcc_build_directory}/mcc_fuse_particles_3d_onetoall.m ${mcc_build_directory}/mcc_fuse_particles_3d_alltoall.m ${mcc_build_directory}/mcc_fuse_particles_3d_refinement.m
         COMMAND
         COMMENT "Creating fuse_particles_3d library")
 else()
