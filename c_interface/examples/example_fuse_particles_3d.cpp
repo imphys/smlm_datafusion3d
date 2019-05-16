@@ -68,6 +68,20 @@ int main(int argc, char const *argv[])
         channel_ids.data(),
         averaging_channel_id);
 
+    fuse_particles_3d_refinement(
+        transformed_coordinates_x.data(),
+        transformed_coordinates_y.data(),
+        transformed_coordinates_z.data(),
+        n_particles,
+        n_localizations_per_particle.data(),
+        registration_matrix.data(),
+        coordinates_x.data(),
+        coordinates_y.data(),
+        coordinates_z.data(),
+        transformation_refinement_threshold,
+        channel_ids.data(),
+        averaging_channel_id);
+
     fuse_particles_3d_onetoall(
         transformed_coordinates_x.data(),
         transformed_coordinates_y.data(),
@@ -75,17 +89,15 @@ int main(int argc, char const *argv[])
         transformation_parameters.data(),
         n_particles,
         n_localizations_per_particle.data(),
-        registration_matrix.data(),
-        coordinates_x.data(),
-        coordinates_y.data(),
-        coordinates_z.data(),
+        transformed_coordinates_x.data(),
+        transformed_coordinates_y.data(),
+        transformed_coordinates_z.data(),
         precision_xy.data(),
         precision_z.data(),
         gauss_render_width,
         channel_ids.data(),
         averaging_channel_id,
-        symmetry_order,
-        transformation_refinement_threshold);
+        symmetry_order);
 
     std::cout << std::endl << "Example completed!" << std::endl;
     std::cout << "Press ENTER to exit" << std::endl;

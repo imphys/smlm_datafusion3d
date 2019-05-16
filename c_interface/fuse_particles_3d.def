@@ -1,6 +1,8 @@
 LIBRARY	      "fuse_particles_3d"
 EXPORTS       
-    fuse_particles_3d_alltoall           @1
-    fuse_particles_3d_onetoall           @2
-    fuse_particles_3d_alltoall_portable  @3
-    fuse_particles_3d_onetoall_portable  @4
+    fuse_particles_3d_alltoall              @1
+    fuse_particles_3d_refinement            @2
+    fuse_particles_3d_onetoall              @3
+    fuse_particles_3d_alltoall_portable     @4
+    fuse_particles_3d_refinement_portable   @5
+    fuse_particles_3d_onetoall_portable     @6

@@ -9,9 +9,11 @@ if(WIN32)
         COMMAND
             copy /Y \"${CMAKE_SOURCE_DIR}/MATLAB\\fuse_particles_3d_alltoall.m\" \"${mcc_build_directory}/mcc_fuse_particles_3d_alltoall.m\" >NUL
         COMMAND
-            mcc -W lib:mcc_fuse_particles_3d -T link:lib 
-            -a ${CMAKE_SOURCE_DIR}/MATLAB -a ${matlab_package_build_directory} -d ${mcc_build_directory} 
-            ${mcc_build_directory}/mcc_fuse_particles_3d_onetoall.m ${mcc_build_directory}/mcc_fuse_particles_3d_alltoall.m
+            copy /Y \"${CMAKE_SOURCE_DIR}/MATLAB\\fuse_particles_3d_refinement.m\" \"${mcc_build_directory}/mcc_fuse_particles_3d_refinement.m\" >NUL
+#        COMMAND
+#            mcc -W lib:mcc_fuse_particles_3d -T link:lib 
+#            -a ${CMAKE_SOURCE_DIR}/MATLAB -a ${matlab_package_build_directory} -d ${mcc_build_directory} 
+#            ${mcc_build_directory}/mcc_fuse_particles_3d_onetoall.m ${mcc_build_directory}/mcc_fuse_particles_3d_alltoall.m ${mcc_build_directory}/mcc_fuse_particles_3d_refinement.m
         COMMAND
         COMMENT "Creating fuse_particles_3d library")
 else()
@@ -20,10 +22,12 @@ else()
             cp ${CMAKE_SOURCE_DIR}/MATLAB/fuse_particles_3d_onetoall.m ${mcc_build_directory}/mcc_fuse_particles_3d_onetoall.m
         COMMAND
             cp ${CMAKE_SOURCE_DIR}/MATLAB/fuse_particles_3d_alltoall.m ${mcc_build_directory}/mcc_fuse_particles_3d_alltoall.m
+            COMMAND
+            cp ${CMAKE_SOURCE_DIR}/MATLAB/fuse_particles_3d_refinement.m ${mcc_build_directory}/mcc_fuse_particles_3d_refinement.m
         COMMAND
             mcc -W lib:mcc_fuse_particles_3d -T link:lib 
             -a ${CMAKE_SOURCE_DIR}/MATLAB -a ${matlab_package_build_directory} -d ${mcc_build_directory} 
-            ${mcc_build_directory}/mcc_fuse_particles_3d_onetoall.m ${mcc_build_directory}/mcc_fuse_particles_3d_alltoall.m
+            ${mcc_build_directory}/mcc_fuse_particles_3d_onetoall.m ${mcc_build_directory}/mcc_fuse_particles_3d_alltoall.m ${mcc_build_directory}/mcc_fuse_particles_3d_refinement.m
         COMMAND
         COMMENT "Creating fuse_particles_3d library")
 endif()
@@ -44,6 +48,7 @@ add_dependencies(link_to_mcc_fuse_particles_3d mcc_fuse_particles_3d)
 if(WIN32)
     add_library(fuse_particles_3d SHARED
         fuse_particles_3d_alltoall.cpp
+        fuse_particles_3d_refinement.cpp
         fuse_particles_3d_onetoall.cpp
         fuse_particles_3d.h
         fuse_particles_3d.def
@@ -56,6 +61,7 @@ if(WIN32)
 else()
     add_library(fuse_particles_3d SHARED
         fuse_particles_3d_alltoall.cpp
+        fuse_particles_3d_refinement.cpp
         fuse_particles_3d_onetoall.cpp
         fuse_particles_3d.h
         fuse_particles_3d.def)
