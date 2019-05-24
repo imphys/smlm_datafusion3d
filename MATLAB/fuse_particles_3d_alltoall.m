@@ -7,15 +7,16 @@ function registration_matrix...
         coordinates_z,...
         precision_xy,...
         precision_z,...
+        gauss_transform_scale,...
         channel_ids,...
         averaging_channel_id)
 
 %% check input parameters
-if nargin < 9
+if nargin < 10
     averaging_channel_id = 0;
-    if nargin == 8
+    if nargin == 9
         channel_ids(:) = 0;
-    elseif nargin < 8
+    elseif nargin < 9
         channel_ids = zeros(numel(coordinates_x),1);
     end
 end
@@ -95,7 +96,7 @@ for i=1:n_particles-1
         precision_j = [precision_xy(indices_j), precision_z(indices_j)];
         
         registration_matrix(:,matrix_index_i + j)...
-            = all2all3Dn(coordinates_i, coordinates_j, precision_i, precision_j,[], USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)';
+            = all2all3Dn(coordinates_i, coordinates_j, precision_i, precision_j,gauss_transform_scale,[], USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)';
     end
     
     progress_bar(n_particles-1,i);

@@ -1,4 +1,4 @@
-function param = all2all3Dn(ptc1, ptc2, sig1, sig2, nIteration, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)
+function param = all2all3Dn(ptc1, ptc2, sig1, sig2, scale, nIteration, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)
 % ptc1  point cloud of particle 1
 % ptc2  point cloud of particle 2
 % sig1  uncertainties for points in ptc1
@@ -23,7 +23,7 @@ for init_iter=1:numel(a)
     % initialize gmmreg
     f_config = initialize_config(double(ptc1), double(ptc2), 'rigid3d', nIteration);
     f_config.init_param = [qtmp(2) qtmp(3) qtmp(4) qtmp(1) 0 0 0];
-    f_config.scale = 0.1;     % TODO  (JKF) Should sig1,sig2 not also be used in gmmreg_L23D? Currently only used for cost calculation?
+    f_config.scale = scale;     % TODO  (JKF) Should sig1,sig2 not also be used in gmmreg_L23D? Currently only used for cost calculation?
     % perform registration
     tmpParam{1,init_iter} = gmmreg_L23D(f_config,USE_GPU_GAUSSTRANSFORM); 
     

@@ -36,7 +36,7 @@ int main(int argc, char const *argv[])
     std::vector<double> coordinates_z = COORDINATES_Z;
     std::vector<double> precision_xy = PRECISION_XY;
     std::vector<double> precision_z = PRECISION_Z;
-    double const gauss_render_width = 0.1;
+    double const gauss_transform_scale = 0.1;
     std::vector<int32_t> channel_ids = CHANNEL_IDS;
     int32_t averaging_channel_id = 0;
     int32_t symmetry_order = 0;
@@ -65,6 +65,7 @@ int main(int argc, char const *argv[])
         coordinates_z.data(),
         precision_xy.data(),
         precision_z.data(),
+        gauss_transform_scale,
         channel_ids.data(),
         averaging_channel_id);
 
@@ -94,7 +95,7 @@ int main(int argc, char const *argv[])
         transformed_coordinates_z.data(),
         precision_xy.data(),
         precision_z.data(),
-        gauss_render_width,
+        gauss_transform_scale,
         channel_ids.data(),
         averaging_channel_id,
         symmetry_order);
