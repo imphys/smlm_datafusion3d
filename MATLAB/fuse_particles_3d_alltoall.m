@@ -8,25 +8,29 @@ function registration_matrix...
         precision_xy,...
         precision_z,...
         gauss_transform_scale,...
+        USE_GPU,...
         channel_ids,...
         averaging_channel_id)
 
 %% check input parameters
-if nargin < 10
+if nargin < 11
     averaging_channel_id = 0;
-    if nargin == 9
+    if nargin == 10
         channel_ids(:) = 0;
-    elseif nargin < 9
+    elseif nargin < 10
         channel_ids = zeros(numel(coordinates_x),1);
+        if nargin < 9
+            USE_GPU = true;
+        end
     end
 end
 
-USE_GPU_GAUSSTRANSFORM = false;
-USE_GPU_EXPDIST = false;
+USE_GPU_GAUSSTRANSFORM = USE_GPU;
+USE_GPU_EXPDIST = USE_GPU;
 
-if gpuDeviceCount > 0
-%    USE_GPU_GAUSSTRANSFORM = true;
-    USE_GPU_EXPDIST = true;
+if gpuDeviceCount <= 0
+    USE_GPU_GAUSSTRANSFORM = false;
+    USE_GPU_EXPDIST = false;
 end
 
 if USE_GPU_GAUSSTRANSFORM 
@@ -47,6 +51,9 @@ if ~USE_GPU_GAUSSTRANSFORM
         message_id = 'MATLAB:MEXNotFound';
         error (message_id, message);
     end
+    fprintf('running CPU version of gausstransform\n')
+else
+    fprintf('running GPU version of gausstransform\n')
 end
 
 if ~USE_GPU_EXPDIST 
@@ -55,6 +62,9 @@ if ~USE_GPU_EXPDIST
         message_id = 'MATLAB:MEXNotFound';
         error (message_id, message);
     end
+    fprintf('running CPU version of expdist\n')
+else
+    fprintf('running GPU version of expdist\n')
 end
 
 %% starting parallel pool

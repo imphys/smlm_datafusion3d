@@ -41,6 +41,7 @@ int main(int argc, char const *argv[])
     int32_t averaging_channel_id = 0;
     int32_t symmetry_order = 0;
     double transformation_refinement_threshold = PI;
+    int32_t use_gpu = 0;
 
     std::size_t n_localizations = 0;
     for (int i = 0; i < n_particles; i++)
@@ -66,6 +67,7 @@ int main(int argc, char const *argv[])
         precision_xy.data(),
         precision_z.data(),
         gauss_transform_scale,
+        use_gpu,
         channel_ids.data(),
         averaging_channel_id);
 

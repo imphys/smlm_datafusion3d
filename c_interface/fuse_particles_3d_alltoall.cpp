@@ -21,8 +21,9 @@ int fuse_particles_3d_alltoall_(int argc, const char **argv)
     double * precision_xy = (double *)argv[6];
     double * precision_z = (double *)argv[7];
     double gauss_transform_scale = *(double *)argv[8];
-    int32_t * channel_ids = (int *)argv[9];
-    int32_t averaging_channel_id = *(int32_t *)argv[10];
+    int32_t use_gpu = *(int32_t *)argv[9];
+    int32_t * channel_ids = (int *)argv[10];
+    int32_t averaging_channel_id = *(int32_t *)argv[11];
 
     // total number of localizations
     size_t n_localizations = 0;
@@ -38,6 +39,7 @@ int fuse_particles_3d_alltoall_(int argc, const char **argv)
     mxArray * mx_precision_xy = mxCreateNumericMatrix(n_localizations, 1, mxDOUBLE_CLASS, mxREAL);
     mxArray * mx_precision_z = mxCreateNumericMatrix(n_localizations, 1, mxDOUBLE_CLASS, mxREAL);
     mxArray * mx_gauss_transform_scale = mxCreateNumericMatrix(1, 1, mxDOUBLE_CLASS, mxREAL);
+    mxArray * mx_use_gpu = mxCreateNumericMatrix(1, 1, mxINT32_CLASS, mxREAL);
     mxArray * mx_channel_ids = mxCreateNumericMatrix(n_localizations, 1, mxINT32_CLASS, mxREAL);
     mxArray * mx_averaging_channel_id = mxCreateNumericMatrix(1, 1, mxINT32_CLASS, mxREAL);
 
@@ -53,6 +55,7 @@ int fuse_particles_3d_alltoall_(int argc, const char **argv)
     memcpy(mxGetPr(mx_precision_xy), precision_xy, n_localizations * sizeof(double));
     memcpy(mxGetPr(mx_precision_z), precision_z, n_localizations * sizeof(double));
     memcpy(mxGetPr(mx_gauss_transform_scale), &gauss_transform_scale, sizeof(double));
+    memcpy(mxGetPr(mx_use_gpu), &use_gpu, sizeof(int32_t));
     memcpy(mxGetPr(mx_channel_ids), channel_ids, n_localizations * sizeof(int32_t));
     memcpy(mxGetPr(mx_averaging_channel_id), &averaging_channel_id, sizeof(int32_t));
 
@@ -81,6 +84,7 @@ int fuse_particles_3d_alltoall_(int argc, const char **argv)
         mx_precision_xy,
         mx_precision_z,
         mx_gauss_transform_scale,
+        mx_use_gpu,
         mx_channel_ids,
         mx_averaging_channel_id);
 
@@ -104,6 +108,7 @@ int fuse_particles_3d_alltoall_(int argc, const char **argv)
     mxDestroyArray(mx_precision_xy);
     mxDestroyArray(mx_precision_z);
     mxDestroyArray(mx_gauss_transform_scale);
+    mxDestroyArray(mx_use_gpu);
     mxDestroyArray(mx_channel_ids);
     mxDestroyArray(mx_averaging_channel_id);
 
@@ -124,8 +129,9 @@ int fuse_particles_3d_alltoall_portable(int argc, void *argv[])
         (double *) argv[6],
         (double *) argv[7],
         *(double *)argv[8],
-        (int32_t *) argv[9],
-        *(int32_t *) argv[10]);
+        *(int32_t *)argv[9],
+        (int32_t *) argv[10],
+        *(int32_t *) argv[11]);
 
 }
 
@@ -140,12 +146,13 @@ int fuse_particles_3d_alltoall(
     double * precision_xy,
     double * precision_z,
     double gauss_transform_scale,
+    int32_t use_gpu,
     int32_t * channel_ids,
     int32_t averaging_channel_id)
 {
     LOAD_MCC_LIBRARY
 
-    const int argc = 11;
+    const int argc = 12;
     const char * argv[argc];
 
     argv[0] = (char *)registration_matrix;
@@ -157,8 +164,9 @@ int fuse_particles_3d_alltoall(
     argv[6] = (char *)precision_xy;
     argv[7] = (char *)precision_z;
     argv[8] = (char *)(&gauss_transform_scale);
-    argv[9] = (char *)channel_ids;
-    argv[10] = (char *)(&averaging_channel_id);
+    argv[9] = (char *)(&use_gpu);
+    argv[10] = (char *)channel_ids;
+    argv[11] = (char *)(&averaging_channel_id);
 
 
     // initialize application
