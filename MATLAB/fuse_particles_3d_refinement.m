@@ -90,7 +90,7 @@ transformed_coordinates_z = coordinates_z;
 for i=1:n_particles  
     
     indices = particle_beginnings(i):particle_beginnings(i)+n_localizations_per_particle(i)-1;
-    indices = indices(channel_ids(indices) == averaging_channel_id);
+    %indices = indices(channel_ids(indices) == averaging_channel_id);
     coordinates = [coordinates_x(indices), coordinates_y(indices), coordinates_z(indices)];
     
     estA = eye(4);
