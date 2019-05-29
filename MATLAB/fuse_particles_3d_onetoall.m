@@ -102,8 +102,8 @@ end
 %% concatenate transformation parameters
 for i=1:n_particles
     transformation_parameters_out(:,:,i)...
-        = transformation_parameters_out(:,:,i)...
-        * transformation_parameters_in(:,:,i);
+        = transformation_parameters_in(:,:,i)...
+        * transformation_parameters_out(:,:,i);    
 end
 
 %% setting output arguments holding transformed coordinates
