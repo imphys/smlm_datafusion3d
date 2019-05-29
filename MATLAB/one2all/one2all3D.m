@@ -30,7 +30,7 @@
 %
 % Hamidreza Heydarian, Oct 2017.
 
-function [ superParticle, MT] = one2all3D(Particles, oldM, outdir, sup, gauss_render_width, symmetry_order, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)
+function [ superParticle, parameter] = one2all3D(Particles, oldM, outdir, sup, gauss_render_width, symmetry_order, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)
 
 %     disp('Bootstapping is started  !');
     
@@ -85,9 +85,6 @@ function [ superParticle, MT] = one2all3D(Particles, oldM, outdir, sup, gauss_re
     a = toc;
 %         disp(['iter #' num2str(j) '... done in ' num2str(a) ' seconds']); 
     superParticle{1} = tmpParticle.points; 
- 
-    % concatenate all previous registration parameters (not implemented)
-    MT = zeros(4,4,N);
 
     % save to disk
 %     save([outdir '/superParticle'], 'superParticle');

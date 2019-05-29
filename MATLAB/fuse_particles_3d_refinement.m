@@ -1,5 +1,5 @@
 
-function [transformed_coordinates_x, transformed_coordinates_y, transformed_coordinates_z]...
+function [transformed_coordinates_x, transformed_coordinates_y, transformed_coordinates_z,transformation_parameters]...
     = fuse_particles_3d_refinement(...
         n_particles,...
         n_localizations_per_particle,...
@@ -63,21 +63,21 @@ end
 %% averaging transformation parameters
 pprint('averaging transformation parameters ',45);
 t = tic;
-Mest = MeanSE3Graph(RR, I);
+transformation_parameters = MeanSE3Graph(RR, I);
 progress_bar(1,1);
 fprintf([' ' num2str(toc(t)) ' s\n']);
 
 %% remove outliers
 pprint('removing outliers ',45);
 t = tic;
-[RR, I] = remove_outliers(RR, I, Mest, transformation_refinement_threshold);
+[RR, I] = remove_outliers(RR, I, transformation_parameters, transformation_refinement_threshold);
 progress_bar(1,1);
 fprintf([' ' num2str(toc(t)) ' s\n']);
 
 %% repeating averaging transformation parameters
 pprint('averaging transformation parameters ',45);
 t = tic;
-Mest = MeanSE3Graph(RR, I);
+transformation_parameters = MeanSE3Graph(RR, I);
 progress_bar(1,1);
 fprintf([' ' num2str(toc(t)) ' s\n']);
 
@@ -94,13 +94,14 @@ for i=1:n_particles
     coordinates = [coordinates_x(indices), coordinates_y(indices), coordinates_z(indices)];
     
     estA = eye(4);
-    estA(1:3,1:3) = Mest(1:3,1:3,i); 
-    estA(4,:) = Mest(:,4,i)';
-    estTform = affine3d(estA);
+    estA(1:3,1:3) = transformation_parameters(1:3,1:3,i); 
+    estA(4,:) = transformation_parameters(:,4,i)';
+    estTform = invert(affine3d(estA));
+    transformation_parameters(:,:,i) = estTform.T;
     
     % transform coordinates
     coordinates_ptc = pointCloud(coordinates);
-    transformed_coordinates_ptc = pctransform2(coordinates_ptc, invert(estTform));
+    transformed_coordinates_ptc = pctransform2(coordinates_ptc, estTform);
     
     % copy transformed coordinates
     transformed_coordinates_x(indices) = transformed_coordinates_ptc.Location(:,1);
