@@ -22,9 +22,12 @@ if nargin < 9
 end
 
 %% setting indicies of the first localization of each particle
+n_localizations = numel(coordinates_x);
 particle_beginnings = ones(n_particles,1);
+particle_endings(n_particles,1) = n_localizations;
 for i = 2:n_particles
     particle_beginnings(i) = particle_beginnings(i-1) + n_localizations_per_particle(i-1);
+    particle_endings(i-1) = particle_beginnings(i) - 1;
 end
 
 %% starting parallel pool
@@ -89,8 +92,7 @@ transformed_coordinates_y = coordinates_y;
 transformed_coordinates_z = coordinates_z;
 for i=1:n_particles  
     
-    indices = particle_beginnings(i):particle_beginnings(i)+n_localizations_per_particle(i)-1;
-    %indices = indices(channel_ids(indices) == averaging_channel_id);
+    indices = particle_beginnings(i):particle_endings(i);
     coordinates = [coordinates_x(indices), coordinates_y(indices), coordinates_z(indices)];
     
     estA = eye(4);

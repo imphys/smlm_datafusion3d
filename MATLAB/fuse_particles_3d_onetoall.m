@@ -70,7 +70,7 @@ t = tic;
 coordinates = [coordinates_x(channel_filter) coordinates_y(channel_filter) coordinates_z(channel_filter)];
 precision = [precision_xy(channel_filter) precision_z(channel_filter)];
 
-[tc,parameter] = one2all3D(...
+[tc,tp] = one2all3D(...
     particles,...
     [],...
     '.',...
@@ -80,38 +80,30 @@ precision = [precision_xy(channel_filter) precision_z(channel_filter)];
     USE_GPU_GAUSSTRANSFORM,...
     USE_GPU_EXPDIST);
 
-coordinates(channel_ids == averaging_channel_id,:) = tc{end};
+coordinates(channel_filter,:) = tc{end};
 fprintf([' ' num2str(toc(t)) ' s\n']);
 
-%% concatenate transformation parameters
-T = eye(4);
+%% transforming remaining channels
+channel_filter = ~channel_filter;
 transformation_parameters_out = zeros(size(transformation_parameters_in));
-for i=1:n_particles
-   
-    T(1:3,1:3) = quaternion2rotation(parameter{i})';
-    T(4,1:3) = parameter{i}(5:7);
-    transformation_parameters_out(:,:,i) = T * transformation_parameters_in(:,:,i);
-    
+for i = 1:n_particles
+    r = quaternion2rotation(tp{i})';
+    t = tp{i}(5:7);
+    transformation_parameters_out(1:3,1:3,i) = r;
+    transformation_parameters_out(4,1:3,i) = t;
+    transformation_parameters_out(4,4,i) = 1;
+
+    indices = particle_beginnings(i):particle_endings(i);
+    indices = indices(channel_filter(indices));
+
+    coordinates(indices,:) = transform_coordinates([coordinates_x(indices), coordinates_y(indices), coordinates_z(indices)], r, t);
 end
 
-%% transforming remaining channels
-for ch = 0:max(channel_ids)
-    
-    if ch == averaging_channel_id
-        continue;
-    end
-    
-    filter_channel = channel_ids == ch;
-    
-    for i = 1:n_particles
-        tp.rot = reshape(transformation_parameters((i-1)*12+1:(i-1)*12+9),3,3);
-        tp.shift = transformation_parameters((i-1)*12+10:(i-1)*12+12)';
-        
-        indices = particle_beginnings(i):particle_beginnings(i)+n_localizations_per_particle(i)-1;
-        indices = indices(filter_channel(indices));
-        
-        coordinates(indices,:) = transform_coordinates([coordinates_x(indices), coordinates_y(indices), coordinates_z(indices)], tp.rot, tp.shift);
-    end
+%% concatenate transformation parameters
+for i=1:n_particles
+    transformation_parameters_out(:,:,i)...
+        = transformation_parameters_out(:,:,i)...
+        * transformation_parameters_in(:,:,i);
 end
 
 %% setting output arguments holding transformed coordinates
