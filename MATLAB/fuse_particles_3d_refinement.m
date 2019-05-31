@@ -7,19 +7,7 @@ function [transformed_coordinates_x, transformed_coordinates_y, transformed_coor
         coordinates_x,...
         coordinates_y,...
         coordinates_z,...
-        transformation_refinement_threshold,...
-        channel_ids,...
-        averaging_channel_id)
-
-%% check input parameters
-if nargin < 9
-    averaging_channel_id = 0;
-    if nargin == 8
-        channel_ids(:) = 0;
-    elseif nargin < 8
-        channel_ids = zeros(numel(coordinates_x),1);
-    end
-end
+        transformation_refinement_threshold)
 
 %% setting indicies of the first localization of each particle
 n_localizations = numel(coordinates_x);

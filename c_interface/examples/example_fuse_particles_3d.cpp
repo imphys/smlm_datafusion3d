@@ -54,7 +54,7 @@ int main(int argc, char const *argv[])
     std::vector<double> transformed_coordinates_x(n_localizations);
     std::vector<double> transformed_coordinates_y(n_localizations);
     std::vector<double> transformed_coordinates_z(n_localizations);
-    std::vector<double> transformation_parameters(n_particles * 12);
+    std::vector<double> transformation_parameters(n_particles * 16);
 
     // run
     fuse_particles_3d_alltoall(
@@ -75,15 +75,14 @@ int main(int argc, char const *argv[])
         transformed_coordinates_x.data(),
         transformed_coordinates_y.data(),
         transformed_coordinates_z.data(),
+        transformation_parameters.data(),
         n_particles,
         n_localizations_per_particle.data(),
         registration_matrix.data(),
         coordinates_x.data(),
         coordinates_y.data(),
         coordinates_z.data(),
-        transformation_refinement_threshold,
-        channel_ids.data(),
-        averaging_channel_id);
+        transformation_refinement_threshold);
 
     fuse_particles_3d_onetoall(
         transformed_coordinates_x.data(),
@@ -95,6 +94,7 @@ int main(int argc, char const *argv[])
         transformed_coordinates_x.data(),
         transformed_coordinates_y.data(),
         transformed_coordinates_z.data(),
+        transformation_parameters.data(),
         precision_xy.data(),
         precision_z.data(),
         gauss_transform_scale,

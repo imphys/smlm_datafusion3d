@@ -15,18 +15,19 @@ int fuse_particles_3d_onetoall_(int argc, const char **argv)
     double * transformed_coordinates_x = (double *)argv[0];
     double * transformed_coordinates_y = (double *)argv[1];
     double * transformed_coordinates_z = (double *)argv[2];
-    double * transformation_parameters = (double *)argv[3];
+    double * transformation_parameters_out = (double *)argv[3];
     int32_t n_particles = *(int32_t *)argv[4];
     int32_t * n_localizations_per_particle = (int32_t *)argv[5];
     double * coordinates_x = (double *)argv[6];
     double * coordinates_y = (double *)argv[7];
     double * coordinates_z = (double *)argv[8];
-    double * precision_xy = (double *)argv[9];
-    double * precision_z = (double *)argv[10];
-    double gauss_render_width = *(double *)argv[11];
-    int32_t * channel_ids = (int *)argv[12];
-    int32_t averaging_channel_id = *(int32_t *)argv[13];
-    int32_t symmetry_order = *(int32_t *)argv[14];
+    double * transformation_parameters_in = (double *)argv[9];
+    double * precision_xy = (double *)argv[10];
+    double * precision_z = (double *)argv[11];
+    double gauss_render_width = *(double *)argv[12];
+    int32_t * channel_ids = (int *)argv[13];
+    int32_t averaging_channel_id = *(int32_t *)argv[14];
+    int32_t symmetry_order = *(int32_t *)argv[15];
 
     // total number of localizations
     size_t n_localizations = 0;
@@ -42,6 +43,7 @@ int fuse_particles_3d_onetoall_(int argc, const char **argv)
     mxArray * mx_coordinates_x = mxCreateNumericMatrix(n_localizations, 1, mxDOUBLE_CLASS, mxREAL);
     mxArray * mx_coordinates_y = mxCreateNumericMatrix(n_localizations, 1, mxDOUBLE_CLASS, mxREAL);
     mxArray * mx_coordinates_z = mxCreateNumericMatrix(n_localizations, 1, mxDOUBLE_CLASS, mxREAL);
+    mxArray * mx_transformation_parameters_in = mxCreateNumericMatrix(16 * n_particles, 1, mxDOUBLE_CLASS, mxREAL);
     mxArray * mx_precision_xy = mxCreateNumericMatrix(n_localizations, 1, mxDOUBLE_CLASS, mxREAL);
     mxArray * mx_precision_z = mxCreateNumericMatrix(n_localizations, 1, mxDOUBLE_CLASS, mxREAL);
     mxArray * mx_gauss_render_width = mxCreateNumericMatrix(1, 1, mxDOUBLE_CLASS, mxREAL);
@@ -53,7 +55,7 @@ int fuse_particles_3d_onetoall_(int argc, const char **argv)
     mxArray * mx_transformed_coordinates_x = NULL;
     mxArray * mx_transformed_coordinates_y = NULL;
     mxArray * mx_transformed_coordinates_z = NULL;
-    mxArray * mx_transformation_parameters = NULL;
+    mxArray * mx_transformation_parameters_out = NULL;
 
     // copy input
     memcpy(mxGetPr(mx_n_particles), &n_particles, sizeof(int32_t));
@@ -61,6 +63,7 @@ int fuse_particles_3d_onetoall_(int argc, const char **argv)
     memcpy(mxGetPr(mx_coordinates_x), coordinates_x, n_localizations * sizeof(double));
     memcpy(mxGetPr(mx_coordinates_y), coordinates_y, n_localizations * sizeof(double));
     memcpy(mxGetPr(mx_coordinates_z), coordinates_z, n_localizations * sizeof(double));
+    memcpy(mxGetPr(mx_transformation_parameters_in), transformation_parameters_in, 16 * n_particles * sizeof(double));
     memcpy(mxGetPr(mx_precision_xy), precision_xy, n_localizations * sizeof(double));
     memcpy(mxGetPr(mx_precision_z), precision_z, n_localizations * sizeof(double));
     memcpy(mxGetPr(mx_gauss_render_width), &gauss_render_width, sizeof(double));
@@ -87,12 +90,13 @@ int fuse_particles_3d_onetoall_(int argc, const char **argv)
         &mx_transformed_coordinates_x,
         &mx_transformed_coordinates_y,
         &mx_transformed_coordinates_z,
-        &mx_transformation_parameters,
+        &mx_transformation_parameters_out,
         mx_n_particles,
         mx_n_localizations_per_particle,
         mx_coordinates_x,
         mx_coordinates_y,
         mx_coordinates_z,
+        mx_transformation_parameters_in,
         mx_precision_xy,
         mx_precision_z,
         mx_gauss_render_width,
@@ -101,7 +105,7 @@ int fuse_particles_3d_onetoall_(int argc, const char **argv)
         mx_symmetry_order);
 
     if (mx_transformed_coordinates_x == NULL || mx_transformed_coordinates_y == NULL ||
-        mx_transformed_coordinates_z == NULL || mx_transformation_parameters == NULL)
+        mx_transformed_coordinates_z == NULL || mx_transformation_parameters_out == NULL)
     {
         fprintf(stderr, "Not all outputs set in Matlab.\n");
         return -3;
@@ -110,20 +114,21 @@ int fuse_particles_3d_onetoall_(int argc, const char **argv)
     memcpy(transformed_coordinates_x, mxGetPr(mx_transformed_coordinates_x), n_localizations * sizeof(double));
     memcpy(transformed_coordinates_y, mxGetPr(mx_transformed_coordinates_y), n_localizations * sizeof(double));
     memcpy(transformed_coordinates_z, mxGetPr(mx_transformed_coordinates_z), n_localizations * sizeof(double));
-    memcpy(transformation_parameters, mxGetPr(mx_transformation_parameters), 12 * n_particles * sizeof(double));
+    memcpy(transformation_parameters_out, mxGetPr(mx_transformation_parameters_out), 12 * n_particles * sizeof(double));
 
     // mcc_fuse_particles_3dTerminate();
 
     mxDestroyArray(mx_transformed_coordinates_x);
     mxDestroyArray(mx_transformed_coordinates_y);
     mxDestroyArray(mx_transformed_coordinates_z);
-    mxDestroyArray(mx_transformation_parameters);
+    mxDestroyArray(mx_transformation_parameters_out);
 
     mxDestroyArray(mx_n_particles);
     mxDestroyArray(mx_n_localizations_per_particle);
     mxDestroyArray(mx_coordinates_x);
     mxDestroyArray(mx_coordinates_y);
     mxDestroyArray(mx_coordinates_z);
+    mxDestroyArray(mx_transformation_parameters_in);
     mxDestroyArray(mx_precision_xy);
     mxDestroyArray(mx_precision_z);
     mxDestroyArray(mx_gauss_render_width);
@@ -150,10 +155,11 @@ int fuse_particles_3d_onetoall_portable(int argc, void *argv[])
         (double *)argv[8],
         (double *)argv[9],
         (double *)argv[10],
-        *(double *)argv[11],
-        (int32_t *)argv[12],
-        *(int32_t *)argv[13],
-        *(int32_t *)argv[14]);
+        (double *)argv[11],
+        *(double *)argv[12],
+        (int32_t *)argv[13],
+        *(int32_t *)argv[14],
+        *(int32_t *)argv[15]);
 
 }
 
@@ -162,12 +168,13 @@ int fuse_particles_3d_onetoall(
     double * transformed_coordinates_x,
     double * transformed_coordinates_y,
     double * transformed_coordinates_z,
-    double * transformation_parameters,
+    double * transformation_parameters_out,
     int32_t n_particles,
     int32_t * n_localizations_per_particle,
     double * coordinates_x,
     double * coordinates_y,
     double * coordinates_z,
+    double * transformation_parameters_in,
     double * precision_xy,
     double * precision_z,
     double gauss_render_width,
@@ -177,24 +184,25 @@ int fuse_particles_3d_onetoall(
 {
     LOAD_MCC_LIBRARY
 
-    const int argc = 15;
+    const int argc = 16;
     const char * argv[argc];
 
     argv[0] = (char *)transformed_coordinates_x;
     argv[1] = (char *)transformed_coordinates_y;
     argv[2] = (char *)transformed_coordinates_z;
-    argv[3] = (char *)transformation_parameters;
+    argv[3] = (char *)transformation_parameters_out;
     argv[4] = (char *)(&n_particles);
     argv[5] = (char *)n_localizations_per_particle;
     argv[6] = (char *)coordinates_x;
     argv[7] = (char *)coordinates_y;
     argv[8] = (char *)coordinates_z;
-    argv[9] = (char *)precision_xy;
-    argv[10] = (char *)precision_z;
-    argv[11] = (char *)(&gauss_render_width);
-    argv[12] = (char *)channel_ids;
-    argv[13] = (char *)(&averaging_channel_id);
-    argv[14] = (char *)(&symmetry_order);
+    argv[9] = (char *)transformation_parameters_in;
+    argv[10] = (char *)precision_xy;
+    argv[11] = (char *)precision_z;
+    argv[12] = (char *)(&gauss_render_width);
+    argv[13] = (char *)channel_ids;
+    argv[14] = (char *)(&averaging_channel_id);
+    argv[15] = (char *)(&symmetry_order);
 
     // initialize application
     if (!mcr_start())

@@ -38,6 +38,9 @@ if gpuDeviceCount > 0
     end
 end
 
+%% reshape transformation parameters
+transformation_parameters_in = reshape(transformation_parameters_in,4,4,[]);
+
 %% setting indicies of the first localization of each particle
 particle_beginnings = ones(n_particles,1);
 particle_endings(n_particles,1) = numel(coordinates_x);
