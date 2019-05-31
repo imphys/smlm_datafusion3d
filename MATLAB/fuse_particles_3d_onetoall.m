@@ -15,19 +15,7 @@ function [transformed_coordinates_x, transformed_coordinates_y, transformed_coor
         symmetry_order,...
         USE_GPU)
 
-%% check input parameters
-if nargin < 12
-    symmetry_order = 0;
-    if nargin < 11
-        averaging_channel_id = 0;
-        if nargin == 10
-            channel_ids(:) = 0;
-        elseif nargin < 10
-            channel_ids = zeros(numel(coordinates_x),1);
-        end
-    end
-end
-
+%% GPU flags
 USE_GPU_GAUSSTRANSFORM = false;
 USE_GPU_EXPDIST = false;
 if gpuDeviceCount > 0

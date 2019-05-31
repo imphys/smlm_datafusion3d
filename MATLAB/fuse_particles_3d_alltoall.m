@@ -12,20 +12,7 @@ function registration_matrix...
         averaging_channel_id,...
         USE_GPU)
 
-%% check input parameters
-if nargin < 11
-    averaging_channel_id = 0;
-    if nargin == 10
-        channel_ids(:) = 0;
-    elseif nargin < 10
-        channel_ids = zeros(numel(coordinates_x),1);
-        if nargin < 9
-            USE_GPU = true;
-        end
-    end
-end
-
-USE_GPU_GAUSSTRANSFORM = USE_GPU;
+%% GPU flags
 USE_GPU_EXPDIST = USE_GPU;
 
 if gpuDeviceCount <= 0
