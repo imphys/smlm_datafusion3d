@@ -129,9 +129,9 @@ int fuse_particles_3d_alltoall_portable(int argc, void *argv[])
         (double *) argv[6],
         (double *) argv[7],
         *(double *)argv[8],
-        *(int32_t *)argv[9],
-        (int32_t *) argv[10],
-        *(int32_t *) argv[11]);
+        (int32_t *) argv[9],
+        *(int32_t *) argv[10], 
+        *(int32_t *)argv[11]);
 
 }
 
@@ -146,9 +146,9 @@ int fuse_particles_3d_alltoall(
     double * precision_xy,
     double * precision_z,
     double gauss_transform_scale,
-    int32_t use_gpu,
     int32_t * channel_ids,
-    int32_t averaging_channel_id)
+    int32_t averaging_channel_id, 
+    int32_t use_gpu)
 {
     LOAD_MCC_LIBRARY
 
@@ -164,10 +164,9 @@ int fuse_particles_3d_alltoall(
     argv[6] = (char *)precision_xy;
     argv[7] = (char *)precision_z;
     argv[8] = (char *)(&gauss_transform_scale);
-    argv[9] = (char *)(&use_gpu);
-    argv[10] = (char *)channel_ids;
-    argv[11] = (char *)(&averaging_channel_id);
-
+    argv[9] = (char *)channel_ids;
+    argv[10] = (char *)(&averaging_channel_id);
+    argv[11] = (char *)(&use_gpu);
 
     // initialize application
     if (!mcr_start())

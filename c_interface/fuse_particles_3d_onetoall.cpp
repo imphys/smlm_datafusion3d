@@ -162,8 +162,8 @@ int fuse_particles_3d_onetoall_portable(int argc, void *argv[])
         (double *)argv[10],
         (double *)argv[11],
         *(double *)argv[12],
-        *(int32_t *)argv[13],
-        (int32_t *)argv[14],
+        (int32_t *)argv[13],
+        *(int32_t *)argv[14],
         *(int32_t *)argv[15],
         *(int32_t *)argv[16]);
 
@@ -184,10 +184,10 @@ int fuse_particles_3d_onetoall(
     double * precision_xy,
     double * precision_z,
     double gauss_render_width,
-    int32_t use_gpu,
     int32_t * channel_ids,
     int32_t averaging_channel_id,
-    int32_t symmetry_order)
+    int32_t symmetry_order, 
+    int32_t use_gpu)
 {
     LOAD_MCC_LIBRARY
 
@@ -207,10 +207,10 @@ int fuse_particles_3d_onetoall(
     argv[10] = (char *)precision_xy;
     argv[11] = (char *)precision_z;
     argv[12] = (char *)(&gauss_render_width);
-    argv[13] = (char *)(&use_gpu);
-    argv[14] = (char *)channel_ids;
-    argv[15] = (char *)(&averaging_channel_id);
-    argv[16] = (char *)(&symmetry_order);
+    argv[13] = (char *)channel_ids;
+    argv[14] = (char *)(&averaging_channel_id);
+    argv[15] = (char *)(&symmetry_order);
+    argv[16] = (char *)(&use_gpu);
 
     // initialize application
     if (!mcr_start())

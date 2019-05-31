@@ -34,9 +34,9 @@ extern "C" {
         double * precision_xy,
         double * precision_z,
         double gauss_transform_scale,
-        int32_t use_gpu,
         int32_t * channel_ids,
-        int32_t averaging_channel_id);
+        int32_t averaging_channel_id,
+        int32_t use_gpu);
 
     int fuse_particles_3d_refinement(
         double * transformed_coordinates_x,
@@ -65,10 +65,10 @@ extern "C" {
         double * precision_xy,
         double * precision_z,
         double gauss_render_width,
-        int32_t use_gpu,
         int32_t * channel_ids,
         int32_t averaging_channel_id,
-        int32_t symmetry_order);
+        int32_t symmetry_order,
+        int32_t use_gpu);
 
 #ifdef __cplusplus
 }
