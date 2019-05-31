@@ -67,9 +67,9 @@ int main(int argc, char const *argv[])
         precision_xy.data(),
         precision_z.data(),
         gauss_transform_scale,
-        use_gpu,
         channel_ids.data(),
-        averaging_channel_id);
+        averaging_channel_id, 
+        use_gpu);
 
     fuse_particles_3d_refinement(
         transformed_coordinates_x.data(),
@@ -98,10 +98,10 @@ int main(int argc, char const *argv[])
         precision_xy.data(),
         precision_z.data(),
         gauss_transform_scale,
-        use_gpu,
         channel_ids.data(),
         averaging_channel_id,
-        symmetry_order);
+        symmetry_order, 
+        use_gpu);
 
     std::cout << std::endl << "Example completed!" << std::endl;
     std::cout << "Press ENTER to exit" << std::endl;
