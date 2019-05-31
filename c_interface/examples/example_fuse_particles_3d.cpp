@@ -98,6 +98,7 @@ int main(int argc, char const *argv[])
         precision_xy.data(),
         precision_z.data(),
         gauss_transform_scale,
+        use_gpu,
         channel_ids.data(),
         averaging_channel_id,
         symmetry_order);
