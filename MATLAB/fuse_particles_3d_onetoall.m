@@ -16,15 +16,46 @@ function [transformed_coordinates_x, transformed_coordinates_y, transformed_coor
         USE_GPU)
 
 %% GPU flags
-USE_GPU_GAUSSTRANSFORM = false;
-USE_GPU_EXPDIST = false;
-if gpuDeviceCount > 0
-    if exist('mex_gausstransform','file')
-        USE_GPU_GAUSSTRANSFORM = true;
+USE_GPU_EXPDIST = USE_GPU;
+USE_GPU_GAUSSTRANSFORM = USE_GPU;
+
+if gpuDeviceCount <= 0
+    USE_GPU_GAUSSTRANSFORM = false;
+    USE_GPU_EXPDIST = false;
+end
+
+if USE_GPU_GAUSSTRANSFORM 
+    if ~exist('mex_gausstransform','file')
+        USE_GPU_GAUSSTRANSFORM = false;
     end
-    if exist('mex_expdist','file')
-       USE_GPU_EXPDIST = true;
+end
+    
+if USE_GPU_EXPDIST 
+    if ~exist('mex_expdist','file')
+        USE_GPU_EXPDIST = false;
     end
+end
+
+if ~USE_GPU_GAUSSTRANSFORM
+    if ~exist('mex_gausstransform_cpu','file')
+        message = 'No compiled modules found for GaussTransform.\n';
+        message_id = 'MATLAB:MEXNotFound';
+        error (message_id, message);
+    end
+    fprintf('running CPU version of gausstransform\n')
+else
+    fprintf('running GPU version of gausstransform\n')
+end
+
+if ~USE_GPU_EXPDIST 
+    if ~exist('mex_expdist_cpu','file')
+        message = 'No compiled modules found for ExpDist.\n';
+        message_id = 'MATLAB:MEXNotFound';
+        error (message_id, message);
+    end
+    fprintf('running CPU version of expdist\n')
+else
+    fprintf('running GPU version of expdist\n')
 end
 
 %% reshape transformation parameters

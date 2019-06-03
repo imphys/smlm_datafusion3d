@@ -14,6 +14,7 @@ function registration_matrix...
 
 %% GPU flags
 USE_GPU_EXPDIST = USE_GPU;
+USE_GPU_GAUSSTRANSFORM = USE_GPU;
 
 if gpuDeviceCount <= 0
     USE_GPU_GAUSSTRANSFORM = false;
