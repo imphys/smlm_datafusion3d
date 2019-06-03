@@ -25,10 +25,10 @@ int fuse_particles_3d_onetoall_(int argc, const char **argv)
     double * precision_xy = (double *)argv[10];
     double * precision_z = (double *)argv[11];
     double gauss_render_width = *(double *)argv[12];
-    int32_t use_gpu = *(int32_t *)argv[13];
-    int32_t * channel_ids = (int *)argv[14];
-    int32_t averaging_channel_id = *(int32_t *)argv[15];
-    int32_t symmetry_order = *(int32_t *)argv[16];
+    int32_t * channel_ids = (int *)argv[13];
+    int32_t averaging_channel_id = *(int32_t *)argv[14];
+    int32_t symmetry_order = *(int32_t *)argv[15];
+    int32_t use_gpu = *(int32_t *)argv[16];
 
     // total number of localizations
     size_t n_localizations = 0;
@@ -48,10 +48,10 @@ int fuse_particles_3d_onetoall_(int argc, const char **argv)
     mxArray * mx_precision_xy = mxCreateNumericMatrix(n_localizations, 1, mxDOUBLE_CLASS, mxREAL);
     mxArray * mx_precision_z = mxCreateNumericMatrix(n_localizations, 1, mxDOUBLE_CLASS, mxREAL);
     mxArray * mx_gauss_render_width = mxCreateNumericMatrix(1, 1, mxDOUBLE_CLASS, mxREAL);
-    mxArray * mx_use_gpu = mxCreateNumericMatrix(1, 1, mxINT32_CLASS, mxREAL);
     mxArray * mx_channel_ids = mxCreateNumericMatrix(n_localizations, 1, mxINT32_CLASS, mxREAL);
     mxArray * mx_averaging_channel_id = mxCreateNumericMatrix(1, 1, mxINT32_CLASS, mxREAL);
     mxArray * mx_symmetry_order = mxCreateNumericMatrix(1, 1, mxINT32_CLASS, mxREAL);
+    mxArray * mx_use_gpu = mxCreateNumericMatrix(1, 1, mxINT32_CLASS, mxREAL);
 
     // output
     mxArray * mx_transformed_coordinates_x = NULL;
@@ -69,10 +69,10 @@ int fuse_particles_3d_onetoall_(int argc, const char **argv)
     memcpy(mxGetPr(mx_precision_xy), precision_xy, n_localizations * sizeof(double));
     memcpy(mxGetPr(mx_precision_z), precision_z, n_localizations * sizeof(double));
     memcpy(mxGetPr(mx_gauss_render_width), &gauss_render_width, sizeof(double));
-    memcpy(mxGetPr(mx_use_gpu), &use_gpu, sizeof(int32_t));
     memcpy(mxGetPr(mx_channel_ids), channel_ids, n_localizations * sizeof(int32_t));
     memcpy(mxGetPr(mx_averaging_channel_id), &averaging_channel_id, sizeof(int32_t));
     memcpy(mxGetPr(mx_symmetry_order), &symmetry_order, sizeof(int32_t));
+    memcpy(mxGetPr(mx_use_gpu), &use_gpu, sizeof(int32_t));
 
     // initialize application
 
@@ -103,10 +103,10 @@ int fuse_particles_3d_onetoall_(int argc, const char **argv)
         mx_precision_xy,
         mx_precision_z,
         mx_gauss_render_width,
-        mx_use_gpu,
         mx_channel_ids,
         mx_averaging_channel_id,
-        mx_symmetry_order);
+        mx_symmetry_order,
+        mx_use_gpu);
 
     if (mx_transformed_coordinates_x == NULL || mx_transformed_coordinates_y == NULL ||
         mx_transformed_coordinates_z == NULL || mx_transformation_parameters_out == NULL)
@@ -136,10 +136,10 @@ int fuse_particles_3d_onetoall_(int argc, const char **argv)
     mxDestroyArray(mx_precision_xy);
     mxDestroyArray(mx_precision_z);
     mxDestroyArray(mx_gauss_render_width);
-    mxDestroyArray(mx_use_gpu);
     mxDestroyArray(mx_channel_ids);
     mxDestroyArray(mx_averaging_channel_id);
     mxDestroyArray(mx_symmetry_order);
+    mxDestroyArray(mx_use_gpu);
 
     return 0;
 }

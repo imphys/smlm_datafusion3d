@@ -21,9 +21,9 @@ int fuse_particles_3d_alltoall_(int argc, const char **argv)
     double * precision_xy = (double *)argv[6];
     double * precision_z = (double *)argv[7];
     double gauss_transform_scale = *(double *)argv[8];
-    int32_t use_gpu = *(int32_t *)argv[9];
-    int32_t * channel_ids = (int *)argv[10];
-    int32_t averaging_channel_id = *(int32_t *)argv[11];
+    int32_t * channel_ids = (int *)argv[9];
+    int32_t averaging_channel_id = *(int32_t *)argv[10];
+    int32_t use_gpu = *(int32_t *)argv[11];
 
     // total number of localizations
     size_t n_localizations = 0;
@@ -84,9 +84,9 @@ int fuse_particles_3d_alltoall_(int argc, const char **argv)
         mx_precision_xy,
         mx_precision_z,
         mx_gauss_transform_scale,
-        mx_use_gpu,
         mx_channel_ids,
-        mx_averaging_channel_id);
+        mx_averaging_channel_id,
+        mx_use_gpu);
 
     if (mx_registration_matrix == NULL)
     {
@@ -108,9 +108,9 @@ int fuse_particles_3d_alltoall_(int argc, const char **argv)
     mxDestroyArray(mx_precision_xy);
     mxDestroyArray(mx_precision_z);
     mxDestroyArray(mx_gauss_transform_scale);
-    mxDestroyArray(mx_use_gpu);
     mxDestroyArray(mx_channel_ids);
     mxDestroyArray(mx_averaging_channel_id);
+    mxDestroyArray(mx_use_gpu);
 
     return 0;
 }
