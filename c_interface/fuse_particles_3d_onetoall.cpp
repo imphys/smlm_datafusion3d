@@ -118,7 +118,7 @@ int fuse_particles_3d_onetoall_(int argc, const char **argv)
     memcpy(transformed_coordinates_x, mxGetPr(mx_transformed_coordinates_x), n_localizations * sizeof(double));
     memcpy(transformed_coordinates_y, mxGetPr(mx_transformed_coordinates_y), n_localizations * sizeof(double));
     memcpy(transformed_coordinates_z, mxGetPr(mx_transformed_coordinates_z), n_localizations * sizeof(double));
-    memcpy(transformation_parameters_out, mxGetPr(mx_transformation_parameters_out), 12 * n_particles * sizeof(double));
+    memcpy(transformation_parameters_out, mxGetPr(mx_transformation_parameters_out), 16 * n_particles * sizeof(double));
 
     // mcc_fuse_particles_3dTerminate();
 
