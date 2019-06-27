@@ -77,6 +77,8 @@ pprint('all2all registration ',45)
 t = tic;
 matrix_size = ((n_particles-1)*n_particles)/2;
 registration_matrix = zeros(7,matrix_size);
+coordinates_j = cell(n_particles,1);
+precision_j = cell(n_particles,1);
 for i=1:n_particles-1
     
     indices_i = particle_beginnings(i):particle_endings(i);
@@ -86,15 +88,16 @@ for i=1:n_particles-1
     
     matrix_index_i = matrix_size - ((n_particles-i+1)*(n_particles-i))/2 - i;
     
+    for j=i+1:n_particles
+        indices_j = particle_beginnings(j):particle_endings(j);
+        coordinates_j{j} = [coordinates_x(indices_j), coordinates_y(indices_j), coordinates_z(indices_j)];
+        precision_j{j} = [precision_xy(indices_j), precision_z(indices_j)];
+    end
+    
     parfor j=i+1:n_particles
         
-        indices_j = particle_beginnings(j):particle_endings(j);
-        indices_j = indices_j(channel_filter(indices_j));
-        coordinates_j = [coordinates_x(indices_j), coordinates_y(indices_j), coordinates_z(indices_j)];
-        precision_j = [precision_xy(indices_j), precision_z(indices_j)];
-        
         registration_matrix(:,matrix_index_i + j)...
-            = all2all3Dn(coordinates_i, coordinates_j, precision_i, precision_j,gauss_transform_scale,[], USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)';
+            = all2all3Dn(coordinates_i, coordinates_j{j}, precision_i, precision_j{j},gauss_transform_scale,[], USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)';
     end
     
     progress_bar(n_particles-1,i);

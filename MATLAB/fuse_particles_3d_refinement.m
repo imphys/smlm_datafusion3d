@@ -58,19 +58,21 @@ transformation_parameters = MeanSE3Graph(RR, I);
 progress_bar(1,1);
 fprintf([' ' num2str(toc(t)) ' s\n']);
 
-%% remove outliers
-pprint('removing outliers ',45);
-t = tic;
-[RR, I] = remove_outliers(RR, I, transformation_parameters, transformation_refinement_threshold);
-progress_bar(1,1);
-fprintf([' ' num2str(toc(t)) ' s\n']);
+if transformation_refinement_threshold < pi
+    %% remove outliers
+    pprint('removing outliers ',45);
+    t = tic;
+    [RR, I] = remove_outliers(RR, I, transformation_parameters, transformation_refinement_threshold);
+    progress_bar(1,1);
+    fprintf([' ' num2str(toc(t)) ' s\n']);
 
-%% repeating averaging transformation parameters
-pprint('averaging transformation parameters ',45);
-t = tic;
-transformation_parameters = MeanSE3Graph(RR, I);
-progress_bar(1,1);
-fprintf([' ' num2str(toc(t)) ' s\n']);
+    %% repeating averaging transformation parameters
+    pprint('averaging transformation parameters ',45);
+    t = tic;
+    transformation_parameters = MeanSE3Graph(RR, I);
+    progress_bar(1,1);
+    fprintf([' ' num2str(toc(t)) ' s\n']);
+end
 
 %% applying the absolute registration parameters to particles
 pprint('coordinate transformation ',45);
