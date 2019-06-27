@@ -40,7 +40,7 @@ function [ superParticle, parameter] = one2all3D(Particles, oldM, outdir, sup, g
     initParticle.points = [];
     initParticle.sigma = [];
     N = numel(Particles);
-    scale = 0.1;
+    scale = gauss_render_width;
    
     
     for i=1:N
