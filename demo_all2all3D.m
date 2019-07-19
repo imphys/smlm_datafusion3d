@@ -4,8 +4,8 @@
 addpath(genpath('MATLAB'));
 
 % load data
-filename = '3D_NUP107_ph1000_dol40_tr20nm_3D_storm_kb5_ang3D_7.mat';
-load(['data/' filename]);
+filename = '3D_NUP107_ph1000_dol30_tr20nm_3D_paint_ang3D_70.mat';
+load(['D:\hheydarian\Desktop\server_result\hpc24\mymatlib\figures\revision\simulate_particle_v3\data\' filename]);
 
 NN = 256;                          % the number of particles to be included
 % sup=[];
