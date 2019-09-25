@@ -1,38 +1,50 @@
+%%
+
 %% 
+close all
+clear all
 
-% add gmmreg registration path
-addpath(genpath('MATLAB'));
+% add the required directory to path
+path_matlab = genpath('MATLAB');
+addpath(path_matlab)
 
-% load data
-filename = '3D_NUP107_ph1000_dol30_tr20nm_3D_paint_ang3D_70.mat';
-load(['D:\hheydarian\Desktop\server_result\hpc24\mymatlib\figures\revision\simulate_particle_v3\data\' filename]);
+% CPU/GPU settings (CPU = 0, GPU = 1)
+USE_GPU_GAUSSTRANSFORM = 1;
+USE_GPU_EXPDIST = 1;
 
-NN = 256;                          % the number of particles to be included
-% sup=[];
-for i=1:NN
-    Particles{1,i}.points = particles{1,i}.coords(:,1:3);
-    idxZ = find(Particles{1,i}.points(:,3) > 1 | Particles{1,i}.points(:,3) < -1);
-    Particles{1,i}.points(idxZ,:) = [];
-    Particles{1,i}.sigma = [particles{1,i}.coords(:,5).^2 particles{1,i}.coords(:,10).^2];
-    Particles{1,i}.sigma(idxZ,:) = [];
-%     sup=[sup;Particles{1,i}.points];
+% load dataset stored in data directory
+filename = 'new_3D_NUP107_ph5000_dol75_tr20nm_3D_paint_ang3D_70_10';
+load(['data/' filename]);
+
+N = 10;     % choose N particles
+if N > numel(particles)
+    N = numel(particles);
+end
+subParticles = cell(1,N);
+
+for i=1:N
+    subParticles{1,i}.points = particles{1,i}.coords(:,1:3);
+    idxZ = find(subParticles{1,i}.points(:,3) > 1 | subParticles{1,i}.points(:,3) < -1);
+    subParticles{1,i}.points(idxZ,:) = [];
+    subParticles{1,i}.sigma = [particles{1,i}.coords(:,5).^2 particles{1,i}.coords(:,10).^2];
+    subParticles{1,i}.sigma(idxZ,:) = [];
 end
 
-%% all-to-all registration
+%% STEP 1
+% all-to-all registration
 
-for i=1:NN
-        ptCloudTformed{i} = pointCloud(Particles{1,i}.points);
+for i=1:N
+        ptCloudTformed{i} = pointCloud(subParticles{1,i}.points);
 end
 
-N = NN;
 
 % filling out the all2all registration matrix (result)
-result = cell(NN-1,NN);
+result = cell(N-1,N);
 for i=1:N-1
-    parfor j=i+1:N
+    for j=i+1:N
         
         param = all2all3Dn(ptCloudTformed{i}.Location,ptCloudTformed{j}.Location, ...
-                           Particles{1,i}.sigma, Particles{1,j}.sigma, 1);
+                           subParticles{1,i}.sigma, subParticles{1,j}.sigma, 1, 1, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
 
         result{i,j}.parameter = param;
         result{i,j}.id = [i; j];       
@@ -73,8 +85,8 @@ Mest = MeanSE3Graph(RR, I);
 kk = 1;
 relTr = zeros(2,5);
 relR = zeros(3,3,1);
-for i=1:NN-1
-    for j=i+1:NN
+for i=1:N-1
+    for j=i+1:N
 
         relR(:,:,kk) = Mest(1:3,1:3,j)'*Mest(1:3,1:3,i);
         kk = kk+1;
@@ -86,7 +98,7 @@ for i=1:size(RR,3)
    d(i) =  distSE3(RR(:,:,i),relR(:,:,i));
 end
 
-error_idx = find(abs(d)>1);                         % threshold, should be automated
+error_idx = find(abs(d)>2);                         % threshold, should be automated
 
 RM_new = RR;
 I_new = I;
@@ -112,7 +124,7 @@ for i=1:N
     
     % initial aligned particles for bootstrapping
     initAlignedParticles{1,i}.points = ptCloudestTformed{i}.Location;
-    initAlignedParticles{1,i}.sigma = Particles{1,i}.sigma;    
+    initAlignedParticles{1,i}.sigma = subParticles{1,i}.sigma;    
     
     % stack all registered particles
     sup = [sup; ptCloudestTformed{i}.Location];
@@ -122,9 +134,9 @@ end
 
 M1 = [];    % not implemented
 iter = 4;   % number of iterations
-[superParticleWithPK, ~] = one2all3D(initAlignedParticles, iter, M1, '.', sup, 1);
+[superParticleWithPK, ~] = one2all3D(initAlignedParticles, iter, M1, '.', sup, 1, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
 
 %%
 M1=[];
-iter = 10;
-[superParticleWithoutPK, ~] = one2all3D(initAlignedParticles, iter, M1, '.', sup, 0);
+iter = 5;
+% [superParticleWithoutPK, ~] = one2all3D(initAlignedParticles, iter, M1, '.', sup, 0, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
