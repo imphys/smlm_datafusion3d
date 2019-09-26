@@ -33,6 +33,8 @@ end
 %% STEP 1
 % all-to-all registration
 
+% convert localization data to MATLAB pointCloud object
+ptCloudTformed = cell{1,N};
 for i=1:N
         ptCloudTformed{i} = pointCloud(subParticles{1,i}.points);
 end
@@ -43,18 +45,19 @@ result = cell(N-1,N);
 for i=1:N-1
     for j=i+1:N
         
-        param = all2all3Dn(ptCloudTformed{i}.Location,ptCloudTformed{j}.Location, ...
+        param = all2all3Dn(ptCloudTformed{i}.Location, ptCloudTformed{j}.Location, ...
                            subParticles{1,i}.sigma, subParticles{1,j}.sigma, 1, 1, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
 
         result{i,j}.parameter = param;
         result{i,j}.id = [i; j];       
         
     end    
-    disp(['row ' num2str(i) ' is done.'])
-    
+    disp(['row ' num2str(i) ' is done.'])    
 end
 
 % convert quaternion to matrix representation (SE3)
+RR = zeros(4,4,N*(N-1)/2);  % relative transformation (rotation+translation)
+I = zeros(2,N*(N-1)/2);     % connectivity matrix
 k = 1;
 for i=1:N-1
     for j=i+1:N
@@ -73,24 +76,23 @@ for i=1:N-1
     end
 end
 
-%% all2all averaging
+%% STEP 2-1 
+% Lie-algebraic averaging
 
-disp('rotation averaging started!');
-% average relative rotations+translation to get the absolute ones (Mest)
+disp('Lie-algebraic averaging started!');
+% average relative rotations+translation (RR) to get the absolute ones (Mest)
 Mest = MeanSE3Graph(RR, I);
 
-%% outlier removal
+%% STEP 2-2 
+% registration consistency check
 
 % relative all2all rotation and translation after averaging
+relR = zeros(3,3,N*(N-1)/2);
 kk = 1;
-relTr = zeros(2,5);
-relR = zeros(3,3,1);
 for i=1:N-1
     for j=i+1:N
-
         relR(:,:,kk) = Mest(1:3,1:3,j)'*Mest(1:3,1:3,i);
         kk = kk+1;
-
     end
 end
 
@@ -98,20 +100,24 @@ for i=1:size(RR,3)
    d(i) =  distSE3(RR(:,:,i),relR(:,:,i));
 end
 
-error_idx = find(abs(d)>2);                         % threshold, should be automated
+error_idx = find(abs(d)>2);          % threshold, should be automated
 
-RM_new = RR;
-I_new = I;
-RM_new(:,:,error_idx) = [];                         % exclude outliers                        
-I_new(:,error_idx) = [];                            % exclude outliers
-%% second averaging
-
+RM_new = RR;                         % new relative transformation
+I_new = I;                           % new connectivity matrix
+RM_new(:,:,error_idx) = [];          % exclude outliers                        
+I_new(:,error_idx) = [];             % exclude outliers
+%% STEP 2-3
+% second Lie-algebraic averaging
 [M_new] = MeanSE3Graph(RM_new,I_new);
-% Mest = M_new;
 disp('2nd rotation averaging done!');
-%% apply the absolute registration parameters to particles
 
-sup =[];
+%% STEP 2-4 
+% apply the absolute registration parameters to particles to make the data-
+% driven template
+
+ptCloudestTformed = cell(1,N);      % first aligned pointClouds
+initAlignedParticles = cell(1,N);   % first aligned particles
+sup =[];                            % data-driven template
 for i=1:N       
     
     estA = eye(4);
@@ -130,13 +136,18 @@ for i=1:N
     sup = [sup; ptCloudestTformed{i}.Location];
     
 end
-%% bootstrapping
+%% STEP 3
+% bootstrapping with imposing prior knowledge
 
-M1 = [];    % not implemented
-iter = 4;   % number of iterations
-[superParticleWithPK, ~] = one2all3D(initAlignedParticles, iter, M1, '.', sup, 1, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
+USE_SYMMETRY = 1;   % flag for imposing symmetry prio knowledge
+M1 = [];            % not implemented
+iter = 4;           % number of iterations
+[superParticleWithPK, ~] = one2all3D(initAlignedParticles, iter, M1, '.', sup, USE_SYMMETRY, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
 
-%%
-M1=[];
-iter = 5;
-% [superParticleWithoutPK, ~] = one2all3D(initAlignedParticles, iter, M1, '.', sup, 0, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
+%% STEP 3
+% bootstrapping without imposing prior knowledge
+
+USE_SYMMETRY = 0;   % flag for imposing symmetry prio knowledge
+M1=[];              % not implemented
+iter = 5;           % number of iterations
+% [superParticleWithoutPK, ~] = one2all3D(initAlignedParticles, iter, M1, '.', sup, USE_SYMMETRY, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
