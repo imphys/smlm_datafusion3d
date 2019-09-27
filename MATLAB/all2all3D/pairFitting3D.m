@@ -4,13 +4,20 @@
 %   param = pairFitting3D(ptc1, ptc2, sig1, sig2, scale, nIteration, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)
 %
 % INPUT
-%   ptc1  point cloud of particle 1
-%   ptc2  point cloud of particle 2
-%   sig1  uncertainties for points in ptc1
-%   sig2  uncertainties for points in ptc2
-%   nIteration    maximal number of iterations in fit 
-%   USE_GPU_GAUSSTRANSFORM 1/0 for using GPU/CPU
-%   USE_GPU_EXPDIST 1/0 for using GPU/CPU
+%   ptc1  
+%       point cloud of particle 1
+%   ptc2  
+%       point cloud of particle 2
+%   sig1  
+%       uncertainties for points in ptc1
+%   sig2  
+%       uncertainties for points in ptc2
+%   nIteration    
+%       maximal number of iterations in fit 
+%   USE_GPU_GAUSSTRANSFORM 
+%       1/0 for using GPU/CPU
+%   USE_GPU_EXPDIST 
+%       1/0 for using GPU/CPU
 %
 % OUTPUT
 %   param       transformations parameter giving the highest cost
