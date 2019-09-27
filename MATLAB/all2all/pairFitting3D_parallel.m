@@ -1,55 +1,50 @@
 % pairFitting   register a pair of particles 
 %
 % SYNOPSIS:
-%   [parameter, registered_model, history, config, max_value] = pairFitting(M, S)
+%   [parameter, registered_model, max_value] = pairFitting3D_parallel(M, S, weight, scale, nIteration, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST) 
 %
 % INPUT
 %   M
 %       The first particle.
 %   S
 %       The second particle.nano 
+%   weight
+%       a vector of weigth for resampling superparticle localizatio data
+%   scale
+%       GMM registration scale parameter
+%   nIteration    
+%       maximal number of iterations in fit 
+%   USE_GPU_GAUSSTRANSFORM 
+%       1/0 for using GPU/CPU
+%   USE_GPU_EXPDIST 
+%       1/0 for using GPU/CPU
 %
 % OUTPUT
 %   parameter
-%       Rigid registration parameter [angle, t1, t2].
+%       Rigid registration parameter [q_angle, t1, t2, t3].
 %   registered_model
 %       The result of registering M to S.
-%   history
-%       History of the optimization variables over iterations (not used!).
-%   config
-%       The structure containing all the input parameters for GMM based 
-%       registration, see '/MATLAB/initialize_config.m'.
 %   max_value
 %       The maximum value of the Bhattacharya cost function.
+%    
 %
-% NOTES
-%       Registration algorithms normally work for a certain range of 
-%       rotation angle and scales. In order to avoid trapping in local 
-%       minima, different initializations is provided. Then, GMM-based 
-%       method, registers the two particles using different
-%       intializations. Finally, Bhattacharya cost function, chooses the
-%       rigid parameter set which gives the highest score.    
-%
-% (C) Copyright 2017               Quantitative Imaging Group
+% (C) Copyright 2019               Quantitative Imaging Group
 %     All rights reserved          Faculty of Applied Physics
 %                                  Delft University of Technology
 %                                  Lorentzweg 1
 %                                  2628 CJ Delft
 %                                  The Netherlands
 %
-% Hamidreza Heydarian, 2017
+% Hamidreza Heydarian, 2019
 
 function [parameter, registered_model, max_value] = pairFitting3D_parallel(M, S, weight, scale, nIteration, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST) 
     
     % multiple start
-%     ang = [0 pi/4 pi/2 3*pi/4 pi 5*pi/4 3*pi/2 7*pi/4];
     ang1 = [0 pi/2 pi 3*pi/2];
-    ang2 = [0];% pi/4 -pi/4];
-    ang3 = [0];% pi/4 -pi/4];
+    ang2 = [0];
+    ang3 = [0];
     
     [a, b, c] = ndgrid(ang1,ang2,ang3);
-    
-%     N_init = numel(ang);   
     N_init = numel(a);
 
 
@@ -61,7 +56,6 @@ function [parameter, registered_model, max_value] = pairFitting3D_parallel(M, S,
     % pairwise registration
     parfor i=1:N_init
         
-%         qtmp = angle2quat(ang(i), 0, 0);
         qtmp = angle2quat(a(i), b(i), c(i));
         
         q = [qtmp(2) qtmp(3) qtmp(4) qtmp(1) 0 0 0];         
@@ -69,6 +63,8 @@ function [parameter, registered_model, max_value] = pairFitting3D_parallel(M, S,
         f_config = initialize_config(M.points, S_resampled.points, 'rigid3d', nIteration);
         f_config.init_param = q;
         f_config.scale = scale;
+        
+        % perform registration        
         [param{i}, tmp_model{1,i}, ~, ~, ~] = gmmreg_L23D(f_config,USE_GPU_GAUSSTRANSFORM);
         
     end

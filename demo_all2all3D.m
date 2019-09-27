@@ -33,8 +33,8 @@ end
 %% STEP 1
 % all-to-all registration
 
-% convert localization data to MATLAB pointCloud object
-ptCloudTformed = cell{1,N};
+% convert localization data structure to MATLAB pointCloud object
+ptCloudTformed = cell(1,N);
 for i=1:N
         ptCloudTformed{i} = pointCloud(subParticles{1,i}.points);
 end
@@ -45,7 +45,7 @@ result = cell(N-1,N);
 for i=1:N-1
     for j=i+1:N
         
-        param = all2all3Dn(ptCloudTformed{i}.Location, ptCloudTformed{j}.Location, ...
+        param = pairFitting3D(ptCloudTformed{i}.Location, ptCloudTformed{j}.Location, ...
                            subParticles{1,i}.sigma, subParticles{1,j}.sigma, 1, 1, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
 
         result{i,j}.parameter = param;
@@ -150,4 +150,4 @@ iter = 4;           % number of iterations
 USE_SYMMETRY = 0;   % flag for imposing symmetry prio knowledge
 M1=[];              % not implemented
 iter = 5;           % number of iterations
-% [superParticleWithoutPK, ~] = one2all3D(initAlignedParticles, iter, M1, '.', sup, USE_SYMMETRY, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
+[superParticleWithoutPK, ~] = one2all3D(initAlignedParticles, iter, M1, '.', sup, USE_SYMMETRY, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
