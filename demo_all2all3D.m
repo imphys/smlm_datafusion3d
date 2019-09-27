@@ -5,6 +5,12 @@ close all
 clear all
 
 % add the required directory to path
+path_matlab = genpath('build/mex/');
+addpath(path_matlab)
+
+path_matlab = genpath('build/figtree/src/mex/');
+addpath(path_matlab)
+
 path_matlab = genpath('MATLAB');
 addpath(path_matlab)
 
