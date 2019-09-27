@@ -130,17 +130,3 @@ set_property(TARGET run_tests PROPERTY FOLDER figtree_projects)
 set_property(TARGET sample PROPERTY FOLDER figtree_projects)
 set_property(TARGET copy_figtree PROPERTY FOLDER figtree_projects)
 
-### C interface ###
-if(Matlab_MCC_COMPILER)
-    # mcc_build_directory
-    if(WIN32)
-        set(mcc_build_directory "${CMAKE_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
-    else()
-        set(mcc_build_directory "${CMAKE_BINARY_DIR}/c_interface")
-    endif()
-
-    add_subdirectory(c_interface)
-    # Binding for the C interface
-    add_subdirectory( python )
-endif()
-
