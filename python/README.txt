@@ -1,1 +1,0 @@
-Python binding for the [3Dalltoall](https://github.com/berndrieger/3Dalltoall) library.
