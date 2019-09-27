@@ -1,60 +1,48 @@
-% all2all3Dn   computes the Gauss transform between point sets A and B
-% with the scale parameter scale
+% pairFitting3D  register a pair of particles
 %
 % SYNOPSIS:
-%   [f, grad] = GaussTransform(A, B, scale)
+%   param = pairFitting3D(ptc1, ptc2, sig1, sig2, scale, nIteration, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)
 %
 % INPUT
-%   A
-%       The first point set
-%
-%   B
-%       The second point set
+%   ptc1  point cloud of particle 1
+%   ptc2  point cloud of particle 2
+%   sig1  uncertainties for points in ptc1
+%   sig2  uncertainties for points in ptc2
+%   nIteration    maximal number of iterations in fit 
+%   USE_GPU_GAUSSTRANSFORM 1/0 for using GPU/CPU
+%   USE_GPU_EXPDIST 1/0 for using GPU/CPU
 %
 % OUTPUT
-%   f 
-%       The gausstransform output. 
+%   param       transformations parameter giving the highest cost
+%    
 %
-%   g
-%       The gradient vector
-%
-% NOTES
-%       The inner product between two spherical Gaussian mixtures computed 
-%       using the Gauss Transform. The centers of the two mixtures are 
-%       given in terms of two point sets A and B (of same dimension d)
-%       represented by an mxd matrix and an nxd matrix, respectively.
-%       It is assumed that all the components have the same covariance 
-%       matrix represented by a scale parameter (scale).  Also, in each 
-%       mixture, all the components are equally weighted.
+% (C) Copyright 2019               Quantitative Imaging Group
+%     All rights reserved          Faculty of Applied Physics
+%                                  Delft University of Technology
+%                                  Lorentzweg 1
+%                                  2628 CJ Delft
+%                                  The Netherlands
 %
 % Author: Hamidreza Heydarian, 2019 
 
 function param = pairFitting3D(ptc1, ptc2, sig1, sig2, scale, nIteration, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)
-% ptc1  point cloud of particle 1
-% ptc2  point cloud of particle 2
-% sig1  uncertainties for points in ptc1
-% sig2  uncertainties for points in ptc2
-% nIteration    maximal number of iterations in fit
-%
-% Output
-%   param       transformations parameter giving the highest cost
 
 % multiple start
 ang1 = [0 pi/2 pi 3*pi/2];
-ang2 = [0];% pi/4 -pi/4];
-ang3 = [0];% pi/4 -pi/4];
+ang2 = [0];
+ang3 = [0];
 
 [a, b, c] = ndgrid(ang1,ang2,ang3);
 
 for init_iter=1:numel(a)
 
-%     qtmp = angle2quat(ang(init_iter), 0, 0);
     qtmp = angle2quat(a(init_iter), b(init_iter), c(init_iter));
     
     % initialize gmmreg
     f_config = initialize_config(double(ptc1), double(ptc2), 'rigid3d', nIteration);
     f_config.init_param = [qtmp(2) qtmp(3) qtmp(4) qtmp(1) 0 0 0];
-    f_config.scale = scale;     % TODO  (JKF) Should sig1,sig2 not also be used in gmmreg_L23D? Currently only used for cost calculation?
+    f_config.scale = scale;     
+    
     % perform registration
     tmpParam{1,init_iter} = gmmreg_L23D(f_config,USE_GPU_GAUSSTRANSFORM); 
     
