@@ -15,21 +15,27 @@ This code is built for a Linux enviroment. It might or might not work on a mac.
 For Windows a Linux shell environment could work.
 For the CPU only code, no special libaries are needed for the compilation of 
 the C code other than a C compiler.
-For the GPU code, a CUDA compiler and libraries must be present and the CUB library
-on the CPATH enviroment variable (see below).
+For the GPU code, a CUDA compiler and libraries must be present and the 
+CUB library, which can be specified to cmake. 
 
+## Installation on Linux
 
-## Installation
+Use the following commands to build the necessary libraries for this software:
 
-A Makefile is provided that can be used to compile the code and produce the 
-required mex files.
+```bash
 
-Simply type ``make`` in the top-level directory and mex files will be 
-produced in the `MATLAB/all2all/` directory.
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=RELEASE -DCUB_ROOT_DIR=<path-to-cub-dir> ..
+make
+````
 
-If you do not have a CUDA-capable GPU use ``make cpu`` instead, to only
-compile the CPU code.
+CMake locates the code's dependencies and generates a Makefile. Make 
+compiles the mex files and necessary shared libraries. 
 
+## Installation on Windows
+
+To be written.
 
 ## Example Usage
 
@@ -58,7 +64,8 @@ installed. Please see Nvidia's website for installation fo the CUDA toolkit
 The GPU code currently has one dependency, which is the CUB library. You can 
 download it from: https://nvlabs.github.io/cub/index.html The easiest way to 
 install CUB is to add the directory where you unpack CUB to your ``$CPATH`` 
-environment variable.
+environment variable. The path to the CUB library can also be specified using
+the ``"-DCUB_ROOT_DIR=<path-to-cub>"`` option of CMake.
 
 
 ## Troubleshooting
