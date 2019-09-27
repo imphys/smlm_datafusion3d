@@ -1,47 +1,57 @@
 %one2all   Register each particle to the stack of all the remaining
-%particles and iterate
+% particles and iterate
 % of particles
 %
 %   SYNOPSIS:
-%       [ superParticle, parameter ] = one2all(Particles, iter)
+%       [ superParticle, MT] = one2all3D(Particles, iter, oldM, outdir, sup, sym_flag, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)
 %
 %   Input: 
-%       Particles: Cell array of particles of size 1xN
-%       iter: the number of iterations
-%       outdir: output directory to store final super-particle
+%       Particles
+%           Cell array of particles of size 1xN
+%       iter
+%           the number of iterations
+%       oldM
+%           (NOT IMPLEMENTED)
+%       outdir
+%           output directory to store final super-particle
+%       sup
+%           data-driven template
+%       sym_flag
+%           flag for imposing symmetry prio knowledge
+%       USE_GPU_GAUSSTRANSFORM 
+%           1/0 for using GPU/CPU
+%       USE_GPU_EXPDIST 
+%           1/0 for using GPU/CPU
 %
 %   Output:
-%       superParticle: the resulting fused particle
-%       MT: Total transformation parameters (rotation+translation). MT is
-%       an 4x4xNxiter matrix.
+%       superParticle
+%           the resulting fused particle
+%       MT
+%           (NOT IMPLEMENTED) Total transformation parameters (rotation+
+%           translation). MT is an 4x4xNxiter matrix.
 %
-%   NOTE:
-%       First, the function concatenates all the particles as they are.
-%       Then, each particle is extracted from the stack and registered to
-%       the rest. This is done until all particles are registered to the
-%       rest. Once done, the whole process is iterated iter times.
-
-% (C) Copyright 2017                    QI Group
+% (C) Copyright 2019                    QI Group
 %     All rights reserved               Faculty of Applied Physics
 %                                       Delft University of Technology
 %                                       Lorentzweg 1
 %                                       2628 CJ Delft
 %                                       The Netherlands
 %
-% Hamidreza Heydarian, Oct 2017.
+% Hamidreza Heydarian, Sep 2019.
 
-function [ superParticle, MT] = one2all3D_tmp(Particles, iter, oldM, outdir, sup, sym_flag, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)
+function [ superParticle, MT] = one2all3D(Particles, iter, oldM, outdir, sup, sym_flag, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)
 
     disp('Bootstapping is started  !');
     
+    % computed the weights for resampling
     [density] = visualizeSMLM3D(sup, 0.1, 0);
     weight = density/max(density);
 
+    % initialization
     initParticle.points = [];
     initParticle.sigma = [];
     N = numel(Particles);
-%     scale = [0.1 0.1 0.1 0.05 0.025];
-    scale = 0.1*ones(1, iter);%[0.1 0.1 0.1 0.1];
+    scale = 0.1*ones(1, iter);
    
     
     for i=1:N
