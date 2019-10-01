@@ -138,9 +138,9 @@ nosetests -v
 ## Further questions
 
 For further questions you can contact the authors:  
-([Hamidreza Heydarian])(https://github.com/hrheydarian) <H.Heydarian@tudelft.nl>   
-([Ben van Werkhoven])(https://github.com/benvanwerkhoven) <b.vanwerkhoven@esciencecenter.nl>  
-([Bernd Rieger])(https://github.com/berndrieger) <b.rieger@tudelft.nl>  
+[(Hamidreza Heydarian)](https://github.com/hrheydarian) <H.Heydarian@tudelft.nl>   
+[(Ben van Werkhoven)](https://github.com/benvanwerkhoven) <b.vanwerkhoven@esciencecenter.nl>  
+[(Bernd Rieger)](https://github.com/berndrieger) <b.rieger@tudelft.nl>  
 
 Note that some files have been reused and adapted from the following sources:  
 
