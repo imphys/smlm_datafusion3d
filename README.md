@@ -110,6 +110,7 @@ Ben van Werkhoven <b.vanwerkhoven@esciencecenter.nl>
 Bernd Rieger <b.rieger@tudelft.nl>
 
 Note that some files have been reused and adapted from the following sources:  
+
 GMM registration:  
     https://github.com/bing-jian/gmmreg  
 	[1] Jian, B. & Vemuri, B. C. Robust point set registration using Gaussian 
