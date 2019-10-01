@@ -48,9 +48,10 @@ Next, we need to locate the built libraries for MATLAB:
 cd ..
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:MATLAB_DIRECTORY/runtime/glnxa64:MATLAB_DIRECTORY/bin/glnxa64:MATLAB_DIRECTORY/sys/os/glnxa64:MATLAB_DIRECTORY/sys/opengl/lib/glnxa64:BUILD_DIRECTORY/mex
 ``` 
-Then, run MATLAB
+Then, run MATLAB and the demo script
 ```bash
 matlab
+demo_all2all3D.m
 ```
 ## Installation on Windows
 
