@@ -24,6 +24,7 @@ The Git repository uses submodules. Include them in a _git clone_ action using t
 
 git clone --single-branch --branch develop git@github.com:berndrieger/alltoall3D.git --recursive
 ````
+### Compile the code
 In the following
 
 - BUILD_DIRECTORY is the directory where the project will be built
@@ -40,8 +41,8 @@ cd build
 cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_C_COMPILER=gcc-5 -DCUB_ROOT_DIR=CUB_DIRECTORY SOURCE_DIRECTORY
 make
 ````
-
-Next, we need to locate mex files and shared libraries for MATLAB:
+### Use the code
+Next, we need to locate the built libraries for MATLAB:
 ```bash
 
 cd ..
