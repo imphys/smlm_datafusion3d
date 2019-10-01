@@ -34,7 +34,7 @@ Use the following commands to build the necessary libraries for this software:
 
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=RELEASE -DCUB_ROOT_DIR=<path-to-cub-dir> ..
+cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_C_COMPILER=gcc-5 -DCUB_ROOT_DIR=CUB_DIRECTORY SOURCE_DIRECTORY
 make
 ````
 
