@@ -10,9 +10,8 @@ works on localization data not pixelated images.
 
 - [MATLAB](https://nl.mathworks.com/products/matlab.html) (version>2018a)
 - [CMake](https://cmake.org/) (version>3.14.3).
-- The GPU code requires a CUDA-capable GPU as well as the CUDA toolkit to be 
-installed. Please see Nvidia's [website](https://developer.nvidia.com/cuda-downloads) for installation fo the CUDA toolkit.
-- [CUB library](https://nvlabs.github.io/cub/).
+- [CUDA toolkit](https://developer.nvidia.com/cuda-downloads) (version>8.0) 
+- [CUB library](https://nvlabs.github.io/cub/)(version>1.8.0)
 - [GNU C compiler](https://gcc.gnu.org/)(version>5.5.0)
 - [The DIPImage toolbox](http://www.diplib.org)
 
