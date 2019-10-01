@@ -9,11 +9,11 @@ works on localization data not pixelated images.
 ## Requirements
 
 - [MATLAB](https://nl.mathworks.com/products/matlab.html) (version>2018a)
-- [CMake](https://cmake.org/) (version>3.14.3).
+- [CMake](https://cmake.org/) (version>3.14.3)
 - [CUDA toolkit](https://developer.nvidia.com/cuda-downloads) (version>8.0) 
-- [CUB library](https://nvlabs.github.io/cub/)(version>1.8.0)
-- [GNU C compiler](https://gcc.gnu.org/)(version>5.5.0)
-- [The DIPImage toolbox](http://www.diplib.org)
+- [CUB library](https://nvlabs.github.io/cub/) (version>1.8.0)
+- [GNU C compiler](https://gcc.gnu.org/) (version>5.5.0)
+- [The DIPImage toolbox](http://www.diplib.org) (version>2.9)
 
 ## Installation and usage on Linux
 
