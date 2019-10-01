@@ -51,7 +51,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:MATLAB_DIRECTORY/runtime/glnxa64:MATLAB_
 Then, run MATLAB and the demo script
 ```bash
 matlab
->> demo_all2all3D.m
+>> demo1.m
 ```
 ## Installation and usage on Windows
 
