@@ -6,9 +6,6 @@ mis-registrations and underlabeling. The method does not assume any prior
 knowledge about the structure to be reconstructed (template-free) and directly
 works on localization data not pixelated images.
 
-The main code is written in MATLAB and some of the compute-intensive kernels 
-have been written in CUDA and C++.
-
 ## Requirements
 
 This code is built for a Linux enviroment. It might or might not work on a mac. 
@@ -19,6 +16,19 @@ For the GPU code, a CUDA compiler and libraries must be present and the
 CUB library, which can be specified to cmake. 
 
 ## Installation on Linux
+
+### Get the sources
+
+The Git repository uses submodules. Include them in a _git clone_ action using the _--recursive_ option.
+
+# clone the project
+git clone --single-branch --branch develop git@github.com:berndrieger/alltoall3D.git --recursive
+
+In the following
+
+- BUILD_DIRECTORY is the directory where the project will be built
+- SOURCE_DIRECTORY is the root directory of the sources
+- CUB_DIRECTORY is the root directory of the downloaded [CUB library](https://nvlabs.github.io/cub/) sources
 
 Use the following commands to build the necessary libraries for this software:
 
