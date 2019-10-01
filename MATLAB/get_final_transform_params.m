@@ -1,43 +1,28 @@
-function parameters = get_final_transform_params(transformed_coordinates, coordinates)
+function [finalParticles, transform] = get_final_transform_params(xSuperParticle, subParticles)
 
 % obtain the absolute transformations
 
-[~, ~, p] = procrustes(...
-    transformed_coordinates, ...
-    coordinates,...
-    'scaling', false,...
-    'reflection', false);
-p.c = p.c(1,:);
+    N = numel(subParticles);        % number of particles
+    finalParticles = cell(1,N);     % the final aligned particles
+    sizen = zeros(1,N);             % size of each particle
+    
+    % particle size
+    for i=1:N
+        sizen(i) = size(subParticles{1,i}.points,1);
+    end
 
-parameters = [p.T(:); p.c(:)];
+    % crop initial particles from the super particle
+    startIdx = 0;
+    for i=1:N
+        endIdx = startIdx+sizen(i)-1;
+        finalParticles{1,i}.points = xSuperParticle(startIdx+1:endIdx+1,:);
+        startIdx = endIdx + 1;
+    end
 
-%
-% c = transform{i}.c; % c — Translation component
-% T = transform{i}.T; % T — Orthogonal rotation
-
-% reconstructed_super_particle = [];
-% for i=1:N
-%     reconstructed_super_particle = [reconstructed_super_particle;...
-%         particles{i}.points * parameters{i}.T + parameters{i}.c];
-% end
-
-% for i=1:N
-% 	sizen(i) = size(particles{i}.points,1);
-% end
-% 
-% % crop initial particles from the super particle
-% startIdx = 0;
-% for i=1:N
-% 	endIdx = startIdx+sizen(i)-1;
-% 	finalParticles{i}.points = superParticle(startIdx+1:endIdx+1,:);
-% 	startIdx = endIdx + 1;
-% end
-% 
-% % obtain the absolute transformations
-% for i=1:N
-% 	[~, ~, parameters{i}] = procrustes(finalParticles{i}.points, ...
-%     	particles{i}.points, 'scaling', false, 'reflection', false);
-%     parameters{i}.c = parameters{i}.c(1,:);
-% end
+    % obtain the absolute transformations
+    for i=1:N
+        [~, ~, transform{i}] = procrustes(finalParticles{1,i}.points, ...
+            subParticles{1,i}.points, 'scaling', false, 'reflection', false);    
+    end
 
 end

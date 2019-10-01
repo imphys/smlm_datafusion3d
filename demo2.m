@@ -19,7 +19,7 @@ USE_GPU_GAUSSTRANSFORM = 1;
 USE_GPU_EXPDIST = 1;
 
 % load dataset stored in data directory
-filename = 'new_3D_NUP107_ph5000_dol75_tr20nm_3D_paint_ang3D_70_10';
+filename = 'data';
 load(['data/' filename]);
 
 N = 10;     % choose N particles
@@ -76,3 +76,8 @@ iter = 5;           % number of iterations
 %% Visualize the results
 visualizeCloud3D(superParticleWithoutPK{1,5},0.05, 1);
 visualizeCloud3D(superParticleWithPK{1,5},0.05, 1);
+
+%% 
+% get final aligned particles and their absolute transformations
+xSuperParticle = superParticleWithPK{1,5};
+[finalParticles, transform] = get_final_transform_params(xSuperParticle, subParticles);
