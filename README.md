@@ -15,6 +15,13 @@ the C code other than a C compiler.
 For the GPU code, a CUDA compiler and libraries must be present and the 
 CUB library, which can be specified to cmake. 
 
+The DIPImage toolbox for MATLAB is required, please see http://www.diplib.org 
+for installation instructions. 
+
+The GPU code requires a CUDA-capable GPU as well as the CUDA toolkit to be 
+installed. Please see Nvidia's website for installation fo the CUDA toolkit 
+(https://developer.nvidia.com/cuda-downloads).
+
 ## Installation on Linux
 
 ### Get the sources
@@ -57,35 +64,7 @@ matlab
 
 To be written.
 
-## Example Usage
-
-The DIPImage toolbox for MATLAB is required, please see http://www.diplib.org 
-for installation instructions.
-
-An example of how to use the code on experimental and simulated data is shown
-in the MATLAB script `demo_all2all.m`. 
-
-
 ## Installation instructions for GPU Version
-
-The mex files that call GPU functions will only be compiled by the Makefile 
-if you have *nvcc* (the Nvidia CUDA compiler) installed. Just type `make` in 
-the top-level directory after you've made sure that you've installed CUDA 
-and the CUB library, see the instructions below.
-
-### CUDA
-
-The GPU code requires a CUDA-capable GPU as well as the CUDA toolkit to be 
-installed. Please see Nvidia's website for installation fo the CUDA toolkit 
-(https://developer.nvidia.com/cuda-downloads).
-
-### CUB Library
-
-The GPU code currently has one dependency, which is the CUB library. You can 
-download it from: https://nvlabs.github.io/cub/index.html The easiest way to 
-install CUB is to add the directory where you unpack CUB to your ``$CPATH`` 
-environment variable. The path to the CUB library can also be specified using
-the ``"-DCUB_ROOT_DIR=<path-to-cub>"`` option of CMake.
 
 
 ## Troubleshooting
@@ -131,22 +110,22 @@ Ben van Werkhoven <b.vanwerkhoven@esciencecenter.nl>
 Bernd Rieger <b.rieger@tudelft.nl>
 
 Note that some files have been reused and adapted from the following sources:
-GMM registration:
-    https://github.com/bing-jian/gmmreg
+GMM registration:  
+    https://github.com/bing-jian/gmmreg  
 	[1] Jian, B. & Vemuri, B. C. Robust point set registration using Gaussian 
     mixture models. IEEE PAMI 33, 16331645 (2011).
 
 Lie-algebraic averaging:
-    http://www.ee.iisc.ac.in/labs/cvl/research/rotaveraging/
+    http://www.ee.iisc.ac.in/labs/cvl/research/rotaveraging/  
     [2] Govindu, V. Lie-algebraic averaging for globally consistent motion estimation. 
-    In Proc. IEEE Conf. on Computer Vision and Pattern Recognition (2004). 
+    In Proc. IEEE Conf. on Computer Vision and Pattern Recognition (2004).  
     [3] Chatterjee, A. Geometric calibration and shape refinement for 3D reconstruction
     PhD thesis. Indian Institute of Science (2015).
 
-l1-magic optimization toolbox:
+l1-magic optimization toolbox:  
     https://statweb.stanford.edu/~candes/l1magic/
 
-Natural-Order Filename Sort
+Natural-Order Filename Sort  
     https://nl.mathworks.com/matlabcentral/fileexchange/47434-natural-order-filename-sort
 
 ## Developer instructions
