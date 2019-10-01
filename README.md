@@ -8,21 +8,15 @@ works on localization data not pixelated images.
 
 ## Requirements
 
-This code is built for a Linux enviroment. It might or might not work on a mac. 
-For Windows a Linux shell environment could work.
-For the CPU only code, no special libaries are needed for the compilation of 
-the C code other than a C compiler.
-For the GPU code, a CUDA compiler and libraries must be present and the 
-CUB library, which can be specified to cmake. 
+- [MATLAB](https://nl.mathworks.com/products/matlab.html) (version>2018a)
+- [CMake](https://cmake.org/) (version>3.14.3).
+- The GPU code requires a CUDA-capable GPU as well as the CUDA toolkit to be 
+installed. Please see Nvidia's [website](https://developer.nvidia.com/cuda-downloads) for installation fo the CUDA toolkit.
+- [CUB library](https://nvlabs.github.io/cub/).
+- [GNU C compiler](https://gcc.gnu.org/)(version>5.5.0)
+- [The DIPImage toolbox](http://www.diplib.org)
 
-The DIPImage toolbox for MATLAB is required, please see http://www.diplib.org 
-for installation instructions. 
-
-The GPU code requires a CUDA-capable GPU as well as the CUDA toolkit to be 
-installed. Please see Nvidia's website for installation fo the CUDA toolkit 
-(https://developer.nvidia.com/cuda-downloads).
-
-## Installation on Linux
+## Installation and usage on Linux
 
 ### Get the sources
 
