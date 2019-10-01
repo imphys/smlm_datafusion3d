@@ -59,20 +59,17 @@ To be written.
 
 ## Troubleshooting
 
-- Matlab mex headers not found
-
+- Matlab mex headers not found  
 The Makefile tries to find the directories in which MATLAB was installed on 
 your system. If this fails, you can manually insert the path to your MATLAB 
 installation (ending with `/extern/include`) inside the Makefile. 
 
-- CUDA headers not found
-
+- CUDA headers not found  
 The Makefile also tries to automatically find the directories with headers 
 and libraries needed to compile the CUDA codes. If this fails, these can as well be 
 inserted at the top of the Makefile.
 
-- <cub/cub.cuh> not found
-
+- <cub/cub.cuh> not found  
 The GPU code has only one external dependency, which is the CUB library. You 
 can download it from: https://nvlabs.github.io/cub/index.html. The easiest 
 way to install CUB is to add the top-level directory of where you've 
@@ -82,8 +79,7 @@ example, if you've unzipped the CUB sources into a directory called
 ``export CPATH=$CPATH:/home/username/cub-version.number/:`` to install CUB. In this way the 
 nvcc compiler is able to find the CUB headers.
 
-- Program tries to run GPU code when no GPU is present
-
+- Program tries to run GPU code when no GPU is present  
 Note that the mex files for the GPU code will be produced by `make` if your 
 machine has `nvcc`. Once the mex files for the GPU code have been produced, 
 the MATLAB code will prefer to use the GPU functions instead of the CPU 
