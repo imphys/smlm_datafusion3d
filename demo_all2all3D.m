@@ -22,7 +22,7 @@ USE_GPU_EXPDIST = 1;
 filename = 'new_3D_NUP107_ph5000_dol75_tr20nm_3D_paint_ang3D_70_10';
 load(['data/' filename]);
 
-N = 25;     % choose N particles
+N = 10;     % choose N particles
 if N > numel(particles)
     N = numel(particles);
 end
