@@ -64,9 +64,6 @@ matlab
 
 To be written.
 
-## Installation instructions for GPU Version
-
-
 ## Troubleshooting
 
 ### Matlab mex headers not found
