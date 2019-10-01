@@ -123,7 +123,8 @@ nosetests -v
 
 ## Further questions
 
-For further questions you can contact the authors:  
+For further questions, you can open new topic at the [issues section](https://github.com/berndrieger/alltoall3D/issues) of this github repository.
+You can also contact the authors:  
 [(Hamidreza Heydarian)](https://github.com/hrheydarian) <H.Heydarian@tudelft.nl>   
 [(Ben van Werkhoven)](https://github.com/benvanwerkhoven) <b.vanwerkhoven@esciencecenter.nl>  
 [(Bernd Rieger)](https://github.com/berndrieger) <b.rieger@tudelft.nl>  
