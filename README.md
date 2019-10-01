@@ -41,13 +41,16 @@ cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_C_COMPILER=gcc-5 -DCUB_ROOT_DIR=CUB_DIR
 make
 ````
 
-Next, we need to locate mex file and shared library for MATLAB:
+Next, we need to locate mex files and shared libraries for MATLAB:
 ```bash
 
 cd ..
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:MATLAB_DIRECTORY/runtime/glnxa64:MATLAB_DIRECTORY/bin/glnxa64:MATLAB_DIRECTORY/sys/os/glnxa64:MATLAB_DIRECTORY/sys/opengl/lib/glnxa64:BUILD_DIRECTORY/mex
 ``` 
-
+Then, run MATLAB
+```bash
+matlab
+```
 ## Installation on Windows
 
 To be written.
