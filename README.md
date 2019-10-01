@@ -20,9 +20,7 @@ CUB library, which can be specified to cmake.
 ### Get the sources
 
 The Git repository uses submodules. Include them in a _git clone_ action using the _--recursive_ option.
-
-## clone the project
-git clone --single-branch --branch develop git@github.com:berndrieger/alltoall3D.git --recursive
+> git clone --single-branch --branch develop git@github.com:berndrieger/alltoall3D.git --recursive
 
 In the following
 
