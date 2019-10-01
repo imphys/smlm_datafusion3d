@@ -124,7 +124,7 @@ nosetests -v
 ## Further questions
 
 For any other questions regarding this software, you can  
-- Open new topic at the [issues section](https://github.com/berndrieger/alltoall3D/issues).
+- Search [issues section](https://github.com/berndrieger/alltoall3D/issues) or open a new topic there.
 - Contact the authors:  
 [(Hamidreza Heydarian)](https://github.com/hrheydarian) <H.Heydarian@tudelft.nl>   
 [(Ben van Werkhoven)](https://github.com/benvanwerkhoven) <b.vanwerkhoven@esciencecenter.nl>  
