@@ -102,30 +102,6 @@ the GPU code, you will get errors and MATLAB will exit. To disable the use
 of the GPU code type `make clean` and use `make cpu` instead of `make` or 
 `make all`.
 
-### Further questions
-
-For further questions you can contact the authors:  
-[Hamidreza Heydarian](https://github.com/hrheydarian) <H.Heydarian@tudelft.nl> and  
-[Ben van Werkhoven](https://github.com/benvanwerkhoven) <b.vanwerkhoven@esciencecenter.nl>  
-[Bernd Rieger](https://github.com/berndrieger) <b.rieger@tudelft.nl>  
-
-Note that some files have been reused and adapted from the following sources:  
-
-[GMM registration](https://github.com/bing-jian/gmmreg)    
-	[1] Jian, B. & Vemuri, B. C. Robust point set registration using Gaussian 
-    mixture models. IEEE PAMI 33, 16331645 (2011).
-
-[Lie-algebraic averaging](http://www.ee.iisc.ac.in/labs/cvl/research/rotaveraging/)  
-    [2] Govindu, V. Lie-algebraic averaging for globally consistent motion estimation. 
-    In Proc. IEEE Conf. on Computer Vision and Pattern Recognition (2004).  
-    [3] Chatterjee, A. Geometric calibration and shape refinement for 3D reconstruction
-    PhD thesis. Indian Institute of Science (2015).
-
-[l1-magic optimization toolbox](https://statweb.stanford.edu/~candes/l1magic/)    
-
-[Natural-Order Filename Sort](https://nl.mathworks.com/matlabcentral/fileexchange/47434-natural-order-filename-sort)  
-    
-
 ## Developer instructions
 
 The testing and tuning scripts for the GPU code have been written in Python, 
@@ -158,3 +134,26 @@ the top-level or test directory:
 ```
 nosetests -v
 ```
+
+## Further questions
+
+For further questions you can contact the authors:  
+([Hamidreza Heydarian])(https://github.com/hrheydarian) <H.Heydarian@tudelft.nl>   
+([Ben van Werkhoven])(https://github.com/benvanwerkhoven) <b.vanwerkhoven@esciencecenter.nl>  
+([Bernd Rieger])(https://github.com/berndrieger) <b.rieger@tudelft.nl>  
+
+Note that some files have been reused and adapted from the following sources:  
+
+[GMM registration](https://github.com/bing-jian/gmmreg)    
+	[1] Jian, B. & Vemuri, B. C. Robust point set registration using Gaussian 
+    mixture models. IEEE PAMI 33, 16331645 (2011).
+
+[Lie-algebraic averaging](http://www.ee.iisc.ac.in/labs/cvl/research/rotaveraging/)  
+    [2] Govindu, V. Lie-algebraic averaging for globally consistent motion estimation. 
+    In Proc. IEEE Conf. on Computer Vision and Pattern Recognition (2004).  
+    [3] Chatterjee, A. Geometric calibration and shape refinement for 3D reconstruction
+    PhD thesis. Indian Institute of Science (2015).
+
+[l1-magic optimization toolbox](https://statweb.stanford.edu/~candes/l1magic/)    
+
+[Natural-Order Filename Sort](https://nl.mathworks.com/matlabcentral/fileexchange/47434-natural-order-filename-sort) 
