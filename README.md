@@ -29,6 +29,7 @@ In the following
 - BUILD_DIRECTORY is the directory where the project will be built
 - SOURCE_DIRECTORY is the root directory of the sources
 - CUB_DIRECTORY is the root directory of the downloaded [CUB library](https://nvlabs.github.io/cub/) sources
+- MATLAB_DIRECTORY is the root of MATLAB installation directory (e.g. /usr/local/MATLAB/R2019a)
 
 Use the following commands to build the necessary libraries for this software:
 
@@ -40,8 +41,12 @@ cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_C_COMPILER=gcc-5 -DCUB_ROOT_DIR=CUB_DIR
 make
 ````
 
-CMake locates the code's dependencies and generates a Makefile. Make 
-compiles the mex files and necessary shared libraries. 
+Next, we need to locate mex file and shared library for MATLAB:
+```bash
+
+cd ..
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:MATLAB_DIRECTORY/runtime/glnxa64:MATLAB_DIRECTORY/bin/glnxa64:MATLAB_DIRECTORY/sys/os/glnxa64:MATLAB_DIRECTORY/sys/opengl/lib/glnxa64:BUILD_DIRECTORY/mex
+``` 
 
 ## Installation on Windows
 
