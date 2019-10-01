@@ -60,15 +60,19 @@ disp('2nd Lie-algebraic averaging started!');
 [initAlignedParticles, sup] = makeTemplate(M_new, ptCloudTformed, subParticles, N);
 
 %% STEP 3
-% bootstrapping with imposing prior knowledge
+% bootstrapping with imposing symmetry prior knowledge
 USE_SYMMETRY = 1;   % flag for imposing symmetry prio knowledge
 M1 = [];            % not implemented
 iter = 5;           % number of iterations
 [superParticleWithPK, ~] = one2all3D(initAlignedParticles, iter, M1, '.', sup, USE_SYMMETRY, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
 
 %% STEP 3
-% bootstrapping without imposing prior knowledge
+% bootstrapping without imposing symmetry prior knowledge
 USE_SYMMETRY = 0;   % flag for imposing symmetry prio knowledge
 M1=[];              % not implemented
 iter = 5;           % number of iterations
 [superParticleWithoutPK, ~] = one2all3D(initAlignedParticles, iter, M1, '.', sup, USE_SYMMETRY, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
+
+%% Visualize the results
+visualizeCloud3D(superParticleWithoutPK{1,5},0.05, 1);
+visualizeCloud3D(superParticleWithPK{1,5},0.05, 1);
