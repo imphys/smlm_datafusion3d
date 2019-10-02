@@ -19,7 +19,7 @@ USE_GPU_GAUSSTRANSFORM = 1;
 USE_GPU_EXPDIST = 1;
 
 % load dataset stored in data directory
-filename = 'new_3D_NUP107_ph5000_dol75_tr20nm_3D_paint_ang3D_70_10';
+filename = 'data.mat';
 load(['data/' filename]);
 
 N = 10;     % choose N particles
