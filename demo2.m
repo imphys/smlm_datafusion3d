@@ -4,14 +4,19 @@
 close all
 clear all
 
-% add the required directory to path
-path_matlab = genpath('build/mex/');
-addpath(path_matlab)
-
-path_matlab = genpath('build/figtree/src/mex/');
-addpath(path_matlab)
-
+% add the required dir to path. Choose the right code block for your OS
+% for linux
+path_mex_matlab1 = genpath('build/mex/');
+path_mex_matlab2 = genpath('build/figtree/src/mex/');
 path_matlab = genpath('MATLAB');
+
+% for windows
+% path_mex_matlab1 = genpath('build\Debug\mex');
+% path_mex_matlab2 = genpath('build\figtree\Debug');
+% path_matlab = genpath('MATLAB');
+
+addpath(path_mex_matlab1)
+addpath(path_mex_matlab2)
 addpath(path_matlab)
 
 % CPU/GPU settings (CPU = 0, GPU = 1)
@@ -19,10 +24,10 @@ USE_GPU_GAUSSTRANSFORM = 1;
 USE_GPU_EXPDIST = 1;
 
 % load dataset stored in data directory
-filename = 'data';
+filename = 'new_3D_NUP107_ph2000_dol75_tr20nm_3D_paint_ang3D_10_9_200.mat';
 load(['data/' filename]);
 
-N = 10;     % choose N particles
+N = 200;     % choose N particles
 if N > numel(particles)
     N = numel(particles);
 end
@@ -79,5 +84,15 @@ visualizeCloud3D(superParticleWithPK{1,5},0.05, 1);
 
 %% 
 % get final aligned particles and their absolute transformations
-xSuperParticle = superParticleWithPK{1,5};
+xSuperParticle = superParticleWithoutPK{1,5};
 [finalParticles, transform] = get_final_transform_params(xSuperParticle, subParticles);
+
+%%
+% separate clusters of particles
+nClust = 3;
+newSuperParticles = separateClusters(finalParticles, 1, nClust);
+
+%%
+for i=1:nClust
+    visualizeCloud3D(newSuperParticles{1,i},0.05, 1);
+end
