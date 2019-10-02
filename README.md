@@ -84,7 +84,7 @@ Then open MS Visual Studio, by double clicking on ALL_BUILD.vcxproj and build al
 
 ### Use the code
 
-Then, open MATLAB and run the demo script
+Open MATLAB and comment/uncomment the lines which add mex files to MATLAB path. Then, run the demo script
 ```bash
 >> demo1.m
 ````
