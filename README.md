@@ -80,7 +80,7 @@ cmake -G "Visual Studio 15 2017 Win64" -DCUB_ROOT_DIR=CUB_DIRECTORY SOURCE_DIREC
 make
 ````
 
-Then open MS Visual Studio, by double clicking on ALL_BUILD.vcxproj and build all the targets. You might need to manually build the targets expdist and gausstransform before building the other targets.
+Then open MS Visual Studio, by double clicking on ALL_BUILD.vcxproj and build all the targets (press `F7`). You might need to manually build the targets expdist and gausstransform before building the other targets.
 
 ### Use the code
 
