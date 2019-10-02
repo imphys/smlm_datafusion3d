@@ -4,14 +4,19 @@
 close all
 clear all
 
-% add the required directory to path
-path_matlab = genpath('build/mex/');
-addpath(path_matlab)
-
-path_matlab = genpath('build/figtree/src/mex/');
-addpath(path_matlab)
-
+% add the required dir to path. Choose the right code block for your OS
+% for linux
+path_mex_matlab1 = genpath('build/mex/');
+path_mex_matlab2 = genpath('build/figtree/src/mex/');
 path_matlab = genpath('MATLAB');
+
+% for windows
+% path_mex_matlab1 = genpath('build\Debug\mex');
+% path_mex_matlab2 = genpath('build\figtree\Debug');
+% path_matlab = genpath('MATLAB');
+
+addpath(path_mex_matlab1)
+addpath(path_mex_matlab2)
 addpath(path_matlab)
 
 % CPU/GPU settings (CPU = 0, GPU = 1)
