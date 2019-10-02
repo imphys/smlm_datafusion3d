@@ -12,8 +12,9 @@ works on localization data not pixelated images.
 - [CMake](https://cmake.org/) (version>3.14.3)
 - [CUDA toolkit](https://developer.nvidia.com/cuda-downloads) (version>8.0) 
 - [CUB library](https://nvlabs.github.io/cub/) (version>1.8.0)
-- [GNU C compiler](https://gcc.gnu.org/) (version>5.5.0)
 - [The DIPImage toolbox](http://www.diplib.org) (version>2.9)
+- [GNU C compiler](https://gcc.gnu.org/) (version>5.5.0, for Linux)
+- [Viusal Studio](https://visualstudio.microsoft.com/downloads/) (Visual Studio 15 2017, for Windows)
 
 ## Installation and usage on Linux
 
@@ -55,7 +56,37 @@ matlab
 ```
 ## Installation and usage on Windows
 
-To be written.
+### Get the sources
+
+The Git repository uses submodules. Include them in a _git clone_ action using the _--recursive_ option.
+```bash
+
+git clone --single-branch --branch develop git@github.com:berndrieger/alltoall3D.git --recursive
+````
+### Compile the code
+In the following
+
+- BUILD_DIRECTORY is the directory where the project will be built
+- SOURCE_DIRECTORY is the root directory of the sources
+- CUB_DIRECTORY is the root directory of the downloaded [CUB library](https://nvlabs.github.io/cub/) sources
+
+Use the following commands from Command Prompt (type `cmd` in Run) to build the necessary libraries for this software:
+
+```bash
+
+mkdir build
+cd build
+cmake -G "Visual Studio 15 2017 Win64" -DCUB_ROOT_DIR=CUB_DIRECTORY SOURCE_DIRECTORY
+make
+````
+
+Then open MS Visual Studio, by double clicking on ALL_BUILD.vcxproj and build all the targets. You might need to manually build the targets expdist and gausstransform before building the other targets.
+
+### Use the code
+
+Then, open MATLAB and run the demo script
+```bash
+>> demo1.m
 
 ## Troubleshooting
 
