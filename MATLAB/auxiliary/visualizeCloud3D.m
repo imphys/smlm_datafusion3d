@@ -49,7 +49,7 @@ function [density] = visualizeCloud3D(data, scale, USE_GPU)
 %     end        
     
     % compute the intensity of each point using the Gauss transform
-    parfor i=1:size(data,1)
+    for i=1:size(data,1)
 
         [density(i),~] = GaussTransform(data,data(i,:), scale, USE_GPU);
 
