@@ -87,6 +87,7 @@ Then open MS Visual Studio, by double clicking on ALL_BUILD.vcxproj and build al
 Then, open MATLAB and run the demo script
 ```bash
 >> demo1.m
+````
 
 ## Troubleshooting
 
