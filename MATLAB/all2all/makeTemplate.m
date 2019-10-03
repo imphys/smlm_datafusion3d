@@ -29,9 +29,8 @@
 %
 % Hamidreza Heydarian, 2019
 
-function [initAlignedParticles, sup] = makeTemplate(M_new, ptCloudTformed, subParticles, N)
+function [initAlignedParticles, sup] = makeTemplate(M_new, subParticles, N)
 
-    ptCloudestTformed = cell(1,N);      % first aligned pointClouds
     initAlignedParticles = cell(1,N);   % first aligned particles
     sup =[];                            % data-driven template
     for i=1:N       
@@ -39,17 +38,22 @@ function [initAlignedParticles, sup] = makeTemplate(M_new, ptCloudTformed, subPa
         estA = eye(4);
         estA(1:3,1:3) = M_new(1:3,1:3,i); 
         estA(4,:) = M_new(:,4,i)';
-        estTform = affine3d(estA);
-
-        % transform each point cloud
-        ptCloudestTformed{i} = pctransform2(ptCloudTformed{i}, invert(estTform));
+        estTform = invTransform(estA);
+        r = estTform(1:3, 1:3);
+        t = estTform(4, 1:3);
+        
+        % transform each particle
+        subParticlesTformed = subParticles{1,i}.points * r;
+        subParticlesTformed(:,1) = subParticles{1,i}.points(:,1) + t(1);
+        subParticlesTformed(:,2) = subParticles{1,i}.points(:,2) + t(2);
+        subParticlesTformed(:,3) = subParticles{1,i}.points(:,3) + t(3);        
 
         % initial aligned particles for bootstrapping
-        initAlignedParticles{1,i}.points = ptCloudestTformed{i}.Location;
+        initAlignedParticles{1,i}.points = subParticlesTformed;
         initAlignedParticles{1,i}.sigma = subParticles{1,i}.sigma;    
 
         % stack all registered particles
-        sup = [sup; ptCloudestTformed{i}.Location];
+        sup = [sup; subParticlesTformed];
 
     end
 
