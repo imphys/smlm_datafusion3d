@@ -24,7 +24,7 @@ USE_GPU_GAUSSTRANSFORM = 1;
 USE_GPU_EXPDIST = 1;
 
 % load dataset stored in data directory
-filename = 'new_3D_NUP107_ph2000_dol75_tr20nm_3D_paint_ang3D_10_9_200.mat';
+filename = '24-Sep-2019_dodecahedron_npar_100_DOL_1.mat';
 load(['data/' filename]);
 
 N = 200;     % choose N particles
@@ -35,10 +35,11 @@ subParticles = cell(1,N);
 ptCloudTformed = cell(1,N);
 
 for i=1:N
-    subParticles{1,i}.points = particles{1,i}.coords(:,1:3);
+    subParticles{1,i}.points = particles{1,i}.coords(:,1:3)/100;
     idxZ = find(subParticles{1,i}.points(:,3) > 1 | subParticles{1,i}.points(:,3) < -1);
     subParticles{1,i}.points(idxZ,:) = [];
-    subParticles{1,i}.sigma = [particles{1,i}.coords(:,5).^2 particles{1,i}.coords(:,10).^2];
+%     subParticles{1,i}.sigma = [particles{1,i}.coords(:,5).^2 particles{1,i}.coords(:,10).^2];
+    subParticles{1,i}.sigma = [particles{1,i}.coords(:,5)/100 particles{1,i}.coords(:,10)/100].^2;
     subParticles{1,i}.sigma(idxZ,:) = [];
     ptCloudTformed{i} = pointCloud(subParticles{1,i}.points);
 end
@@ -62,7 +63,7 @@ disp('2nd Lie-algebraic averaging started!');
 [M_new] = MeanSE3Graph(RM_new,I_new);
 
 % 2-4 make the first data-driven template
-[initAlignedParticles, sup] = makeTemplate(M_new, ptCloudTformed, subParticles, N);
+[initAlignedParticles, sup] = makeTemplate(M_new, subParticles, N);
 
 %% STEP 3
 % bootstrapping with imposing symmetry prior knowledge
@@ -94,5 +95,6 @@ newSuperParticles = separateClusters(finalParticles, 1, nClust);
 
 %%
 for i=1:nClust
-    visualizeCloud3D(newSuperParticles{1,i},0.05, 1);
+%     visualizeCloud3D(newSuperParticles{1,i},0.05, 1);
+    visualizeSMLM3D(newSuperParticles{1,i},0.05, 1);
 end

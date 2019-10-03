@@ -27,12 +27,11 @@ USE_GPU_EXPDIST = 1;
 filename = 'data.mat';
 load(['data/' filename]);
 
-N = 10;     % choose N particles
+N = 20;     % choose N particles
 if N > numel(particles)
     N = numel(particles);
 end
 subParticles = cell(1,N);
-ptCloudTformed = cell(1,N);
 
 for i=1:N
     subParticles{1,i}.points = particles{1,i}.coords(:,1:3);
@@ -40,7 +39,6 @@ for i=1:N
     subParticles{1,i}.points(idxZ,:) = [];
     subParticles{1,i}.sigma = [particles{1,i}.coords(:,5).^2 particles{1,i}.coords(:,10).^2];
     subParticles{1,i}.sigma(idxZ,:) = [];
-    ptCloudTformed{i} = pointCloud(subParticles{1,i}.points);
 end
 
 %% STEP 1
@@ -62,7 +60,7 @@ disp('2nd Lie-algebraic averaging started!');
 [M_new] = MeanSE3Graph(RM_new,I_new);
 
 % 2-4 make the first data-driven template
-[initAlignedParticles, sup] = makeTemplate(M_new, ptCloudTformed, subParticles, N);
+[initAlignedParticles, sup] = makeTemplate(M_new, subParticles, N);
 
 %% STEP 3
 % bootstrapping with imposing symmetry prior knowledge
