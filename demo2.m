@@ -32,7 +32,6 @@ if N > numel(particles)
     N = numel(particles);
 end
 subParticles = cell(1,N);
-ptCloudTformed = cell(1,N);
 
 for i=1:N
     subParticles{1,i}.points = particles{1,i}.coords(:,1:3)/100;
@@ -41,7 +40,6 @@ for i=1:N
 %     subParticles{1,i}.sigma = [particles{1,i}.coords(:,5).^2 particles{1,i}.coords(:,10).^2];
     subParticles{1,i}.sigma = [particles{1,i}.coords(:,5)/100 particles{1,i}.coords(:,10)/100].^2;
     subParticles{1,i}.sigma(idxZ,:) = [];
-    ptCloudTformed{i} = pointCloud(subParticles{1,i}.points);
 end
 
 %% STEP 1
