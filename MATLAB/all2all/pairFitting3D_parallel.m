@@ -56,7 +56,7 @@ function [parameter, registered_model, max_value] = pairFitting3D_parallel(M, S,
     % pairwise registration
     parfor i=1:N_init
         
-        qtmp = angle2quat(a(i), b(i), c(i));
+        qtmp = ang2q(a(i), b(i), c(i));
         
         q = [qtmp(2) qtmp(3) qtmp(4) qtmp(1) 0 0 0];         
     
