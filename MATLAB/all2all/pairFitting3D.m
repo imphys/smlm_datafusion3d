@@ -43,7 +43,7 @@ ang3 = [0];
 
 for init_iter=1:numel(a)
 
-    qtmp = angle2quat(a(init_iter), b(init_iter), c(init_iter));
+    qtmp = ang2q(a(init_iter), b(init_iter), c(init_iter));
     
     % initialize gmmreg
     f_config = initialize_config(double(ptc1), double(ptc2), 'rigid3d', nIteration);
