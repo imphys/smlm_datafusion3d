@@ -9,8 +9,8 @@ works on localization data not pixelated images.
 ## Requirements
 
 - [MATLAB](https://nl.mathworks.com/products/matlab.html) (version>2018a)
-    1- distrib_computing_toolbox  
-    2- statistics_toolbox  
+    - distrib_computing_toolbox  
+    - statistics_toolbox  
 - [CMake](https://cmake.org/) (version>3.14.3)
 - [CUDA toolkit](https://developer.nvidia.com/cuda-downloads) (version>8.0) 
 - [CUB library](https://nvlabs.github.io/cub/) (version>1.8.0)
