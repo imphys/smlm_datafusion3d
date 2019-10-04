@@ -15,6 +15,7 @@ function [result] = rotate_by_pifourth3d(pointset)
 %% $Revision: 116 $
 %%=====================================================================
 angle = floor(8*rand)*pi/4;
-r = rotz(rad2deg(angle));
+angdeg = rad2deg(angle);
+r = [cosd(angdeg) -sind(angdeg) 0; sind(angdeg) cosd(angdeg) 0; 0 0 1];
 result = pointset*r';
 
