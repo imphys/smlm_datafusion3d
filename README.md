@@ -18,7 +18,7 @@ works on localization data not pixelated images.
 - [GNU C compiler](https://gcc.gnu.org/) (version>5.5.0, for Linux)
 - [Viusal Studio](https://visualstudio.microsoft.com/downloads/) (Visual Studio 15 2017, for Windows)
 
-## Installation and usage on Linux
+## Installation and usage on Linux 
 
 ### Get the sources
 
