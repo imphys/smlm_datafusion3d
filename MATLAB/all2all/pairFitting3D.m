@@ -56,15 +56,13 @@ for init_iter=1:numel(a)
     % calculate cost again and store
     M = double(ptc1);
     S = double(ptc2);
-    q = [tmpParam{1,init_iter}(4) tmpParam{1,init_iter}(1) tmpParam{1,init_iter}(2) tmpParam{1,init_iter}(3)];
-    tmpRR = q2R(q);
-    tmpTT = repmat([tmpParam{1,init_iter}(5) tmpParam{1,init_iter}(6) tmpParam{1,init_iter}(7)], size(M,1),1);
-    M = (M - tmpTT) * tmpRR' * tmpRR';
 
+    M_points_transformed = transform_pointset(M, 'rigid3d', tmpParam{1,init_iter});
+    RM = quaternion2rotation(tmpParam{1,init_iter}(1:4));
     if USE_GPU_EXPDIST
-        cost(init_iter) = mex_expdist(S, M, sig2, sig1, tmpRR');
+        cost(init_iter) = mex_expdist(S, M_points_transformed, sig2, sig1, RM);
     else
-        cost(init_iter) = mex_expdist_cpu(S, M, sig2, sig1, tmpRR');
+        cost(init_iter) = mex_expdist_cpu(S, M_points_transformed, sig2, sig1, RM);
     end
 
 end
