@@ -70,16 +70,15 @@ function [parameter, registered_model, max_value] = pairFitting3D_parallel(M, S,
     end
     
     parfor i=1:N_init
-        q = [param{i}(4) param{i}(1) param{i}(2) param{i}(3)];
-        tmpRR = q2R(q);
-        tmpTT = repmat([param{1,i}(5) param{1,i}(6) param{1,i}(7)], size(M,1),1);
 
+        M_points_transformed = transform_pointset(M.points, 'rigid3d', param{i});        
+        RM = quaternion2rotation(param{i}(1:4));
         if USE_GPU_EXPDIST
-            cost(i) = mex_expdist(S_resampled.points, (M.points - tmpTT) * tmpRR' * tmpRR',...
-                                  S_resampled.sigma, M.sigma, tmpRR');
+            cost(i) = mex_expdist(S_resampled.points, M_points_transformed,...
+                                  S_resampled.sigma, M.sigma, RM);
         else
-            cost(i) = mex_expdist_cpu(S_resampled.points, (M.points - tmpTT) * tmpRR' * tmpRR',...
-                                      S_resampled.sigma, M.sigma, tmpRR');
+            cost(i) = mex_expdist_cpu(S_resampled.points, M_points_transformed,...
+                                      S_resampled.sigma, M.sigma, RM);
         end
     end
 
