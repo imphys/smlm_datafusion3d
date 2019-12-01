@@ -35,18 +35,20 @@ function [initAlignedParticles, sup] = makeTemplate(M_new, subParticles, N)
     sup =[];                            % data-driven template
     for i=1:N       
 
-        estA = eye(4);
-        estA(1:3,1:3) = M_new(1:3,1:3,i); 
-        estA(4,:) = M_new(:,4,i)';
-        estTform = invTransform(estA);
-        r = estTform(1:3, 1:3);
-        t = estTform(4, 1:3);
+%         estA = eye(4);
+%         estA(1:3,1:3) = M_new(1:3,1:3,i); 
+%         estA(4,:) = M_new(:,4,i)';
+%         estTform = invTransform(estA);
+%         r = estTform(1:3, 1:3);
+%         t = estTform(4, 1:3);
+        r = inv(M_new(1:3,1:3,i));
+        t = M_new(:,4,i)';
         
         % transform each particle
         subParticlesTformed = subParticles{1,i}.points * r;
-        subParticlesTformed(:,1) = subParticles{1,i}.points(:,1) + t(1);
-        subParticlesTformed(:,2) = subParticles{1,i}.points(:,2) + t(2);
-        subParticlesTformed(:,3) = subParticles{1,i}.points(:,3) + t(3);        
+        subParticlesTformed(:,1) = subParticlesTformed(:,1) + t(1);
+        subParticlesTformed(:,2) = subParticlesTformed(:,2) + t(2);
+        subParticlesTformed(:,3) = subParticlesTformed(:,3) + t(3);        
 
         % initial aligned particles for bootstrapping
         initAlignedParticles{1,i}.points = subParticlesTformed;
