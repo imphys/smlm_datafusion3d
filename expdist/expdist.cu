@@ -67,7 +67,7 @@ GPUExpDist::GPUExpDist(int n, int argdim) {
         fprintf(stderr, "Error in cudaMalloc: %s\n", cudaGetErrorString(err));
         exit(1);
     }
-    err = cudaMalloc((void **)&d_cross_term, max_n*sizeof(double));
+    err = cudaMalloc((void **)&d_cross_term, 20*max_n*sizeof(double));
     if (err != cudaSuccess) {
         fprintf(stderr, "Error in cudaMalloc: %s\n", cudaGetErrorString(err));
         exit(1);
@@ -225,6 +225,11 @@ double GPUExpDist::compute(const double *A, const double *B, int m, int n, const
         }
 
     } else {
+
+        fprintf(stderr, "Error in Expdist GPU: number of blocks exceeds buffer for intermediate results\n");
+        exit(1);
+
+        /*
         //setup kernel execution parameters
         grid.x = (int) ceilf(m / (float)(block_size_x * tile_size_x));
     
@@ -234,6 +239,8 @@ double GPUExpDist::compute(const double *A, const double *B, int m, int n, const
         } else {
             ExpDist_column3D<<<grid, threads, 0, stream>>>(d_A, d_B, m, n, d_scale_A, d_scale_B, d_cross_term); 
         }
+        */
+
     }
 
     //call the second kernel
