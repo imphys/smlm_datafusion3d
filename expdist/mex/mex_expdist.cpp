@@ -131,7 +131,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
     result = mxGetPr(plhs[0]);
 
     if (gpu_expdist == (GPUExpDist *)NULL) {
-        gpu_expdist = new GPUExpDist(1000000, dim);
+        gpu_expdist = new GPUExpDist(100000, dim);
     } else {
     if (gpu_expdist->dim != dim) {
             mexErrMsgTxt("Error GPUExpDist dimension does not match");
