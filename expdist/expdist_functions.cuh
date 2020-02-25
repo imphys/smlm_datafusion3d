@@ -13,6 +13,7 @@
 #endif // __CUDACC__
 
 #include "matrix_functions.cuh"
+#include <math.h>
 
 template <typename T>
 HOST_DEVICE
@@ -95,6 +96,8 @@ T compute_expdist_3D(const T (&A)[dim], const T (&B)[dim], const T (&Sigma_i)[9]
     //printf("%f, %f, [%f, %f, %f]\n", -1.0*exponent, exp(-1.0*exponent), temp[0], temp[1], temp[2]);
 
     //cross_term += exp(-dist_ij / (scale_A[i] + scale_B[j]) );
+    T norm = 0;
+    norm = sqrt(determinant(temp_matrix));
     cross_term += exp(-1.0*exponent);
 
     return cross_term;
