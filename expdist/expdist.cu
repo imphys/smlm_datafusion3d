@@ -20,6 +20,8 @@
 #define reduce_block_size 256
 
 
+#define INTERMEDIATE_BUFFER_MULTIPLE 20
+
 #include "kernels.cuh"
 
 __constant__ double rotation_matrixd[9];
@@ -67,7 +69,7 @@ GPUExpDist::GPUExpDist(int n, int argdim) {
         fprintf(stderr, "Error in cudaMalloc: %s\n", cudaGetErrorString(err));
         exit(1);
     }
-    err = cudaMalloc((void **)&d_cross_term, 20*max_n*sizeof(double));
+    err = cudaMalloc((void **)&d_cross_term, INTERMEDIATE_BUFFER_MULTIPLE*max_n*sizeof(double));
     if (err != cudaSuccess) {
         fprintf(stderr, "Error in cudaMalloc: %s\n", cudaGetErrorString(err));
         exit(1);
@@ -212,7 +214,7 @@ double GPUExpDist::compute(const double *A, const double *B, int m, int n, const
 
     //check if the number of thread blocks does not exceed the allocated space
     //if it does, run the ExpDist_column kernel that uses fewer thread blocks
-    if (nblocks < max_n) {
+    if (nblocks < INTERMEDIATE_BUFFER_MULTIPLE*max_n) {
         //setup kernel execution parameters
         grid.x = (int) ceilf(m / (float)(block_size_x * tile_size_x));
         grid.y = (int) ceilf(n / (float)(block_size_y * tile_size_y));
