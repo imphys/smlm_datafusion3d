@@ -75,7 +75,7 @@ function [parameter, registered_model, max_value] = pairFitting3D_parallel(M, S,
         RM = quaternion2rotation(param{i}(1:4));
         if USE_GPU_EXPDIST
             cost(i) = mex_expdist(S_resampled.points, M_points_transformed,...
-                                  S_resampled.sigma, M.sigma, RM);
+                                  correct_uncer(S_resampled.sigma), M.sigma, RM);
         else
             cost(i) = mex_expdist_cpu(S_resampled.points, M_points_transformed,...
                                       S_resampled.sigma, M.sigma, RM);

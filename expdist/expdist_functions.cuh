@@ -13,25 +13,68 @@
 #endif // __CUDACC__
 
 #include "matrix_functions.cuh"
+#include <stdio.h>
 #include <math.h>
 
 template <typename T>
 HOST_DEVICE
-void rotate_scale(T *rotated_scales, const T *rotation_matrix, const T *transposed_rotation_matrix, const int i, const T *scale_B) {
+void rotate_scale(T *rotated_scales, const T *rotation_matrix, const T *transposed_rotation_matrix, const int n, const int i, const T *scale_B) {
 
     //construct matrix sigma with uncertainties on diagonal
     T sigma[9];
     zero_matrix(sigma);
-    sigma[0] = scale_B[i*2+0];   // 0 1 2
-    sigma[4] = scale_B[i*2+0];   // 3 4 5
-    sigma[8] = scale_B[i*2+1];   // 6 7 8
+    sigma[0] = scale_B[i];   // 0 1 2
+    sigma[4] = scale_B[i];   // 3 4 5
+    sigma[8] = scale_B[i + n];   // 6 7 8
+
+    T rotation_matrix2[9];
+    zero_matrix(rotation_matrix2);
+    for (int i=0; i<3; i++){
+	for (int j=0; j<3; j++){
+		rotation_matrix2[i*3+j] = rotation_matrix[i+j*3];
+	}
+    }
+
+    T transposed_rotation_matrix2[9];
+    zero_matrix(transposed_rotation_matrix2);
+    for (int i=0; i<3; i++){
+	for (int j=0; j<3; j++){
+		transposed_rotation_matrix2[i*3+j] = transposed_rotation_matrix[i+j*3];
+	}
+    }
+
+    /*printf("Rotation_Matrix:\n");
+    for (int ii=0; ii<9; ii++) {            
+	printf("%f ", rotation_matrix[ii]);
+    }  
+    printf("\n");
+
+    printf("Rotation_Matrix_Transpose:\n");
+    for (int ii=0; ii<9; ii++) {            
+	printf("%f ", transposed_rotation_matrix[ii]);
+    }  
+    printf("\n");
+
+    printf("Rotation_Matrix2:\n");
+    for (int ii=0; ii<9; ii++) {            
+	printf("%f ", rotation_matrix2[ii]);
+    }  
+    printf("\n");
+
+    printf("Rotation_Matrix_Transpose2:\n");
+    for (int ii=0; ii<9; ii++) {            
+	printf("%f ", transposed_rotation_matrix2[ii]);
+    }  
+    printf("\n");*/
+
+	
 
     //multiply sigma with transposed rotation matrix
     T temp[9];
-    multiply_matrix<T, 9, 3>(temp, sigma, reinterpret_cast<const T(&)[9]>(*transposed_rotation_matrix));
+    multiply_matrix<T, 9, 3>(temp, sigma, reinterpret_cast<const T(&)[9]>(*transposed_rotation_matrix2));
 
     //multiply with rotation matrix, reuse sigma to store result
-    multiply_matrix<T, 9, 3>(sigma, reinterpret_cast<const T(&)[9]>(*rotation_matrix), temp);
+    multiply_matrix<T, 9, 3>(sigma, reinterpret_cast<const T(&)[9]>(*rotation_matrix2), temp);
 
     //store result
     for (int ii=0; ii<9; ii++) {
@@ -69,11 +112,25 @@ T compute_expdist_3D(const T (&A)[dim], const T (&B)[dim], const T (&Sigma_i)[9]
     //obtain inverted matrix
     T Inverted[9];
     invert_matrix(Inverted, temp_matrix);
-    /*
-    printf("input:\n");
+   
+    /*printf("Sigma_i:\n");
     for (int ii=0; ii<3; ii++) {
         for (int jj=0; jj<3; jj++) {
             printf("%f ", Sigma_i[ii*3+jj]);
+        }
+        printf("\n");
+    }
+    printf("Sigma_j:\n");
+    for (int ii=0; ii<3; ii++) {
+        for (int jj=0; jj<3; jj++) {
+            printf("%f ", Sigma_j[ii*3+jj]);
+        }
+        printf("\n");
+    } 
+    printf("temp_matrix:\n");
+    for (int ii=0; ii<3; ii++) {
+        for (int jj=0; jj<3; jj++) {
+            printf("%f ", temp_matrix[ii*3+jj]);
         }
         printf("\n");
     }
@@ -83,8 +140,8 @@ T compute_expdist_3D(const T (&A)[dim], const T (&B)[dim], const T (&Sigma_i)[9]
             printf("%f ", Inverted[ii*3+jj]);
         }
         printf("\n");
-    }
-    */
+    }*/
+    
 
     //multiply with dist_ij
     T temp[dim];
@@ -93,12 +150,27 @@ T compute_expdist_3D(const T (&A)[dim], const T (&B)[dim], const T (&Sigma_i)[9]
     //dot product to obtain scalar value
     T exponent = 0;
     dot_product(exponent, dist_ij, temp);
-    //printf("%f, %f, [%f, %f, %f]\n", -1.0*exponent, exp(-1.0*exponent), temp[0], temp[1], temp[2]);
+
+    /*printf("dist_ij:\n");
+    for (int ii=0; ii<3; ii++) {
+        printf("%f ", dist_ij[ii]);
+    }
+    printf("\n");
+    printf("temp:\n");
+    for (int ii=0; ii<3; ii++) {
+        printf("%f ", temp[ii]);
+    }
+    printf("\n");
+
+    printf("%f, %f, [%f, %f, %f]\n", -1.0*exponent, exp(-1.0*exponent), temp[0], temp[1], temp[2]);*/
 
     //cross_term += exp(-dist_ij / (scale_A[i] + scale_B[j]) );
     T norm = 0;
     norm = sqrt(determinant(temp_matrix));
-    cross_term += exp(-1.0*exponent);
+
+    //printf("norm: %f, sqrt(norm): %f \n",norm,sqrt(norm));
+
+    cross_term += exp(-1.0*exponent)/norm;
 
     return cross_term;
 

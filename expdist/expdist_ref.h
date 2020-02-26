@@ -2,6 +2,7 @@
 
 #include "expdist_functions.cuh"
 
+
 double expdist(const double *A, const double *B, int m, int n, int dim, const double *scale_A, const double *scale_B);
 
 
@@ -30,9 +31,9 @@ T expdist3D(const T *A, const T *B, const int m, const int n, const T *scale_A, 
         //assume sigma in x and y are equal and scale_A only stores 2 values per localization
         T Sigma_i[9];
         zero_matrix(Sigma_i);
-        Sigma_i[0] = scale_A[i * 2 + 0];   // 0 1 2
-        Sigma_i[4] = scale_A[i * 2 + 0];   // 3 4 5
-        Sigma_i[8] = scale_A[i * 2 + 1];   // 6 7 8
+        Sigma_i[0] = scale_A[i];   // 0 1 2
+        Sigma_i[4] = scale_A[i];   // 3 4 5
+        Sigma_i[8] = scale_A[i + m];   // 6 7 8
 
         for (j = 0; j<n; j++) {
 
@@ -70,7 +71,7 @@ void rotate_scales(T *rotated_scales, const T *rotation_matrix, const int n, con
 
     for (int i = 0; i<n; i++) {
 
-        rotate_scale(rotated_scales, rotation_matrix, transposed_rotation_matrix, i, scale_B);
+        rotate_scale(rotated_scales, rotation_matrix, transposed_rotation_matrix, n, i, scale_B);
     }
 
 }

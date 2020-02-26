@@ -60,7 +60,7 @@ for init_iter=1:numel(a)
     M_points_transformed = transform_pointset(M, 'rigid3d', tmpParam{1,init_iter});
     RM = quaternion2rotation(tmpParam{1,init_iter}(1:4));
     if USE_GPU_EXPDIST
-        cost(init_iter) = mex_expdist(S, M_points_transformed, sig2, sig1, RM);
+        cost(init_iter) = mex_expdist(S, M_points_transformed, correct_uncer(sig2), sig1, RM);
     else
         cost(init_iter) = mex_expdist_cpu(S, M_points_transformed, sig2, sig1, RM);
     end

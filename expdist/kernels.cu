@@ -79,7 +79,7 @@ __global__ void rotate_scales_double(double *rotated_scales, const int n, const 
     int x = blockIdx.x * block_size_x + threadIdx.x;
 
     if (x < n) {
-        rotate_scale(rotated_scales, rotation_matrix, rotation_matrix_transposed, x, scale_B);
+        rotate_scale(rotated_scales, rotation_matrix, rotation_matrix_transposed, n, x, scale_B);
     }
 
 }
