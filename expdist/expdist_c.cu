@@ -2,6 +2,7 @@
 
 //definition
 #include "expdist_ref.h"
+#include "expdist_ref.cu"
 
 
 

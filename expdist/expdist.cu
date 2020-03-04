@@ -22,10 +22,8 @@
 
 #define INTERMEDIATE_BUFFER_MULTIPLE 20
 
-#include "kernels.cuh"
-
-__constant__ double rotation_matrixd[9];
-__constant__ double rotation_matrix_transposedd[9];
+//#include "kernels.cuh"
+#include "kernels.cu"
 
 GPUExpDist::GPUExpDist(int n, int argdim) {
     //allocate GPU memory for size max_n
@@ -174,7 +172,7 @@ double GPUExpDist::compute(const double *A, const double *B, int m, int n, const
         //call rotate scales kernel
         dim3 threads(block_size_x, 1, 1);
         dim3 grid((int) ceil(n / (float)(block_size_x)), 1, 1);
-        rotate_scales_double<<<grid, threads, 0, stream_b>>>(d_scale_B, n, d_scale_B_temp, ptrto_rotation_matrixd, ptrto_rotation_matrix_transposedd);
+        rotate_scales_double<<<grid, threads, 0, stream_b>>>(d_scale_B, n, d_scale_B_temp);
         cudaEventRecord(event, stream_b);
 
 
