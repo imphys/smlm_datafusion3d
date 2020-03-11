@@ -14,7 +14,7 @@ class GPUExpDist {
         DLL_EXPORT GPUExpDist(int max_n, int argdim);
         ~GPUExpDist();
         DLL_EXPORT double compute(const double *A, const double *B, int m, int n, const double *scale_A, const double *scale_B);
-        DLL_EXPORT double compute(const double *A, const double *B, int m, int n, const double *scale_A, const double *scale_B, const double *rotation_matrix);
+        DLL_EXPORT double compute(const double *A, const double *B, int m, int n, const double *scale_A, const double *scale_B, const double *rotation_matrix, int use_prerotated_scale_B);
         int dim;
         int max_n;
         int scale_A_dim;

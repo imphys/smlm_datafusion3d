@@ -122,10 +122,10 @@ GPUExpDist::~GPUExpDist() {
 } 
 
 double GPUExpDist::compute(const double *A, const double *B, int m, int n, const double *scale_A, const double *scale_B) {
-  return GPUExpDist::compute(A, B, m, n, scale_A, scale_B, (const double *)NULL);
+  return GPUExpDist::compute(A, B, m, n, scale_A, scale_B, (const double *)NULL, 0);
 }
 
-double GPUExpDist::compute(const double *A, const double *B, int m, int n, const double *scale_A, const double *scale_B, const double *rotation_matrix) {
+double GPUExpDist::compute(const double *A, const double *B, int m, int n, const double *scale_A, const double *scale_B, const double *rotation_matrix, int use_prerotated_scale_B) {
 
     double cost;
     cudaError_t err;
@@ -148,7 +148,7 @@ double GPUExpDist::compute(const double *A, const double *B, int m, int n, const
     }
 
     //prepare scale_B if needed
-    if (dim == 3) {
+    if (dim == 3 && use_prerotated_scale_B == 0) {
         err = cudaMemcpyAsync(d_scale_B_temp, scale_B, scale_A_dim*n*sizeof(double), cudaMemcpyHostToDevice, stream_b);
         if (err != cudaSuccess) {
             fprintf(stderr, "Error in cudaMemcpyAsync d_scale_B: %s\n", cudaGetErrorString(err));
@@ -261,14 +261,14 @@ double GPUExpDist::compute(const double *A, const double *B, int m, int n, const
 
 extern "C"
 float test_GPUExpDistHost(double *cost, const double* A, const double* B,
-            int m, int n, int dim, const double *scale_A, const double *scale_B, int max_n, const double *rotation_matrix) {
+            int m, int n, int dim, const double *scale_A, const double *scale_B, int max_n, const double *rotation_matrix, int use_prerotated_scale_B) {
 
     GPUExpDist gpu_expdist(1000000, dim);
 
     if (dim == 2) {
         *cost = gpu_expdist.compute(A, B, m, n, scale_A, scale_B);
     } else {
-        *cost = gpu_expdist.compute(A, B, m, n, scale_A, scale_B, rotation_matrix);
+        *cost = gpu_expdist.compute(A, B, m, n, scale_A, scale_B, rotation_matrix, use_prerotated_scale_B);
     }
 
     cudaDeviceSynchronize();

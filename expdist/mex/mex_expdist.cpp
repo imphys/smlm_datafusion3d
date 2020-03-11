@@ -36,6 +36,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
 {
     /* Declare variables */ 
     int m, n, dim; 
+    int use_prerotated_scale_B = 0;
     double *A, *B, *result, *scale_A, *scale_B;
 
     //prevent clearing from memory
@@ -91,12 +92,12 @@ void mexFunction(int nlhs,       mxArray *plhs[],
         if (nrhs != 4) {
             mexErrMsgTxt("Four input arguments required.");
         }
-    if (mxGetN(prhs[2])!=1)
+
+        if (mxGetN(prhs[2])!=1)
         {
             mexErrMsgTxt("uncertainties should be a m*1 matrix.");
         }
-
-    if (mxGetN(prhs[3])!=1)
+        if (mxGetN(prhs[3])!=1)
         {
             mexErrMsgTxt("uncertainties should be a n*1 matrix.");
         }
@@ -110,9 +111,13 @@ void mexFunction(int nlhs,       mxArray *plhs[],
             mexErrMsgTxt("uncertainties should be a m*2 matrix for 3D.");
         }
 
-        if (mxGetN(prhs[3])!=2)
+        if (mxGetN(prhs[3])==2 || mxGetN(prhs[3])==9)
         {
-            mexErrMsgTxt("uncertainties should be a n*2 matrix for 3D.");
+            if (mxGetN(prhs[3])==9) {
+                use_prerotated_scale_B = 1;
+            }
+        } else {
+            mexErrMsgTxt("uncertainties should be an n*2 or n*9 matrix for 3D.");
         }
 
         //rotation matrix
@@ -145,7 +150,7 @@ void mexFunction(int nlhs,       mxArray *plhs[],
         *result = gpu_expdist->compute(A, B, m, n, scale_A, scale_B);
     } else if (dim == 3) {
         *result = gpu_expdist->compute(A, B, m, n, scale_A, scale_B, 
-                                       (double *)mxGetPr(prhs[4]));
+                                       (double *)mxGetPr(prhs[4]), use_prerotated_scale_B);
     }
 
 

@@ -3,11 +3,8 @@ if(CUDA_FOUND)
 
     set(sources
         expdist.cu
-        expdist_c.cu
         expdist_functions.cuh
         expdist_ref.cu
-        kernels.cu
-        kernels.cuh
         matrix_functions.cuh
         expdist.h
         expdist_ref.h

@@ -5,8 +5,6 @@ if (CUDA_FOUND)
         gausstransform.cu
         gausstransform_c.cpp
         gausstransform_ref.h
-        kernels.cu
-        kernels.cuh
         gausstransform.h
         ${CUB_ROOT_DIR}/cub/cub.cuh)
 
