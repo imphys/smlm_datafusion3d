@@ -222,6 +222,8 @@ def test_hostfunction(dim=2):
                 lang="C", compiler_options=['-I'+get_kernel_path('expdist'), "-Wno-deprecated-gpu-targets"], compiler='nvcc')
         scale_B_rot = answer[0]
         f = "call_expdist3D_double"
+
+
     arguments = [cost, A, B, m, n, ndim, scale_A, scale_B_rot]
     answer = run_kernel(f, kernel_string, 1, arguments, {},
                lang="C", compiler_options=['-I'+get_kernel_path('expdist'), "-Wno-deprecated-gpu-targets"], compiler='nvcc')
@@ -230,7 +232,7 @@ def test_hostfunction(dim=2):
 
 
     #call the host function
-    arguments = [cost, A, B, m, n, ndim, scale_A, scale_B, numpy.int32(100000), rotation_matrix]
+    arguments = [cost, A, B, m, n, ndim, scale_A, scale_B, numpy.int32(100000), rotation_matrix, np.int32(0)]
     #with open(get_kernel_path('expdist')+'expdist.cu', 'r') as f:
     #    kernel_string = f.read()
     kernel_string = get_kernel_path('expdist')+'expdist.cu'
@@ -292,7 +294,7 @@ def test_hostfunction_largeN():
 
     #call the host function
     rot_matrix = numpy.eye(3).astype(numpy.float64)
-    arguments = [cost, A, B, size, size, ndim, scale_A, scale_B, allocation_size, rot_matrix]
+    arguments = [cost, A, B, size, size, ndim, scale_A, scale_B, allocation_size, rot_matrix, np.int32(0)]
     with open(get_kernel_path('expdist')+'expdist.cu', 'r') as f:
         kernel_string = f.read()
     answer = run_kernel("test_GPUExpDistHost", kernel_string, size, arguments, {},
