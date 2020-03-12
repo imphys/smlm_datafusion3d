@@ -186,6 +186,10 @@ def test_hostfunction():
 
 
 if __name__ == "__main__":
-    test_gausstransform_random_input()
-    test_gausstransform_real_data0()
+    test_hostfunction()
+    test_hostfunction()
+    test_hostfunction()
+    test_hostfunction()
+    test_hostfunction()
+    test_hostfunction()
 

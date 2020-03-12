@@ -25,8 +25,10 @@ GPUGaussTransform::GPUGaussTransform(int n, int arg_dim) {
     //pseudo load balancing across available GPUs
     int count;
     cudaGetDeviceCount(&count);
-    int id = rand() % count;
+    int rand_int = (int)rand();
+    int id = rand_int % count;
     cudaSetDevice(id);
+    //printf("DEBUG GaussTransform: count returned %d, rand returned %d, using GPU %d\n", count, rand_int, id);
 
     err = cudaMalloc((void **)&d_A, elems*sizeof(double));
     if (err != cudaSuccess) {

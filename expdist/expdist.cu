@@ -31,6 +31,14 @@ GPUExpDist::GPUExpDist(int n, int argdim) {
     dim = argdim;
     int elems = max_n * dim;
 
+    //pseudo load balancing across available GPUs
+    int count;
+    cudaGetDeviceCount(&count);
+    int rand_int = (int)rand();
+    int id = rand_int % count;
+    cudaSetDevice(id);
+    //printf("DEBUG Expdist: count returned %d, rand returned %d, using GPU %d\n", count, rand_int, id);
+
     scale_A_dim = 1;
     scale_B_dim = 1;
     if (dim == 3) {
