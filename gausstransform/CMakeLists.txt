@@ -3,7 +3,6 @@ if (CUDA_FOUND)
 
     set(sources
         gausstransform.cu
-        gausstransform_c.cpp
         gausstransform_ref.h
         gausstransform.h
         ${CUB_ROOT_DIR}/cub/cub.cuh)
