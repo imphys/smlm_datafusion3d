@@ -32,23 +32,44 @@
 %
 % Author: Hamidreza Heydarian, 2019 
 
-function param = pairFitting3D(ptc1, ptc2, sig1, sig2, scale, nIteration, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)
+function [param, maxCost] = pairFitting3D(ptc1, ptc2, sig1, sig2, scale, initAng, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)
+nIteration = 1; % unused parameter
 
-% multiple start
-ang1 = [0 pi/2 pi 3*pi/2];
-ang2 = [0];
-ang3 = [0];
+% % multiple start
+% if initAng==1
+%     ang1 = [0 pi/2 pi 3*pi/2];
+%     ang2 = [0];
+%     ang3 = [0];
+% elseif initAng==2
+%     ang1 = [0 pi/2 pi 3*pi/2];
+%     ang2 = [0 pi/2 pi 3*pi/2];
+%     ang3 = [0 pi/2 pi 3*pi/2];
+% else
+%     ang1 = linspace(-pi,pi,initAng);
+%     ang2 = asin(linspace(-1,1,initAng));
+%     ang3 = linspace(-pi,pi,initAng);
+% end
+% 
+% [a, b, c, d] = ndgrid(ang1,ang2,ang3,scale); % use all combinations of initial angles and scales as in initialization parameters for GMM registration
 
-[a, b, c] = ndgrid(ang1,ang2,ang3);
 
-for init_iter=1:numel(a)
+NN = 72;
+[x1, x2, x3, x4] = textread('/home/mjjoosten/hpc24/MasterEndProject/my_github/Maarten_Msc/sampling_so3/data.qua', '%f %f %f %f', NN);
 
-    qtmp = ang2q(a(init_iter), b(init_iter), c(init_iter));
-    
+for i=1:NN
+    q_init(i,:) = [x1(i), x2(i), x3(i), x4(i)];
+end
+
+for init_iter=1:size(q_init,1)
+
+%     qtmp = ang2q(a(init_iter), b(init_iter), c(init_iter));
+    qtmp = q_init(init_iter,:);
+   
     % initialize gmmreg
     f_config = initialize_config(double(ptc1), double(ptc2), 'rigid3d', nIteration);
     f_config.init_param = [qtmp(2) qtmp(3) qtmp(4) qtmp(1) 0 0 0];
-    f_config.scale = scale;     
+%     f_config.scale = d(init_iter);     
+    f_config.scale = scale;
     
     % perform registration
     tmpParam{1,init_iter} = gmmreg_L23D(f_config,USE_GPU_GAUSSTRANSFORM); 
@@ -60,7 +81,8 @@ for init_iter=1:numel(a)
     M_points_transformed = transform_pointset(M, 'rigid3d', tmpParam{1,init_iter});
     RM = quaternion2rotation(tmpParam{1,init_iter}(1:4));
     if USE_GPU_EXPDIST
-        cost(init_iter) = mex_expdist(S, M_points_transformed, sig2, sig1, RM);
+%         cost(init_iter) = mex_expdist(S, M_points_transformed, correct_uncer(sig2), sig1, RM);
+        cost(init_iter) = mex_expdist(S,M_points_transformed,sig2,sig1,RM);
     else
         cost(init_iter) = mex_expdist_cpu(S, M_points_transformed, sig2, sig1, RM);
     end
