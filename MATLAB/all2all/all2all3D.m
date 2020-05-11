@@ -27,20 +27,23 @@
 %
 % Hamidreza Heydarian, 2019
 
-function [RR, I] = all2all3D(subParticles, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
+function [RR, I, cost] = all2all3D(subParticles, scale, initAng, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
 
     N = numel(subParticles);
 
     % filling out the all2all registration matrix (result)
     result = cell(N-1,N);
+    cost = zeros(N);
+    
     for i=1:N-1
         parfor j=i+1:N
 
-            param = pairFitting3D(subParticles{1,i}.points, subParticles{1,j}.points, ...
-                               subParticles{1,i}.sigma, subParticles{1,j}.sigma, 1, 1, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
+            [param,cost(i,j)] = pairFitting3D(subParticles{1,i}.points, subParticles{1,j}.points, ...
+                               subParticles{1,i}.sigma, subParticles{1,j}.sigma, scale, initAng, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
 
             result{i,j}.parameter = param;
-            result{i,j}.id = [i; j];       
+            result{i,j}.id = [i; j];  
+            result{i,j}.cost = cost(i,j);
 
         end    
         disp(['row ' num2str(i) ' is done.'])    
@@ -56,7 +59,7 @@ function [RR, I] = all2all3D(subParticles, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDI
                  result{i,j}.parameter(2) result{i,j}.parameter(3)];
 
             % RR holds the registration parameters of size 4x4xN(N-1)/2 
-            RR(1:3,1:3,k) = q2R(q);
+            RR(1:3,1:3,k) = q2R(q)';
             RR(1:3,4,k) = [result{i,j}.parameter(5); result{i,j}.parameter(6); result{i,j}.parameter(7)];
             RR(4,4,k) = 1;
             RR(4,1:3) = 0;
