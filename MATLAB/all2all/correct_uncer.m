@@ -38,6 +38,6 @@
 
 function [sigmas_corrected] = correct_uncer(sigmas_in)
 
-    sigmas_corrected = reshape(sigmas_in',size(sigmas_in,1),2); 
+    sigmas_corrected = reshape(sigmas_in',size(sigmas_in,1),size(sigmas_in,2)); 
     
 end
