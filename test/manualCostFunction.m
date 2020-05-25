@@ -28,9 +28,9 @@ function [costValue] = manualCostFunction(S,M,RM)
 
             if size(M.sigma,2)==2
                 Sb = diag([M.sigma(j,1) M.sigma(j,1) M.sigma(j,2)]);%3x3 uncertainty matrix loc j of particle M
-                Sb = RM*Sb*RM';                                     %rotate the uncertainties of M
+                Sb = RM*Sb*RM';                                 %rotate the uncertainties of M
             elseif size(M.sigma,2)==9
-                Sb = reshape(M.sigma,3,3); 
+                Sb = reshape(M.sigma(j,:),3,3); 
             else
                 disp('error: uncertainties of M have wrong shape')
             end

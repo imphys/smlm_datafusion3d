@@ -8,11 +8,11 @@ addpath(genpath('test'))
 addpath(genpath('MATLAB'))
 addpath(genpath('build/mex/'))      %remove everything from path, except the correct mex files 
 
-%initialize particles (S has two locs, M has 1)
+%initialize particles (S and M have two locs)
 S.points = [0,0,0;1,1,1];
 S.sigma = [1 3;1 1];
-M.points = [1 -1 1];
-M.sigma = [10 1];
+M.points = [1 -1 1; 1 2 3];
+M.sigma = [10 1; 3 4];
 
 %test without rotation (RM=identity matrix) or a random rotation
 RM = eye(3); 
@@ -25,46 +25,30 @@ RM = eye(3);
 %If the old mex-files are used, the values will be different/wrong
 
 %CPU
-mex_expdist_cpu(S.points,M.points,S.sigma,M.sigma,RM)                 %should give 0.0742
-% 0.0725 is S.sigma not reshaped
+mex_expdist_cpu(S.points,M.points,S.sigma,M.sigma,RM)                 %should give 0.1208
 
 %GPU
-mex_expdist(S.points,M.points,correct_uncer(S.sigma),M.sigma,RM)   %should give 0.0742
-mex_expdist(S.points,M.points,correct_uncer(S.sigma),correct_uncer(M.sigma),correct_uncer(RM))   %should give 0.0742
+mex_expdist(S.points,M.points,correct_uncer(S.sigma),M.sigma,RM)   %should give 0.1208
                 %> note that we have to reshape sigmasA
                 % on GitLab reshape(sigmasA',size(sigmasA,1),2) is replaces
                 % by correct_uncer(sigmasA)
 
-%correct manual normalized costFunction
-
+%manua
 manualCostFunction(S,M,RM)
 
-%% both particles 2 localizations
-S.points = [0,0,0;1,1,1];
-S.sigma = [1 3;1 1];
+
+%% Particle M is passed a mx9 uncertainty matrix (M has 2 locs) 
+S.points = [0,0,0];%;1,1,1];
+S.sigma = [1 3];%;1 1];
 M.points = [1 -1 1; 1 2 3];
-M.sigma = [10 1; 3 4];
+M.sigma = [reshape(diag([10,10,1])*rotx(32)*roty(14)*rotz(11),1,9); reshape(diag([3,3,4])*rotx(123)*roty(110)*rotz(13),1,9)] ;
 
-RM = eye(3); 
+RM = eye(3);
+% RM = rand(3,3);     %RM does nothing when M.sigma is mx9
 
-mex_expdist(S.points,M.points,correct_uncer(S.sigma),(M.sigma),(RM))   %should give 0.0742
-mex_expdist(S.points,M.points,correct_uncer(S.sigma),correct_uncer(M.sigma),correct_uncer(RM))   %should give 0.0742
-manualCostFunction(S,M,RM)
+mex_expdist(S.points,M.points,correct_uncer(S.sigma),M.sigma,RM)        %wrong, 
+mex_expdist(S.points,M.points,correct_uncer(S.sigma),correct_uncer(M.sigma),RM)  %is good right now
+manualCostFunction(S,M,RM)      %0.3133
 
-%good: 0.1208
-%
-
-%% Particle M is passed a mx3 uncertainty matrix
-S.points = [0,0,0;1,1,1];
-S.sigma = [1 3;1 1];
-M.points = [1 -1 1];
-M.sigma = reshape(diag([10,10,1])*rotx(32)*roty(14),1,9);
-
-RM = eye(3); 
-RM = rand(3,3);
-
-mex_expdist(S.points,M.points,correct_uncer(S.sigma),correct_uncer(M.sigma),correct_uncer(RM))   %should give 0.0742
-manualCostFunction(S,M,RM)
-% RM does not matter here, since 
 
 
