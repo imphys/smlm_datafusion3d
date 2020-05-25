@@ -25,13 +25,29 @@ void rotate_scale(T *rotated_scales, const T *rotation_matrix, const T *transpos
     sigma[0] = scale_B[i*2+0];   // 0 1 2
     sigma[4] = scale_B[i*2+0];   // 3 4 5
     sigma[8] = scale_B[i*2+1];   // 6 7 8
+            
+    T rotation_matrix2[9];
+    zero_matrix(rotation_matrix2);
+    for (int i=0; i<3; i++){
+        for (int j=0; j<3; j++){
+            rotation_matrix2[i*3+j] = rotation_matrix[i+j*3]; 
+        }
+    }
+
+    T transposed_rotation_matrix2[9];
+    zero_matrix(transposed_rotation_matrix2);
+    for (int i=0; i<3; i++){
+        for (int j=0; j<3; j++){
+            transposed_rotation_matrix2[i*3+j] = transposed_rotation_matrix[i+j*3]; 
+        }
+    }
 
     //multiply sigma with transposed rotation matrix
     T temp[9];
-    multiply_matrix<T, 9, 3>(temp, sigma, reinterpret_cast<const T(&)[9]>(*transposed_rotation_matrix));
+    multiply_matrix<T, 9, 3>(temp, sigma, reinterpret_cast<const T(&)[9]>(*transposed_rotation_matrix2));
 
     //multiply with rotation matrix, reuse sigma to store result
-    multiply_matrix<T, 9, 3>(sigma, reinterpret_cast<const T(&)[9]>(*rotation_matrix), temp);
+    multiply_matrix<T, 9, 3>(sigma, reinterpret_cast<const T(&)[9]>(*rotation_matrix2), temp);
 
     //store result
     for (int ii=0; ii<9; ii++) {
