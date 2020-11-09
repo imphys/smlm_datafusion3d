@@ -1,3 +1,29 @@
+%get_final_transform_params   compute absolute final transformation from
+%the superparticle for each individual particle
+%particles
+%
+% SYNOPSIS:
+%  [finalParticles, transform] = get_final_transform_params(xSuperParticle, subParticles)
+%
+% INPUT:
+%   xSuperParticle: the final superparticle
+%   subParticles: cell array of the input particles
+%
+% OUTPUT:
+%   finalParticles: final particles after alignment
+%   transform:      absolute transformation for each final particle
+%
+% (C) Copyright 2018-2020      
+% Faculty of Applied Sciences
+% Delft University of Technology
+%
+% Hamidreza Heydarian, November 2020.
+%
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+%    http://www.apache.org/licenses/LICENSE-2.0
+
 function [finalParticles, transform] = get_final_transform_params(xSuperParticle, subParticles)
 
 % obtain the absolute transformations

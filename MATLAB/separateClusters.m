@@ -1,3 +1,26 @@
+%separateClusters   separate particles that are clustered in a
+%superparticle (NOT USED ANYMORE)
+%
+% SYNOPSIS:
+%  newSuperParticles = separateClusters(finalParticles, USE_GPU, nClust)
+% INPUT:
+%   finalParticles: the set of all aligned particles after bootstrapping.
+%   USE_GPU: use gpu or not
+%   nClust: number of clusters
+%
+% OUTPUT:
+%   newSuperParticles: cell array of the separated clusters
+%
+% (C) Copyright 2018-2020      
+% Faculty of Applied Sciences
+% Delft University of Technology
+%
+% Hamidreza Heydarian, November 2020.
+%
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+%    http://www.apache.org/licenses/LICENSE-2.0
 function newSuperParticles = separateClusters(finalParticles, USE_GPU, nClust)
 
 N = numel(finalParticles);      % the number of particles
