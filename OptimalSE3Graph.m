@@ -1,20 +1,25 @@
 function [newParticles] = OptimalSE3Graph(cost,particles,RR,filename)
 %OPTIMALSE3GRAPH Rotate particles into common reference frame based on the
 %optimal path through the cost function network
-
-% input:
-
-%  cost : cost function value for the best alignment between all N
+% INPUT:
+%  cost: cost function value for the best alignment between all N
 %  particles, presented in a upper triangular matrix. Unnormalized
-
-% particles : cell array of particles structs with .points field at least.
-
-% RR : 4x4 transformation matrix consisting of 3x3 rotation matrix and 3x1
-% translation vector
-
-% output:
-
-% newparticles : particles after applying all transformations
+%  particles: cell array of particles structs with .points field at least.
+%  RR : 4x4 transformation matrix consisting of 3x3 rotation matrix and 3x1
+%  translation vector
+% OUTPUT:
+%  newparticles : particles after applying all transformations
+%
+% (C) Copyright 2018-2020      
+% Faculty of Applied Sciences
+% Delft University of Technology
+%
+% Maarten Joosten, November 2020.
+%
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+%    http://www.apache.org/licenses/LICENSE-2.0
 
 % Step 1. Link particles together
 A = cost;
