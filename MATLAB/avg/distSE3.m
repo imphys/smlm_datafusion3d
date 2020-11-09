@@ -18,14 +18,17 @@
 %       reference: Park, F. C. Distance Metrics on the Rigid-Body Motions 
 %       with Applications to Mechanism Design. Journal of Mechanical Design 117, 48 (1995).
 %
-% (C) Copyright 2019               Quantitative Imaging Group
-%     All rights reserved          Faculty of Applied Physics
-%                                  Delft University of Technology
-%                                  Lorentzweg 1
-%                                  2628 CJ Delft
-%                                  The Netherlands
+% (C) Copyright 2018-2020      
+% Faculty of Applied Sciences
+% Delft University of Technology
 %
-% Author: Hamidreza Heydarian, 2019 
+% Hamidreza Heydarian, November 2020.
+%
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+%    http://www.apache.org/licenses/LICENSE-2.0
+
 
 function d = distSE3(X,Y)
 
