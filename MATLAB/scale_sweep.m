@@ -18,6 +18,17 @@ function [optimal_scale,scales_vec,cost_log,idxP] = scale_sweep(particles,numsam
 % idxP : index list of the particles selected for alignment. particle 1 is
 %               aligned against particle 1+numsample etc.
 
+% (C) Copyright 2018-2020      
+% Faculty of Applied Sciences
+% Delft University of Technology
+%
+% Maarten Joosten, Hamidreza Heydarian, November 2020.
+%
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+%    http://www.apache.org/licenses/LICENSE-2.0
+
 
 initAng = 2;     % dummy parameter used to set the number of initial angles in pairFitting
 % scales_vec = linspace(0.001,0.5,30);          % fine scales vector
