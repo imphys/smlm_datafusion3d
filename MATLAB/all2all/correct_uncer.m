@@ -27,14 +27,16 @@
 %                                                                       ... ]
 %
 %
-% (C) Copyright 2019                    QI Group
-%     All rights reserved               Faculty of Applied Physics
-%                                       Delft University of Technology
-%                                       Lorentzweg 1
-%                                       2628 CJ Delft
-%                                       The Netherlands
+% (C) Copyright 2018-2020      
+% Faculty of Applied Sciences
+% Delft University of Technology
 %
-% Teun Huijben , Feb 2020.
+% Teun Huijben, November 2020.
+%
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+%    http://www.apache.org/licenses/LICENSE-2.0
 
 function [sigmas_corrected] = correct_uncer(sigmas_in)
 

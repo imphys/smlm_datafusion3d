@@ -12,14 +12,17 @@
 %  M is a 4x4xk matrix. M(1:3,1:3,i) is the rotation submatrix, M(1:2,4,i)
 %  is the translation vector.
 
-% (C) Copyright 2017                    QI Group
-%     All rights reserved               Faculty of Applied Physics
-%                                       Delft University of Technology
-%                                       Lorentzweg 1
-%                                       2628 CJ Delft
-%                                       The Netherlands
+% (C) Copyright 2018-2020      
+% Faculty of Applied Sciences
+% Delft University of Technology
 %
-% Hamidreza Heydarian, Oct 2017.
+% Hamidreza Heydarian, November 2020.
+%
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+%    http://www.apache.org/licenses/LICENSE-2.0
+
 
 function newParticles = applyRigidTransform(oldParticles, M)
 

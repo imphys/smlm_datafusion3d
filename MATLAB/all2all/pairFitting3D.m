@@ -23,14 +23,17 @@
 %   param       transformations parameter giving the highest cost
 %    
 %
-% (C) Copyright 2019               Quantitative Imaging Group
-%     All rights reserved          Faculty of Applied Physics
-%                                  Delft University of Technology
-%                                  Lorentzweg 1
-%                                  2628 CJ Delft
-%                                  The Netherlands
+% (C) Copyright 2018-2020      
+% Faculty of Applied Sciences
+% Delft University of Technology
 %
-% Author: Hamidreza Heydarian, 2019 
+% Hamidreza Heydarian, November 2020.
+%
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+%    http://www.apache.org/licenses/LICENSE-2.0
+
 
 function [param, maxCost] = pairFitting3D(ptc1, ptc2, sig1, sig2, scale, initAng, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST)
 nIteration = 1; % unused parameter

@@ -14,13 +14,17 @@
 %   [t1, t2]
 %      2D translation paramteres 
 %
-% (C) Copyright 2017               Quantitative Imaging Group
-%     All rights reserved          Faculty of Applied Physics
-%                                  Delft University of Technology
-%                                  Lorentzweg 1
-%                                  2628 CJ Delft
-%                                  The Netherlands
-% Hamidreza Heydarian, Feb 2017
+% (C) Copyright 2018-2020      
+% Faculty of Applied Sciences
+% Delft University of Technology
+%
+% Hamidreza Heydarian, November 2020.
+%
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+%    http://www.apache.org/licenses/LICENSE-2.0
+
 
 function D = expdist(S, M, angle, t1, t2)
 

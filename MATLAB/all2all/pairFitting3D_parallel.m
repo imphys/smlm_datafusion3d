@@ -28,14 +28,17 @@
 %       The maximum value of the Bhattacharya cost function.
 %    
 %
-% (C) Copyright 2019               Quantitative Imaging Group
-%     All rights reserved          Faculty of Applied Physics
-%                                  Delft University of Technology
-%                                  Lorentzweg 1
-%                                  2628 CJ Delft
-%                                  The Netherlands
+% (C) Copyright 2018-2020      
+% Faculty of Applied Sciences
+% Delft University of Technology
 %
-% Hamidreza Heydarian, 2019
+% Hamidreza Heydarian, November 2020.
+%
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+%    http://www.apache.org/licenses/LICENSE-2.0
+
 
 function [parameter, registered_model, max_value] = pairFitting3D_parallel(M, S, weight, scale, nIteration, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST) 
     
