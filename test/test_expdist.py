@@ -1,4 +1,13 @@
 #!/usr/bin/env python
+# (C) Copyright 2018-2020      
+# Faculty of Applied Sciences
+# Delft University of Technology
+# Ben van Werkhoven, November 2020.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# http://www.apache.org/licenses/LICENSE-2.0
+
 from nose.tools import nottest
 import numpy
 import numpy as np
