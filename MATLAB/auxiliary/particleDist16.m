@@ -1,8 +1,33 @@
-% compute the distance between two particles of size 32x3
-% For NPC particles that have very high tilt and due to the symmetry
-% of the top and bottom ring, a flip match can happen.
-% The problem is that the top/bottom rings are not consistent and we
-% need to modify the NPC model to solve this problem.
+% particleDist16  compute the distance between two particles using their binding 
+%   sites from the design model size (only for NPC with 16 sites).
+%
+% SYNOPSIS:
+%   [D, flipflag] = particleDist16(par1, par2)
+%
+% INPUT
+%   par1: the sites of the first particle  
+%   par2: the sites of the second particle
+%
+% OUTPUT
+%   D: the distance in particle unit  
+%   flipflag: does flipping happen?
+%    
+%   NOTE:% compute the distance between two particles of size 32x3
+%   For NPC particles that have very high tilt and due to the symmetry
+%   of the top and bottom ring, a flip match can happen.
+%   The problem is that the top/bottom rings are not consistent and we
+%   need to modify the NPC model to solve this problem.
+%
+% (C) Copyright 2018-2020      
+% Faculty of Applied Sciences
+% Delft University of Technology
+%
+% Hamidreza Heydarian, November 2020.
+%
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+%    http://www.apache.org/licenses/LICENSE-2.0
 
 function [D, flipflag] = particleDist16(par1, par2)
 
@@ -51,7 +76,6 @@ end
 
 if ID > 8
     flipflag = 1;
-%     D = D - 11.1893*32/130;
 end
 
 end
