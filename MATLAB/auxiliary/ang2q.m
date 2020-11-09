@@ -12,17 +12,17 @@
 %       quternion representation
 %    
 %
-%   NOTE:
-%       the function is adapted from angle2quant() from MATLAB
+% (C) Copyright 2018-2020      
+% Faculty of Applied Sciences
+% Delft University of Technology
 %
-% (C) Copyright 2019               Quantitative Imaging Group
-%     All rights reserved          Faculty of Applied Physics
-%                                  Delft University of Technology
-%                                  Lorentzweg 1
-%                                  2628 CJ Delft
-%                                  The Netherlands
+% Hamidreza Heydarian, November 2020.
 %
-% Author: Hamidreza Heydarian, 2019 
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+%    http://www.apache.org/licenses/LICENSE-2.0
+ 
 
 function q = ang2q(r1, r2, r3)
 %  ang2q Convert rotation angles to quaternion.
