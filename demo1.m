@@ -53,8 +53,21 @@ end
 
 %% STEP 1
 % all-to-all registration
+
+% when the particles have a prefered orientation, like NPCs that lie in the
+% cell membrane, it is recommanded to do in-plane initialization to save 
+% computational time for example initAng = 1 samples azimuthal angle around 
+% z-axis (in x-y plane). See pairFitting3D.m line 68 for detail. 
+initAng = 1;
+
+% for NPC particle scale = 0.1 (10 nm) is the optimal choice. In other
+% cases, it is recommanded to use the scale_sweep() function to find the
+% optimal value. This needs to be done once for a structure regardless of 
+% the mean loc. unc. or DOL.(see Online Methods)
+scale = 0.1;    % in camera pixel unit (corresponds to 10 nm in physical unit)
+
 disp('all2all registration started!');
-[RR, I] = all2all3D(subParticles, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
+[RR, I] = all2all3D(subParticles, scale, initAng, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
 
 %% STEP 2 
 % 2-1 Lie-algebraic averaging
