@@ -50,7 +50,7 @@ nIteration = 1; % unused parameter
 q_init=[];
 if ischar(initAng)      % sampling from file
     % load uniform SO(3) grid
-    [x1, x2, x3, x4] = textread(['/uniform_sampling_grids/',initAng], '%f %f %f %f');
+    [x1, x2, x3, x4] = textread(['MATLAB/all2all/uniform_SO3_sampling_grids/',initAng], '%f %f %f %f');
     NN = length(x1);
 
     %build initial quaternion vector
