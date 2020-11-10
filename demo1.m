@@ -87,5 +87,5 @@ iter = 5;           % number of iterations
 [superParticleWithoutPK, ~] = one2all3D(initAlignedParticles, iter, M1, '.', sup, USE_SYMMETRY, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
 
 %% Visualize the results
-visualizeCloud3D(superParticleWithoutPK{1,5},0.05, 1);
-visualizeCloud3D(superParticleWithPK{1,5},0.05, 1);
+visualizeSMLM3D(superParticleWithoutPK{1,5},0.05, 1);
+visualizeSMLM3D(superParticleWithPK{1,5},0.05, 1);
