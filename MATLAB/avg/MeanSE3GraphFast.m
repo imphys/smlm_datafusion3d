@@ -57,7 +57,7 @@ function  [M, Iteration]=MeanSE3GraphFast(RM,I,Minit,Weight)
                 end
             end
             if(SpanFlag==0&&sum(i)<N)
-                error('Relative Motions DO NOT SPAN all the nodes in the VIEW GRAPH');
+                error('Relative Motions DO NOT SPAN all the nodes in the VIEW GRAPH\n%s', 'Choose a larger threshold value !');
             end
         end    
     end
