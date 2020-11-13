@@ -2,13 +2,11 @@
 %   particles to make the data-driven template
 %
 % SYNOPSIS:
-%   [initAlignedParticles, sup] = makeTemplate(M_new, ptCloudTformed, subParticles, N)
+%   [initAlignedParticles, sup] = makeTemplate(M_new, subParticles, N)
 %
 % INPUT
 %   M_new
 %       the second absolute transformations
-%   ptCloudTformed
-%       point cloud of particles
 %   subParticles
 %       the inital particles
 %   N 
@@ -38,21 +36,13 @@ function [initAlignedParticles, sup] = makeTemplate(M_new, subParticles, N)
     sup =[];                            % data-driven template
     for i=1:N       
 
-%         estA = eye(4);
-%         estA(1:3,1:3) = M_new(1:3,1:3,i); 
-%         estA(4,:) = M_new(:,4,i)';
-%         estTform = invTransform(estA);
-%         r = estTform(1:3, 1:3);
-%         t = estTform(4, 1:3);
-        r = inv(M_new(1:3,1:3,i));
+        r = M_new(1:3,1:3,i);
         t = M_new(:,4,i)';
         
-        % transform each particle
-        subParticlesTformed = subParticles{1,i}.points * r;
-        subParticlesTformed(:,1) = subParticlesTformed(:,1) + t(1);
-        subParticlesTformed(:,2) = subParticlesTformed(:,2) + t(2);
-        subParticlesTformed(:,3) = subParticlesTformed(:,3) + t(3);        
-
+        % transform each particle       
+        subParticlesTformed = subParticles{1,i}.points - repmat(t(1:3),size(subParticles{1,i}.points,1),1);
+        subParticlesTformed = subParticlesTformed * r;
+        
         % initial aligned particles for bootstrapping
         initAlignedParticles{1,i}.points = subParticlesTformed;
         initAlignedParticles{1,i}.sigma = subParticles{1,i}.sigma;    
