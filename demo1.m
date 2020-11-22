@@ -34,10 +34,10 @@ USE_GPU_GAUSSTRANSFORM = 1;
 USE_GPU_EXPDIST = 1;
 
 % load dataset stored in data directory
-filename = 'data.mat';
+filename = 'nup_data.mat';
 load(['data/' filename]);
 
-N = 20;     % choose N particles
+N = 100;     % choose N particles
 if N > numel(particles)
     N = numel(particles);
 end
@@ -56,34 +56,30 @@ end
 
 % when the particles have a prefered orientation, like NPCs that lie in the
 % cell membrane, it is recommanded to do in-plane initialization to save 
-% computational time for example initAng = 1 samples azimuthal angle around 
-% z-axis (in x-y plane). See pairFitting3D.m line 68 for detail. 
-initAng = 1;
+% computational time for example initAng = 1 (see pairFitting3D.m line 68). 
+initAng = 'grid_72.qua';
 
-% for NPC particle scale = 0.1 (10 nm) is the optimal choice. In other
+% For NPC particle scale = 0.1 (10 nm) is the optimal choice. In other
 % cases, it is recommanded to use the scale_sweep() function to find the
-% optimal value. This needs to be done once for a structure regardless of 
-% the mean loc. unc. or DOL.(see Online Methods)
+% optimal value. This needs to be done once for a structure (see Online
+% Methods and demo2.m)
 scale = 0.1;    % in camera pixel unit (corresponds to 10 nm in physical unit)
 
 disp('all2all registration started!');
 [RR, I] = all2all3D(subParticles, scale, initAng, USE_GPU_GAUSSTRANSFORM, USE_GPU_EXPDIST);
+disp('all2all registration finished!');
+%% STEP 2
+% iterations of:
+% 2-1 lie-algebra averaging of relative transformation
+% 2-2 consistency check
+% 2-3 constructing the data-driven template
 
-%% STEP 2 
-% 2-1 Lie-algebraic averaging
-disp('Lie-algebraic averaging started!');
-% average relative rotations+translation (RR) to get the absolute ones (Mest)
-Mest = MeanSE3Graph(RR, I);
-
-% 2-2 registration consistency check
-[RM_new, I_new] = consistencyCheck(Mest, RR, I, N);
-
-% 2-3 second Lie-algebraic averaging
-disp('2nd Lie-algebraic averaging started!');
-[M_new] = MeanSE3Graph(RM_new,I_new);
-
-% 2-4 make the first data-driven template
-[initAlignedParticles, sup] = makeTemplate(M_new, subParticles, N);
+nIterations = 5;           % number of lie-algebra avg and consistency check
+                            % iterations
+flagVisualizeSijHist = 1;   % show S_ij histogram (boolean) 
+threshold = 0.5;            % consistency check threshold.
+[initAlignedParticles, sup] = relative2absolute(subParticles, RR, I, N, ...
+                                                nIterations, threshold, 1);
 
 %% STEP 3
 % bootstrapping with imposing symmetry prior knowledge
@@ -101,4 +97,4 @@ iter = 5;           % number of iterations
 
 %% Visualize the results
 visualizeSMLM3D(superParticleWithoutPK{1,5},0.05, 1);
-visualizeSMLM3D(superParticleWithPK{1,5},0.05, 1);
+% visualizeCloud3D(superParticleWithPK{1,5},0.05, 1);
