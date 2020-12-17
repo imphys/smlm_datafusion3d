@@ -25,8 +25,8 @@ works on localization data not pixelated images.
 The Git repository uses submodules. Include them in a _git clone_ action using the _--recursive_ option.
 ```bash
 
-git clone --single-branch --branch develop git@github.com:imphys/smlm_datafusion3d.git --recursive
-cd all2all3d/
+git clone --single-branch --branch develop https://github.com/imphys/smlm_datafusion3d.git --recursive
+cd smlm_datafusion3d/
 ````
 ### Compile the code
 In the following
