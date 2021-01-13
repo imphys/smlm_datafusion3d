@@ -176,5 +176,5 @@ Some files have been reused and adapted from the following sources:
     In Proc. IEEE Conf. on Computer Vision and Pattern Recognition (2004).  
     [3] Chatterjee, A. Geometric calibration and shape refinement for 3D reconstruction
     PhD thesis. Indian Institute of Science (2015).
-- [l1-magic optimization toolbox](https://statweb.stanford.edu/~candes/l1magic/)    
+- [l1-magic optimization toolbox](https://statweb.stanford.edu/~candes/software/l1magic/)    
 - [Natural-Order Filename Sort](https://nl.mathworks.com/matlabcentral/fileexchange/47434-natural-order-filename-sort) 
