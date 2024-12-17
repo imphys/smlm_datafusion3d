@@ -16,81 +16,109 @@ works on localization data not pixelated images.
 - [CUB library](https://nvlabs.github.io/cub/) (version>1.8.0)
 - [The DIPImage toolbox](http://www.diplib.org) (version>2.9)
 - [GNU C compiler](https://gcc.gnu.org/) (version>5.5.0, for Linux)
-- [Viusal Studio](https://visualstudio.microsoft.com/downloads/) (Visual Studio 15 2017, for Windows)
+- [Visual Studio](https://visualstudio.microsoft.com/downloads/) (Visual Studio 15 2017, for Windows)
+
+**Note! For CUDA versions ≥ 11.0, the CUB library is included in the CUDA distribution. In this case the CUB_ROOT_DIR is automatically set to the cub directory within the CUDA installation (typically located in the include path).**
+
+The installation and test has been successfully done with:
+
+- Matlab R2023b
+- GCC 10.5.0
+- CUDA 12.6.1
+- DIPlib 3.5.1
 
 ## Installation and usage on Linux
 
 ### Get the sources
 
 The Git repository uses submodules. Include them in a _git clone_ action using the _--recursive_ option.
-```bash
 
+```bash
 git clone --single-branch --branch develop https://github.com/imphys/smlm_datafusion3d.git --recursive
 cd smlm_datafusion3d/
-````
-### Compile the code
-In the following
+```
 
-- BUILD_DIRECTORY is the directory where the project will be built
-- SOURCE_DIRECTORY is the root directory of the sources
-- CUB_DIRECTORY is the root directory of the downloaded [CUB library](https://nvlabs.github.io/cub/) sources
-- MATLAB_DIRECTORY is the root of MATLAB installation directory (e.g. /usr/local/MATLAB/R2019a)
+### Compile the code
+
+In the following:
+
+- `BUILD_DIRECTORY` is the directory where the project will be built
+- `SOURCE_DIRECTORY` is the root directory of the sources
+- `CUB_DIRECTORY` is the root directory of the downloaded [CUB library](https://nvlabs.github.io/cub/) sources. **Only needed for CUDA versions < 11.0!**
+- `MATLAB_DIRECTORY` is the root of MATLAB installation directory (e.g. `/usr/local/MATLAB/R2019a`)
 
 Use the following commands to build the necessary libraries for this software:
 
-```bash
+For CUDA versions < 11.0:
 
+```bash
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_C_COMPILER=gcc-5 -DCUB_ROOT_DIR=CUB_DIRECTORY SOURCE_DIRECTORY
 make
-````
-### Use the code
-Next, we need to locate the built libraries for MATLAB:
-```bash
+```
 
+For CUDA versions ≥ 11.0:
+
+```bash
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=RELEASE SOURCE_DIRECTORY
+make
+```
+
+### Use the code
+
+Next, we need to locate the built libraries for MATLAB:
+
+```bash
 cd ..
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:MATLAB_DIRECTORY/runtime/glnxa64:MATLAB_DIRECTORY/bin/glnxa64:MATLAB_DIRECTORY/sys/os/glnxa64:MATLAB_DIRECTORY/sys/opengl/lib/glnxa64:BUILD_DIRECTORY/mex
 ``` 
+
 Then, run MATLAB and the demo script
+
 ```bash
 matlab
 >> demo1.m
 ```
+
 ## Installation and usage on Windows
 
 ### Get the sources
 
 The Git repository uses submodules. Include them in a _git clone_ action using the _--recursive_ option.
-```bash
 
+```bash
 git clone --single-branch --branch develop git@github.com:berndrieger/alltoall3D.git --recursive
-````
+```
+
 ### Compile the code
+
 In the following
 
-- BUILD_DIRECTORY is the directory where the project will be built
-- SOURCE_DIRECTORY is the root directory of the sources
-- CUB_DIRECTORY is the root directory of the downloaded [CUB library](https://nvlabs.github.io/cub/) sources
+- `BUILD_DIRECTORY` is the directory where the project will be built
+- `SOURCE_DIRECTORY` is the root directory of the sources
+- `CUB_DIRECTORY` is the root directory of the downloaded [CUB library](https://nvlabs.github.io/cub/) sources
 
 Use the following commands from Command Prompt (type `cmd` in Run) to build the necessary libraries for this software:
 
 ```bash
-
 mkdir build
 cd build
 cmake -G "Visual Studio 15 2017 Win64" -DCUB_ROOT_DIR=CUB_DIRECTORY SOURCE_DIRECTORY
 make
-````
+```
 
-Then open MS Visual Studio, by double clicking on ALL_BUILD.vcxproj and build all the targets (press `F7`). You might need to manually build the targets expdist and gausstransform before building the other targets.
+Then open MS Visual Studio, by double clicking on `ALL_BUILD.vcxproj` and build all the targets (press `F7`). You might need to manually build the targets expdist and gausstransform before building the other targets.
 
 ### Use the code
 
 Open MATLAB and comment/uncomment the lines which add mex files to MATLAB path. Then, run the demo script
+
 ```bash
 >> demo1.m
-````
+```
 
 ## Troubleshooting
 
@@ -111,8 +139,7 @@ way to install CUB is to add the top-level directory of where you've
 unpacked the CUB source codes to your ``$CPATH`` environment variable. For 
 example, if you've unzipped the CUB sources into a directory called 
 ``/home/username/cub-version.number``, you can use 
-``export CPATH=$CPATH:/home/username/cub-version.number/:`` to install CUB. In this way the 
-nvcc compiler is able to find the CUB headers.
+``export CPATH=$CPATH:/home/username/cub-version.number/:`` to install CUB. In this way the nvcc compiler is able to find the CUB headers.
 
 - Program tries to run GPU code when no GPU is present  
 Note that the mex files for the GPU code will be produced by `make` if your 
@@ -139,33 +166,38 @@ get this is using [Miniconda](https://conda.io/miniconda.html).
 
 On Linux systems one could type the following commands to download and 
 install Python 3 using Miniconda:
-```
+
+```bash
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh
 ```
 
 All the required Python packages can be installed using the following command,
 before you run it make sure that you have CUDA installed:
-```
+
+```bash
 pip install -r requirements.txt
 ```
 
 The tests can be run using ``nose``, for example by typing the following in 
 the top-level or test directory:
-```
+
+```bash
 nosetests -v
 ```
 
 ## Further questions
 
-For any other questions regarding this software, you can  
+For any other questions regarding this software, you can:
+
 - Search [issues section](https://github.com/berndrieger/alltoall3D/issues) or open a new topic there.
-- Contact the authors:  
-[(Hamidreza Heydarian)](https://github.com/hrheydarian) <H.Heydarian@tudelft.nl>   
-[(Ben van Werkhoven)](https://github.com/benvanwerkhoven) <b.vanwerkhoven@esciencecenter.nl>  
-[(Bernd Rieger)](https://github.com/berndrieger) <b.rieger@tudelft.nl>  
+- Contact the authors:
+  - [(Hamidreza Heydarian)](https://github.com/hrheydarian) <H.Heydarian@tudelft.nl>
+  - [(Ben van Werkhoven)](https://github.com/benvanwerkhoven) <b.vanwerkhoven@esciencecenter.nl>
+  - [(Bernd Rieger)](https://github.com/berndrieger) <b.rieger@tudelft.nl>
 
 ## Acknowledgement
+
 Some files have been reused and adapted from the following sources:  
 
 - [GMM registration](https://github.com/bing-jian/gmmreg)    
